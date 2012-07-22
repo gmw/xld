@@ -1,0 +1,66 @@
+# cdda_paranoia makefile.in ready to go for autoconf.
+
+# DO NOT EDIT BELOW! ##########################################################
+# (unless, of course, you know what you are doing :) ##########################
+
+.SUFFIXES: .t
+VPATH=@srcdir@
+srcdir=@srcdir@
+
+@SET_MAKE@
+FLAGS=@TYPESIZES@ @CFLAGS@
+OPT=@OPT@ $(FLAGS)
+DEBUG=@DEBUG@ 
+CC=@CC@
+LD=@CC@
+LDFLAGS=@LDFLAGS@ $(FLAGS)
+AR=@AR@
+RANLIB=@RANLIB@
+CPPFLAGS+=-D_REENTRANT
+
+OFILES = paranoia.o p_block.o overlap.o gap.o isort.o 
+#TFILES = isort.t gap.t p_block.t paranoia.t
+
+LIBS = ../interface/libcdda_interface.a -lm
+export VERSION
+
+all: lib slib
+
+debug: 
+	$(MAKE) libcdda_paranoia.a CFLAGS="$(DEBUG)"
+
+lib:	
+	$(MAKE) libcdda_paranoia.a CFLAGS="$(OPT)" 
+
+slib:	
+	$(MAKE) lessmessy
+	$(MAKE) libcdda_paranoia.so CFLAGS="$(OPT) -fpic" 
+
+#test:	$(TFILES)
+#
+
+libcdda_paranoia.a: 	$(OFILES)	
+	$(AR) -r libcdda_paranoia.a $(OFILES)
+	$(RANLIB) libcdda_paranoia.a
+
+libcdda_paranoia.so: 	$(OFILES)	
+	$(CC) -fpic -shared -o libcdda_paranoia.so.0.$(VERSION) -Wl,-soname -Wl,libcdda_paranoia.so.0 $(OFILES) -L ../interface -lcdda_interface
+	[ -e libcdda_paranoia.so.0 ] || ln -s libcdda_paranoia.so.0.$(VERSION) libcdda_paranoia.so.0
+	[ -e libcdda_paranoia.so ] || ln -s libcdda_paranoia.so.0.$(VERSION) libcdda_paranoia.so
+
+.c.o:
+	$(CC) $(CFLAGS) -c $<
+
+.c.t:
+	$(CC) -g -DTEST $(DEBUG) -o $@ $< $(LIBS)
+	$@
+
+lessmessy:
+	-rm -f *.o  *.t core *~
+
+clean: lessmessy
+	-rm -f  *.a *.so *.so.0 *.so.0.* core
+
+distclean: clean
+	-rm -f Makefile 
+
