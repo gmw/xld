@@ -1,0 +1,349 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		BF2360E30A3E890E0040DAC4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF2360E20A3E890E0040DAC4 /* AudioToolbox.framework */; };
+		BF2360E70A3E89190040DAC4 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF2360E60A3E89190040DAC4 /* CoreServices.framework */; };
+		BF310C5A0CE96D70005083EC /* XLDAacOutput2.m in Sources */ = {isa = PBXBuildFile; fileRef = BF310C560CE96D70005083EC /* XLDAacOutput2.m */; };
+		BF310C5B0CE96D71005083EC /* XLDAacOutput2Task.m in Sources */ = {isa = PBXBuildFile; fileRef = BF310C580CE96D70005083EC /* XLDAacOutput2Task.m */; };
+		BF5EF2D51062CCD800CA8F9C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BF5EF2D41062CCD800CA8F9C /* Localizable.strings */; };
+		BFB9DE311281DCA2009445A3 /* XLDAacOutput2.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB9DE2F1281DCA2009445A3 /* XLDAacOutput2.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32DBCF630370AF2F00C91783 /* XLDAacOutput_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDAacOutput_Prefix.pch; sourceTree = "<group>"; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF23063C1328A40A0000DC53 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/XLDAacOutput2.xib; sourceTree = "<group>"; };
+		BF230843132BB4030000DC53 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF2360BF0A3E78F90040DAC4 /* XLDOutput.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDOutput.h; sourceTree = "<group>"; };
+		BF2360E20A3E890E0040DAC4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
+		BF2360E60A3E89190040DAC4 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		BF310C560CE96D70005083EC /* XLDAacOutput2.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDAacOutput2.m; sourceTree = "<group>"; };
+		BF310C570CE96D70005083EC /* XLDAacOutput2.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDAacOutput2.h; sourceTree = "<group>"; };
+		BF310C580CE96D70005083EC /* XLDAacOutput2Task.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDAacOutput2Task.m; sourceTree = "<group>"; };
+		BF310C590CE96D70005083EC /* XLDAacOutput2Task.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDAacOutput2Task.h; sourceTree = "<group>"; };
+		BF310D830CE98869005083EC /* XLDAacOutput2.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XLDAacOutput2.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF4C7CE3142C84CE00C03E9E /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/XLDAacOutput2.xib; sourceTree = "<group>"; };
+		BF4C7CF3142C84D300C03E9E /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF5EF2D11062CCBC00CA8F9C /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF5EF2D61062CCDE00CA8F9C /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF5EF2D81062CD2B00CA8F9C /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF5EF2DA1062CD3500CA8F9C /* zh_CN */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF5EF2DC1062CD3F00CA8F9C /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF91C4F80AB1202800885032 /* XLDOutputTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOutputTask.h; sourceTree = "<group>"; };
+		BFB9DE301281DCA2009445A3 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/XLDAacOutput2.xib; sourceTree = "<group>"; };
+		BFB9DE321281DCAF009445A3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/XLDAacOutput2.xib; sourceTree = "<group>"; };
+		BFB9DE351281DCBA009445A3 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/XLDAacOutput2.xib; sourceTree = "<group>"; };
+		BFB9DE361281DCC0009445A3 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/XLDAacOutput2.xib; sourceTree = "<group>"; };
+		BFB9DE371281DCC8009445A3 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/XLDAacOutput2.xib; sourceTree = "<group>"; };
+		BFBA4FE60A48456D0089D755 /* XLDTrack.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDTrack.h; sourceTree = "<group>"; };
+		BFD3CCBE1359D04B00D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BFD3CCC41359D05000D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/XLDAacOutput2.xib; sourceTree = "<group>"; };
+		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D5B49B3048680CD000E48DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
+				BF2360E30A3E890E0040DAC4 /* AudioToolbox.framework in Frameworks */,
+				BF2360E70A3E89190040DAC4 /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* XLDAacOutput */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Classes */,
+				32C88E010371C26100C91783 /* Other Sources */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
+				19C28FB8FE9D52D311CA2CBB /* Products */,
+			);
+			name = XLDAacOutput;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
+				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
+			);
+			name = "Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BFB9DE2F1281DCA2009445A3 /* XLDAacOutput2.xib */,
+				8D5B49B7048680CD000E48DA /* Info.plist */,
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+				BF5EF2D41062CCD800CA8F9C /* Localizable.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BFBA4FE60A48456D0089D755 /* XLDTrack.h */,
+				BF2360BF0A3E78F90040DAC4 /* XLDOutput.h */,
+				BF91C4F80AB1202800885032 /* XLDOutputTask.h */,
+				BF310C570CE96D70005083EC /* XLDAacOutput2.h */,
+				BF310C560CE96D70005083EC /* XLDAacOutput2.m */,
+				BF310C590CE96D70005083EC /* XLDAacOutput2Task.h */,
+				BF310C580CE96D70005083EC /* XLDAacOutput2Task.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BF2360E60A3E89190040DAC4 /* CoreServices.framework */,
+				BF2360E20A3E890E0040DAC4 /* AudioToolbox.framework */,
+				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				089C167FFE841241C02AAC07 /* AppKit.framework */,
+				D2F7E65807B2D6F200F64583 /* CoreData.framework */,
+				089C1672FE841209C02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FB8FE9D52D311CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF310D830CE98869005083EC /* XLDAacOutput2.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		32C88E010371C26100C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32DBCF630370AF2F00C91783 /* XLDAacOutput_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D5B49AC048680CD000E48DA /* XLDAacOutput2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XLDAacOutput2" */;
+			buildPhases = (
+				8D5B49AF048680CD000E48DA /* Resources */,
+				8D5B49B1048680CD000E48DA /* Sources */,
+				8D5B49B3048680CD000E48DA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XLDAacOutput2;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = XLDAacOutput;
+			productReference = BF310D830CE98869005083EC /* XLDAacOutput2.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XLDAacOutput2_export" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				zh_CN,
+				Spanish,
+				zh_TW,
+				Italian,
+			);
+			mainGroup = 089C166AFE841209C02AAC07 /* XLDAacOutput */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D5B49AC048680CD000E48DA /* XLDAacOutput2 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D5B49AF048680CD000E48DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
+				BF5EF2D51062CCD800CA8F9C /* Localizable.strings in Resources */,
+				BFB9DE311281DCA2009445A3 /* XLDAacOutput2.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D5B49B1048680CD000E48DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF310C5A0CE96D70005083EC /* XLDAacOutput2.m in Sources */,
+				BF310C5B0CE96D71005083EC /* XLDAacOutput2Task.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		BF5EF2D41062CCD800CA8F9C /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF5EF2D11062CCBC00CA8F9C /* English */,
+				BF5EF2D61062CCDE00CA8F9C /* Japanese */,
+				BF5EF2D81062CD2B00CA8F9C /* German */,
+				BF5EF2DA1062CD3500CA8F9C /* zh_CN */,
+				BF5EF2DC1062CD3F00CA8F9C /* French */,
+				BF230843132BB4030000DC53 /* Spanish */,
+				BFD3CCBE1359D04B00D0E817 /* zh_TW */,
+				BF4C7CF3142C84D300C03E9E /* Italian */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		BFB9DE2F1281DCA2009445A3 /* XLDAacOutput2.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFB9DE301281DCA2009445A3 /* English */,
+				BFB9DE321281DCAF009445A3 /* Japanese */,
+				BFB9DE351281DCBA009445A3 /* German */,
+				BFB9DE361281DCC0009445A3 /* French */,
+				BFB9DE371281DCC8009445A3 /* zh_CN */,
+				BF23063C1328A40A0000DC53 /* Spanish */,
+				BFD3CCC41359D05000D0E817 /* zh_TW */,
+				BF4C7CE3142C84CE00C03E9E /* Italian */,
+			);
+			name = XLDAacOutput2.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB913B08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLDAacOutput_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = XLDAacOutput;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1DEB913C08733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLDAacOutput_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1DEB913F08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+			};
+			name = Debug;
+		};
+		1DEB914008733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = XLDAacOutput2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XLDAacOutput2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913B08733D840010E9CD /* Debug */,
+				1DEB913C08733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XLDAacOutput2_export" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913F08733D840010E9CD /* Debug */,
+				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
