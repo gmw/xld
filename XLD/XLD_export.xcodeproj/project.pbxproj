@@ -1,0 +1,1192 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		BF001A280F6A1B4C0090585D /* XLDDDPParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BF001A260F6A1B4C0090585D /* XLDDDPParser.m */; };
+		BF1166A7128AF2450058749F /* XLDCDDABackend.c in Sources */ = {isa = PBXBuildFile; fileRef = BF1166A6128AF2450058749F /* XLDCDDABackend.c */; };
+		BF1192010E7B91DA004BC21D /* gain_analysis.c in Sources */ = {isa = PBXBuildFile; fileRef = BF1191FF0E7B91DA004BC21D /* gain_analysis.c */; };
+		BF12FEB90A3D2F1700822690 /* XLDTtaDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF3758C60A3C14090003FD0E /* XLDTtaDecoder.bundle */; };
+		BF12FEBA0A3D2F1700822690 /* XLDWavpackDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF3758C70A3C14090003FD0E /* XLDWavpackDecoder.bundle */; };
+		BF12FEBB0A3D2F1700822690 /* XLDAlacDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF3758C80A3C14090003FD0E /* XLDAlacDecoder.bundle */; };
+		BF12FEBD0A3D2F1700822690 /* XLDLibsndfileDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF3758CA0A3C14090003FD0E /* XLDLibsndfileDecoder.bundle */; };
+		BF12FF950A3D586D00822690 /* XLDVorbisOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF12FF940A3D586D00822690 /* XLDVorbisOutput.bundle */; };
+		BF1539E61374F6BF003E1C69 /* XLDDiscBurner.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1539E51374F6BF003E1C69 /* XLDDiscBurner.m */; };
+		BF153A2513752BC3003E1C69 /* XLDTrackProducer.m in Sources */ = {isa = PBXBuildFile; fileRef = BF153A2413752BC3003E1C69 /* XLDTrackProducer.m */; };
+		BF2013FA10BC62D800A82187 /* shn.icns in Resources */ = {isa = PBXBuildFile; fileRef = BF2013F910BC62D800A82187 /* shn.icns */; };
+		BF21887E0B1FD6F20010AA1E /* xld.icns in Resources */ = {isa = PBXBuildFile; fileRef = BF21887D0B1FD6F20010AA1E /* xld.icns */; };
+		BF23610B0A3E8B670040DAC4 /* XLDAacOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF23610A0A3E8B670040DAC4 /* XLDAacOutput.bundle */; };
+		BF23B67C12338C1F00AF5305 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF23B67A12338C1F00AF5305 /* MainMenu.xib */; };
+		BF23B69112338DD800AF5305 /* Player.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF23B69012338DD800AF5305 /* Player.xib */; };
+		BF23B69612338E0A00AF5305 /* Queue.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF23B69412338E0A00AF5305 /* Queue.xib */; };
+		BF23B6A812338EF400AF5305 /* MetadataEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF23B6A612338EF400AF5305 /* MetadataEditor.xib */; };
+		BF23B6B812338F8D00AF5305 /* ARChecker.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF23B6B712338F8D00AF5305 /* ARChecker.xib */; };
+		BF23B6BC12338FC400AF5305 /* XLDDefaultOutput.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF23B6BA12338FC400AF5305 /* XLDDefaultOutput.xib */; };
+		BF23FBD50B04D1FC00A01A49 /* XLDPlayerSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = BF23FBD30B04D1FC00A01A49 /* XLDPlayerSlider.m */; };
+		BF24F1C40E828D8E007E24DE /* offsetlist.plist in Resources */ = {isa = PBXBuildFile; fileRef = BF24F1C30E828D8E007E24DE /* offsetlist.plist */; };
+		BF24F1D80E829140007E24DE /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF24F1D70E829140007E24DE /* IOKit.framework */; };
+		BF2B874812A00413002CB1FF /* XLDTrackValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2B874612A00413002CB1FF /* XLDTrackValidator.m */; };
+		BF2D3F980E72C5BD00BE32E5 /* XLDSparkleUpdater.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF2D3F970E72C5BD00BE32E5 /* XLDSparkleUpdater.bundle */; };
+		BF2E0E300E5EDA4100A13E00 /* XLDAccurateRipChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2E0E2E0E5EDA4100A13E00 /* XLDAccurateRipChecker.m */; };
+		BF2F0010128E75E800B01786 /* XLDSecureRipperEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FFFEE128E53AA00B01786 /* XLDSecureRipperEngine.m */; };
+		BF310DBA0CE9889A005083EC /* XLDAacOutput2.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF310D9A0CE98882005083EC /* XLDAacOutput2.bundle */; };
+		BF3755110A3AA78F0003FD0E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BF3755100A3AA78F0003FD0E /* Localizable.strings */; };
+		BF37551A0A3ABA090003FD0E /* XLDCueParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3755190A3ABA090003FD0E /* XLDCueParser.m */; };
+		BF3755EE0A3BFD820003FD0E /* XLDTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3755ED0A3BFD820003FD0E /* XLDTrack.m */; };
+		BF3D6BB113237F6F002CA462 /* XLDDiscView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3D6BB013237F6F002CA462 /* XLDDiscView.m */; };
+		BF3D6BCE1323814F002CA462 /* DiscView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF3D6BCC1323814F002CA462 /* DiscView.xib */; };
+		BF3D6BDE132382E1002CA462 /* XLDShadowedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3D6BDD132382E1002CA462 /* XLDShadowedImageView.m */; };
+		BF43BCEB0B00C1FF00A676A0 /* sfifo.c in Sources */ = {isa = PBXBuildFile; fileRef = BF43BCE90B00C1FF00A676A0 /* sfifo.c */; };
+		BF476DA213FCE9B500E66093 /* XLDPluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF476DA113FCE9B500E66093 /* XLDPluginManager.m */; };
+		BF476E4313FD14DD00E66093 /* SaveAs.png in Resources */ = {isa = PBXBuildFile; fileRef = BF476E4213FD14DD00E66093 /* SaveAs.png */; };
+		BF51575B0D7D937C001C0905 /* XLDHEAACOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF51575A0D7D937C001C0905 /* XLDHEAACOutput.bundle */; };
+		BF5593DD0EC9EEAA00562F2C /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5593DC0EC9EEAA00562F2C /* CoreAudio.framework */; };
+		BF69CA6C139025E1008332B5 /* XLDCDDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = BF69CA6B139025E1008332B5 /* XLDCDDBUtil.m */; };
+		BF69CA771390264E008332B5 /* XLDMusicBrainzReleaseList.m in Sources */ = {isa = PBXBuildFile; fileRef = BF69CA761390264E008332B5 /* XLDMusicBrainzReleaseList.m */; };
+		BF69CA851390268B008332B5 /* XLDMusicBrainzRelease.m in Sources */ = {isa = PBXBuildFile; fileRef = BF69CA841390268B008332B5 /* XLDMusicBrainzRelease.m */; };
+		BF6A1E180E580EE900C5E823 /* XLDAccurateRipDB.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6A1E160E580EE900C5E823 /* XLDAccurateRipDB.m */; };
+		BF6CA3C30D6579610089BAAA /* XLDMP3Decoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF6CA3C20D6579610089BAAA /* XLDMP3Decoder.bundle */; };
+		BF6E297A10BDAF4400406393 /* batch.png in Resources */ = {isa = PBXBuildFile; fileRef = BF6E297510BDAF4400406393 /* batch.png */; };
+		BF6E297C10BDAF4400406393 /* general.png in Resources */ = {isa = PBXBuildFile; fileRef = BF6E297710BDAF4400406393 /* general.png */; };
+		BF6E297D10BDAF4400406393 /* metadata.png in Resources */ = {isa = PBXBuildFile; fileRef = BF6E297810BDAF4400406393 /* metadata.png */; };
+		BF6E297E10BDAF4400406393 /* cddb.png in Resources */ = {isa = PBXBuildFile; fileRef = BF6E297910BDAF4400406393 /* cddb.png */; };
+		BF7BA3260E5328EB0062F558 /* XLDCDDAResult.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7BA3240E5328EB0062F558 /* XLDCDDAResult.m */; };
+		BF7C727C0DE34D3400325E88 /* XLDWavpackOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF7C725B0DE34D1D00325E88 /* XLDWavpackOutput.bundle */; };
+		BF7DF1360A381110006893CB /* XLDController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7DF1350A38110F006893CB /* XLDController.m */; };
+		BF7DF16B0A384011006893CB /* XLDDefaultOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7DF16A0A384011006893CB /* XLDDefaultOutput.m */; };
+		BF7E84200A428C30004D738A /* XLDLameOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF7E841F0A428C30004D738A /* XLDLameOutput.bundle */; };
+		BF7E84310A428C43004D738A /* XLDApeDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF3758C90A3C14090003FD0E /* XLDApeDecoder.bundle */; };
+		BF85F5851371579E00D71081 /* DiscRecording.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF85F5841371579E00D71081 /* DiscRecording.framework */; };
+		BF85F5871371579E00D71081 /* DiscRecordingUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF85F5861371579E00D71081 /* DiscRecordingUI.framework */; };
+		BF8AA6C1139B6CFB0041328A /* ExportStopPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8AA6BF139B6CFB0041328A /* ExportStopPressed.png */; };
+		BF8AA6C2139B6CFB0041328A /* ExportStop.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8AA6C0139B6CFB0041328A /* ExportStop.png */; };
+		BF8AD2A90A87CADD0070AA3C /* stop_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8AD2A70A87CADD0070AA3C /* stop_blue.png */; };
+		BF8AD2AA0A87CADD0070AA3C /* stop_active.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8AD2A80A87CADD0070AA3C /* stop_active.png */; };
+		BF8AD2B80A87CBF00070AA3C /* previous_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8AD2B40A87CBF00070AA3C /* previous_blue.png */; };
+		BF8AD2B90A87CBF00070AA3C /* next_active.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8AD2B50A87CBF00070AA3C /* next_active.png */; };
+		BF8AD2BA0A87CBF00070AA3C /* next_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8AD2B60A87CBF00070AA3C /* next_blue.png */; };
+		BF8AD2BB0A87CBF00070AA3C /* previous_active.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8AD2B70A87CBF00070AA3C /* previous_active.png */; };
+		BF8CD8A615BEAC3000433B47 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF8CD8A515BEAC3000433B47 /* libcrypto.dylib */; };
+		BF8F4442131A8417004D1C78 /* XLDProfileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF8F4441131A8417004D1C78 /* XLDProfileManager.m */; };
+		BF8F4467131AA478004D1C78 /* ProfileManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF8F4465131AA478004D1C78 /* ProfileManager.xib */; };
+		BF91C6C40AB147DD00885032 /* XLDDefaultOutputTask.m in Sources */ = {isa = PBXBuildFile; fileRef = BF91C6C20AB147DD00885032 /* XLDDefaultOutputTask.m */; };
+		BF9AB3090E84D96A0089A313 /* gap.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9AB2FD0E84D96A0089A313 /* gap.c */; };
+		BF9AB30B0E84D96A0089A313 /* isort.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9AB2FF0E84D96A0089A313 /* isort.c */; };
+		BF9AB30E0E84D96A0089A313 /* overlap.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9AB3020E84D96A0089A313 /* overlap.c */; };
+		BF9AB3110E84D96A0089A313 /* p_block.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9AB3050E84D96A0089A313 /* p_block.c */; };
+		BF9AB3130E84D96A0089A313 /* paranoia.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9AB3070E84D96A0089A313 /* paranoia.c */; };
+		BF9AB8B80A86FE5E00355496 /* XLDPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9AB8B60A86FE5E00355496 /* XLDPlayer.m */; };
+		BF9AB9950A8754C400355496 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9AB9940A8754C400355496 /* AudioToolbox.framework */; };
+		BF9AB99A0A8754DA00355496 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9AB9990A8754DA00355496 /* AudioUnit.framework */; };
+		BF9FD55F0E66FDA800E8DFEE /* Credits.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = BF9FD55D0E66FDA800E8DFEE /* Credits.rtfd */; };
+		BFA129830B02289100A8CEF7 /* play_active.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA1297F0B02289100A8CEF7 /* play_active.png */; };
+		BFA129840B02289100A8CEF7 /* pause_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA129800B02289100A8CEF7 /* pause_blue.png */; };
+		BFA129850B02289100A8CEF7 /* pause_active.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA129810B02289100A8CEF7 /* pause_active.png */; };
+		BFA129860B02289100A8CEF7 /* play_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA129820B02289100A8CEF7 /* play_blue.png */; };
+		BFA129C70B02338300A8CEF7 /* XLDPlayerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = BFA129C50B02338300A8CEF7 /* XLDPlayerWindow.m */; };
+		BFB24D1C10BA622D00E11EBF /* XLDShortenDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFB24D1B10BA622D00E11EBF /* XLDShortenDecoder.bundle */; };
+		BFB7CEA9123A8B7200F0870D /* XLDMetadataTextParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB7CEA7123A8B7200F0870D /* XLDMetadataTextParser.m */; };
+		BFB9DC291281509E009445A3 /* XLDWavOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB9DC281281509E009445A3 /* XLDWavOutput.m */; };
+		BFB9DC331281540B009445A3 /* XLDAiffOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB9DC321281540B009445A3 /* XLDAiffOutput.m */; };
+		BFB9DC3812815472009445A3 /* XLDWave64Output.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB9DC3712815472009445A3 /* XLDWave64Output.m */; };
+		BFB9DC3D128155C0009445A3 /* XLDPcmBEOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB9DC3C128155C0009445A3 /* XLDPcmBEOutput.m */; };
+		BFB9DC401281564E009445A3 /* XLDPcmLEOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB9DC3F1281564E009445A3 /* XLDPcmLEOutput.m */; };
+		BFB9E02C12829A55009445A3 /* XLDCustomFormatManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB9E02B12829A55009445A3 /* XLDCustomFormatManager.m */; };
+		BFB9E03012829DCD009445A3 /* CustomFormatManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB9E02E12829DCD009445A3 /* CustomFormatManager.xib */; };
+		BFC102A00E91DAEE00C18EEE /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = BFC1029F0E91DAEE00C18EEE /* dsa_pub.pem */; };
+		BFC1702E0A4BDC4400EA040C /* XLDAlacOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFC1702D0A4BDC4400EA040C /* XLDAlacOutput.bundle */; };
+		BFC1B05B14ADAADC003FE6DE /* XLDDiscogsRelease.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC1B05A14ADAADC003FE6DE /* XLDDiscogsRelease.m */; };
+		BFC1B34A14B179EB003FE6DE /* XLDID3.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFC1B34814B179C8003FE6DE /* XLDID3.framework */; };
+		BFC5E7670E4D730300B3EF55 /* XLDCDDARipper.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC5E7650E4D730300B3EF55 /* XLDCDDARipper.m */; };
+		BFC5E9FA0E4E294300B3EF55 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFC5E9F90E4E294300B3EF55 /* DiskArbitration.framework */; };
+		BFCAB0DE0F74176B00A8480A /* oga.icns in Resources */ = {isa = PBXBuildFile; fileRef = BFCAB0D80F74176B00A8480A /* oga.icns */; };
+		BFCAB0DF0F74176B00A8480A /* flac.icns in Resources */ = {isa = PBXBuildFile; fileRef = BFCAB0D90F74176B00A8480A /* flac.icns */; };
+		BFCAB0E00F74176B00A8480A /* tta.icns in Resources */ = {isa = PBXBuildFile; fileRef = BFCAB0DA0F74176B00A8480A /* tta.icns */; };
+		BFCAB0E10F74176B00A8480A /* wv.icns in Resources */ = {isa = PBXBuildFile; fileRef = BFCAB0DB0F74176B00A8480A /* wv.icns */; };
+		BFCAB0E20F74176B00A8480A /* ape.icns in Resources */ = {isa = PBXBuildFile; fileRef = BFCAB0DC0F74176B00A8480A /* ape.icns */; };
+		BFCAB0E30F74176B00A8480A /* cue.icns in Resources */ = {isa = PBXBuildFile; fileRef = BFCAB0DD0F74176B00A8480A /* cue.icns */; };
+		BFD4BF820ADA4E290036C31D /* XLDRawDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFD4BF800ADA4E290036C31D /* XLDRawDecoder.m */; };
+		BFD791FC0CEEF0C400A1204F /* XLDQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = BFD791FA0CEEF0C400A1204F /* XLDQueue.m */; };
+		BFD792370CEF062B00A1204F /* XLDConverterTask.m in Sources */ = {isa = PBXBuildFile; fileRef = BF45F7520CEAC78200749982 /* XLDConverterTask.m */; };
+		BFD792EE0CEF569E00A1204F /* XLDecoderCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = BFD792EC0CEF569E00A1204F /* XLDecoderCenter.m */; };
+		BFDBBA661334D0DC00718DAF /* cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = BFDBBA651334D0DC00718DAF /* cancel.png */; };
+		BFDC10FC0E1F34D20039A2AF /* XLDMetadataEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDC10FA0E1F34D20039A2AF /* XLDMetadataEditor.m */; };
+		BFDD9CFB146EBDB500C9391C /* XLD_cmdline.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDD9CFA146EBDB500C9391C /* XLD_cmdline.m */; };
+		BFE3A02B0ABAA9A000E64AF8 /* XLDFlacOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFE3A02A0ABAA9A000E64AF8 /* XLDFlacOutput.bundle */; };
+		BFE88E2E1318073600931123 /* XLDSilentDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE88E2D1318073600931123 /* XLDSilentDecoder.m */; };
+		BFE88E501318096F00931123 /* XLDDiscLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE88E4F1318096F00931123 /* XLDDiscLayout.m */; };
+		BFE88E59131809AD00931123 /* XLDMultipleFileWrappedDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE88E58131809AD00931123 /* XLDMultipleFileWrappedDecoder.m */; };
+		BFED73F20F46CCAD002F6FF5 /* XLDCustomClasses.m in Sources */ = {isa = PBXBuildFile; fileRef = BFED73F00F46CCAC002F6FF5 /* XLDCustomClasses.m */; };
+		BFF32F511382C0D600B5DCDB /* XLDAmazonSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = BFF32F501382C0D600B5DCDB /* XLDAmazonSearcher.m */; };
+		BFF3316613862CDC00B5DCDB /* XLDCoverArtSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = BFF3316513862CDC00B5DCDB /* XLDCoverArtSearcher.m */; };
+		BFF331701386359D00B5DCDB /* CoverArtSearcher.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFF3316E1386359D00B5DCDB /* CoverArtSearcher.xib */; };
+		BFF7E77E1126FEDD00300E40 /* XLDTakDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFF7E77D1126FEDD00300E40 /* XLDTakDecoder.bundle */; };
+		BFFCC5F20B0F7A62005CE0B7 /* XLDFlacDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFFCC5CB0B0F7A45005CE0B7 /* XLDFlacDecoder.bundle */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BF12FE8E0A3D2EC900822690 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BFF7E77E1126FEDD00300E40 /* XLDTakDecoder.bundle in CopyFiles */,
+				BFB24D1C10BA622D00E11EBF /* XLDShortenDecoder.bundle in CopyFiles */,
+				BF2D3F980E72C5BD00BE32E5 /* XLDSparkleUpdater.bundle in CopyFiles */,
+				BF7C727C0DE34D3400325E88 /* XLDWavpackOutput.bundle in CopyFiles */,
+				BF51575B0D7D937C001C0905 /* XLDHEAACOutput.bundle in CopyFiles */,
+				BF310DBA0CE9889A005083EC /* XLDAacOutput2.bundle in CopyFiles */,
+				BFFCC5F20B0F7A62005CE0B7 /* XLDFlacDecoder.bundle in CopyFiles */,
+				BFE3A02B0ABAA9A000E64AF8 /* XLDFlacOutput.bundle in CopyFiles */,
+				BFC1702E0A4BDC4400EA040C /* XLDAlacOutput.bundle in CopyFiles */,
+				BF7E84310A428C43004D738A /* XLDApeDecoder.bundle in CopyFiles */,
+				BF7E84200A428C30004D738A /* XLDLameOutput.bundle in CopyFiles */,
+				BF23610B0A3E8B670040DAC4 /* XLDAacOutput.bundle in CopyFiles */,
+				BF12FF950A3D586D00822690 /* XLDVorbisOutput.bundle in CopyFiles */,
+				BF12FEB90A3D2F1700822690 /* XLDTtaDecoder.bundle in CopyFiles */,
+				BF12FEBA0A3D2F1700822690 /* XLDWavpackDecoder.bundle in CopyFiles */,
+				BF12FEBB0A3D2F1700822690 /* XLDAlacDecoder.bundle in CopyFiles */,
+				BF12FEBD0A3D2F1700822690 /* XLDLibsndfileDecoder.bundle in CopyFiles */,
+				BF6CA3C30D6579610089BAAA /* XLDMP3Decoder.bundle in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF84DED00A4FC2F2000AA853 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BFC1B34A14B179EB003FE6DE /* XLDID3.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* XLD_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLD_Prefix.pch; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* XLD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XLD.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF001A250F6A1B4C0090585D /* XLDDDPParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDDPParser.h; sourceTree = "<group>"; };
+		BF001A260F6A1B4C0090585D /* XLDDDPParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDDPParser.m; sourceTree = "<group>"; };
+		BF1166A6128AF2450058749F /* XLDCDDABackend.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XLDCDDABackend.c; sourceTree = "<group>"; };
+		BF1166A8128AF24D0058749F /* XLDCDDABackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCDDABackend.h; sourceTree = "<group>"; };
+		BF1166AB128AF2920058749F /* cdda_paranoia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdda_paranoia.h; sourceTree = "<group>"; };
+		BF1191FF0E7B91DA004BC21D /* gain_analysis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gain_analysis.c; sourceTree = "<group>"; };
+		BF1192000E7B91DA004BC21D /* gain_analysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gain_analysis.h; sourceTree = "<group>"; };
+		BF12FEFF0A3D4A7D00822690 /* XLDOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOutput.h; sourceTree = "<group>"; };
+		BF12FF940A3D586D00822690 /* XLDVorbisOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDVorbisOutput.bundle; path = ../XLDVorbisOutput/build/Release/XLDVorbisOutput.bundle; sourceTree = "<group>"; };
+		BF1539E41374F6BF003E1C69 /* XLDDiscBurner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDiscBurner.h; sourceTree = "<group>"; };
+		BF1539E51374F6BF003E1C69 /* XLDDiscBurner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDiscBurner.m; sourceTree = "<group>"; };
+		BF153A2313752BC3003E1C69 /* XLDTrackProducer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDTrackProducer.h; sourceTree = "<group>"; };
+		BF153A2413752BC3003E1C69 /* XLDTrackProducer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDTrackProducer.m; sourceTree = "<group>"; };
+		BF1856E00D9FB263000A924A /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF1856E10D9FB266000A924A /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF2013F910BC62D800A82187 /* shn.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = shn.icns; sourceTree = "<group>"; };
+		BF21887D0B1FD6F20010AA1E /* xld.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = xld.icns; sourceTree = "<group>"; };
+		BF23610A0A3E8B670040DAC4 /* XLDAacOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDAacOutput.bundle; path = ../XLDAacOutput/build/Release/XLDAacOutput.bundle; sourceTree = "<group>"; };
+		BF23B67B12338C1F00AF5305 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BF23B68312338C3900AF5305 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BF23B68412338C4F00AF5305 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BF23B68512338C5700AF5305 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BF23B68612338C6000AF5305 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BF23B68712338C6800AF5305 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BF23B68812338C7300AF5305 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BF23B69012338DD800AF5305 /* Player.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Player.xib; sourceTree = "<group>"; };
+		BF23B69512338E0A00AF5305 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Queue.xib; sourceTree = "<group>"; };
+		BF23B69812338E1A00AF5305 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/Queue.xib; sourceTree = "<group>"; };
+		BF23B69A12338E3300AF5305 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/Queue.xib; sourceTree = "<group>"; };
+		BF23B69C12338E4A00AF5305 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/Queue.xib; sourceTree = "<group>"; };
+		BF23B69E12338E5D00AF5305 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/Queue.xib; sourceTree = "<group>"; };
+		BF23B6A012338E8D00AF5305 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/Queue.xib; sourceTree = "<group>"; };
+		BF23B6A212338E9B00AF5305 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/Queue.xib; sourceTree = "<group>"; };
+		BF23B6A712338EF400AF5305 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BF23B6AA12338F0400AF5305 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BF23B6AC12338F1900AF5305 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BF23B6AE12338F2D00AF5305 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BF23B6B012338F4100AF5305 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BF23B6B212338F5400AF5305 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BF23B6B412338F6800AF5305 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BF23B6B712338F8D00AF5305 /* ARChecker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ARChecker.xib; sourceTree = "<group>"; };
+		BF23B6BB12338FC400AF5305 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BF23B6BE12338FD300AF5305 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BF23B6C012338FE300AF5305 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BF23B6C212338FF300AF5305 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BF23B6C41233900400AF5305 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BF23B6C61233901600AF5305 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BF23B6C81233902900AF5305 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BF23FBD20B04D1FC00A01A49 /* XLDPlayerSlider.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDPlayerSlider.h; sourceTree = "<group>"; };
+		BF23FBD30B04D1FC00A01A49 /* XLDPlayerSlider.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDPlayerSlider.m; sourceTree = "<group>"; };
+		BF24428112857D4F00B6FD45 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BF2442A612857D6000B6FD45 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BF2442A712857D6800B6FD45 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BF2442A812857D6F00B6FD45 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BF2442A912857D7600B6FD45 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BF2442AA12857D7D00B6FD45 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BF2442AB12857D8500B6FD45 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BF24F1C30E828D8E007E24DE /* offsetlist.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = offsetlist.plist; sourceTree = "<group>"; };
+		BF24F1D70E829140007E24DE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		BF2B874612A00413002CB1FF /* XLDTrackValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDTrackValidator.m; sourceTree = "<group>"; };
+		BF2B874712A00413002CB1FF /* XLDTrackValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDTrackValidator.h; sourceTree = "<group>"; };
+		BF2D3F970E72C5BD00BE32E5 /* XLDSparkleUpdater.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDSparkleUpdater.bundle; path = ../XLDSparkleUpdater/build/Release/XLDSparkleUpdater.bundle; sourceTree = "<group>"; };
+		BF2E0E2D0E5EDA4100A13E00 /* XLDAccurateRipChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDAccurateRipChecker.h; sourceTree = "<group>"; };
+		BF2E0E2E0E5EDA4100A13E00 /* XLDAccurateRipChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDAccurateRipChecker.m; sourceTree = "<group>"; };
+		BF2FFFED128E53AA00B01786 /* XLDSecureRipperEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDSecureRipperEngine.h; sourceTree = "<group>"; };
+		BF2FFFEE128E53AA00B01786 /* XLDSecureRipperEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDSecureRipperEngine.m; sourceTree = "<group>"; };
+		BF310D9A0CE98882005083EC /* XLDAacOutput2.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDAacOutput2.bundle; path = ../XLDAacOutput2/build/Release/XLDAacOutput2.bundle; sourceTree = "<group>"; };
+		BF37550E0A3AA7800003FD0E /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF3755180A3ABA090003FD0E /* XLDCueParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCueParser.h; sourceTree = "<group>"; };
+		BF3755190A3ABA090003FD0E /* XLDCueParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDCueParser.m; sourceTree = "<group>"; };
+		BF3755EB0A3BFD820003FD0E /* XLDDecoder.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDDecoder.h; sourceTree = "<group>"; };
+		BF3755EC0A3BFD820003FD0E /* XLDTrack.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDTrack.h; sourceTree = "<group>"; };
+		BF3755ED0A3BFD820003FD0E /* XLDTrack.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDTrack.m; sourceTree = "<group>"; };
+		BF3758C60A3C14090003FD0E /* XLDTtaDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDTtaDecoder.bundle; path = ../XLDTtaDecoder/build/Release/XLDTtaDecoder.bundle; sourceTree = "<group>"; };
+		BF3758C70A3C14090003FD0E /* XLDWavpackDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDWavpackDecoder.bundle; path = ../XLDWavpackDecoder/build/Release/XLDWavpackDecoder.bundle; sourceTree = "<group>"; };
+		BF3758C80A3C14090003FD0E /* XLDAlacDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDAlacDecoder.bundle; path = ../XLDAlacDecoder/build/Release/XLDAlacDecoder.bundle; sourceTree = "<group>"; };
+		BF3758C90A3C14090003FD0E /* XLDApeDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDApeDecoder.bundle; path = ../XLDApeDecoder/build/Release/XLDApeDecoder.bundle; sourceTree = "<group>"; };
+		BF3758CA0A3C14090003FD0E /* XLDLibsndfileDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDLibsndfileDecoder.bundle; path = ../XLDLibsndfileDecoder/build/Release/XLDLibsndfileDecoder.bundle; sourceTree = "<group>"; };
+		BF375A320A3C423F0003FD0E /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF3811420CE9EB79008C7B47 /* zh_CN */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF3D6BAF13237F6F002CA462 /* XLDDiscView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDiscView.h; sourceTree = "<group>"; };
+		BF3D6BB013237F6F002CA462 /* XLDDiscView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDiscView.m; sourceTree = "<group>"; };
+		BF3D6BCD1323814F002CA462 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF3D6BDC132382E1002CA462 /* XLDShadowedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDShadowedImageView.h; sourceTree = "<group>"; };
+		BF3D6BDD132382E1002CA462 /* XLDShadowedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDShadowedImageView.m; sourceTree = "<group>"; };
+		BF3D6E5B1324133F002CA462 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF43BCE80B00C1FF00A676A0 /* sfifo.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = sfifo.h; sourceTree = "<group>"; };
+		BF43BCE90B00C1FF00A676A0 /* sfifo.c */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.c; path = sfifo.c; sourceTree = "<group>"; };
+		BF45F7510CEAC78200749982 /* XLDConverterTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDConverterTask.h; sourceTree = "<group>"; };
+		BF45F7520CEAC78200749982 /* XLDConverterTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDConverterTask.m; sourceTree = "<group>"; };
+		BF46FC2D1236957100559B47 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = German; path = German.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BF46FC2E1236957800559B47 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = Dutch; path = Dutch.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BF46FC2F1236957C00559B47 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = Russian; path = Russian.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BF46FC301236958300559B47 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = zh_CN; path = zh_CN.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BF476DA013FCE9B500E66093 /* XLDPluginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDPluginManager.h; sourceTree = "<group>"; };
+		BF476DA113FCE9B500E66093 /* XLDPluginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDPluginManager.m; sourceTree = "<group>"; };
+		BF476E4213FD14DD00E66093 /* SaveAs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SaveAs.png; sourceTree = "<group>"; };
+		BF4AA77710A69C50002441F3 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF51575A0D7D937C001C0905 /* XLDHEAACOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDHEAACOutput.bundle; path = ../XLDHEAACOutput/build/Release/XLDHEAACOutput.bundle; sourceTree = "<group>"; };
+		BF5593DC0EC9EEAA00562F2C /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+		BF564F3B1325447600838FC4 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF564F3C1325447E00838FC4 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF564F3D1325448B00838FC4 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF564F3E1325449700838FC4 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF564F3F132544A400838FC4 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF564F40132544AB00838FC4 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF564F591325592E00838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BF564F5A1325593600838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/Queue.xib; sourceTree = "<group>"; };
+		BF564F5B1325593F00838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BF564F5C1325594400838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BF564F5D1325594D00838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF564F5E1325595000838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BF564F5F1325597500838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BF564F621325599000838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF564F6713255BDF00838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = Spanish; path = Spanish.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BF69CA6B139025E1008332B5 /* XLDCDDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDCDDBUtil.m; sourceTree = "<group>"; };
+		BF69CA74139025F6008332B5 /* XLDCDDBUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCDDBUtil.h; sourceTree = "<group>"; };
+		BF69CA751390264E008332B5 /* XLDMusicBrainzReleaseList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDMusicBrainzReleaseList.h; sourceTree = "<group>"; };
+		BF69CA761390264E008332B5 /* XLDMusicBrainzReleaseList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDMusicBrainzReleaseList.m; sourceTree = "<group>"; };
+		BF69CA831390268B008332B5 /* XLDMusicBrainzRelease.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDMusicBrainzRelease.h; sourceTree = "<group>"; };
+		BF69CA841390268B008332B5 /* XLDMusicBrainzRelease.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDMusicBrainzRelease.m; sourceTree = "<group>"; };
+		BF6A1E150E580EE900C5E823 /* XLDAccurateRipDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDAccurateRipDB.h; sourceTree = "<group>"; };
+		BF6A1E160E580EE900C5E823 /* XLDAccurateRipDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDAccurateRipDB.m; sourceTree = "<group>"; };
+		BF6A22820E5B11DF00C5E823 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BF6CA3C20D6579610089BAAA /* XLDMP3Decoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDMP3Decoder.bundle; path = ../XLDMP3Decoder/build/Release/XLDMP3Decoder.bundle; sourceTree = "<group>"; };
+		BF6E297510BDAF4400406393 /* batch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = batch.png; sourceTree = "<group>"; };
+		BF6E297710BDAF4400406393 /* general.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = general.png; sourceTree = "<group>"; };
+		BF6E297810BDAF4400406393 /* metadata.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = metadata.png; sourceTree = "<group>"; };
+		BF6E297910BDAF4400406393 /* cddb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cddb.png; sourceTree = "<group>"; };
+		BF7BA3230E5328EB0062F558 /* XLDCDDAResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCDDAResult.h; sourceTree = "<group>"; };
+		BF7BA3240E5328EB0062F558 /* XLDCDDAResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDCDDAResult.m; sourceTree = "<group>"; };
+		BF7C725B0DE34D1D00325E88 /* XLDWavpackOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDWavpackOutput.bundle; path = ../XLDWavpackOutput/build/Release/XLDWavpackOutput.bundle; sourceTree = "<group>"; };
+		BF7DF1340A38110F006893CB /* XLDController.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDController.h; sourceTree = "<group>"; };
+		BF7DF1350A38110F006893CB /* XLDController.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDController.m; sourceTree = "<group>"; };
+		BF7DF1690A384011006893CB /* XLDDefaultOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDefaultOutput.h; sourceTree = "<group>"; };
+		BF7DF16A0A384011006893CB /* XLDDefaultOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDefaultOutput.m; sourceTree = "<group>"; };
+		BF7E841F0A428C30004D738A /* XLDLameOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDLameOutput.bundle; path = ../XLDLameOutput/build/Release/XLDLameOutput.bundle; sourceTree = "<group>"; };
+		BF85F5841371579E00D71081 /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = /System/Library/Frameworks/DiscRecording.framework; sourceTree = "<absolute>"; };
+		BF85F5861371579E00D71081 /* DiscRecordingUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecordingUI.framework; path = /System/Library/Frameworks/DiscRecordingUI.framework; sourceTree = "<absolute>"; };
+		BF8AA6BF139B6CFB0041328A /* ExportStopPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ExportStopPressed.png; sourceTree = "<group>"; };
+		BF8AA6C0139B6CFB0041328A /* ExportStop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ExportStop.png; sourceTree = "<group>"; };
+		BF8AD2A70A87CADD0070AA3C /* stop_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_blue.png; sourceTree = "<group>"; };
+		BF8AD2A80A87CADD0070AA3C /* stop_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_active.png; sourceTree = "<group>"; };
+		BF8AD2B40A87CBF00070AA3C /* previous_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = previous_blue.png; sourceTree = "<group>"; };
+		BF8AD2B50A87CBF00070AA3C /* next_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = next_active.png; sourceTree = "<group>"; };
+		BF8AD2B60A87CBF00070AA3C /* next_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = next_blue.png; sourceTree = "<group>"; };
+		BF8AD2B70A87CBF00070AA3C /* previous_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = previous_active.png; sourceTree = "<group>"; };
+		BF8CD8A515BEAC3000433B47 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
+		BF8F4440131A8417004D1C78 /* XLDProfileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDProfileManager.h; sourceTree = "<group>"; };
+		BF8F4441131A8417004D1C78 /* XLDProfileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDProfileManager.m; sourceTree = "<group>"; };
+		BF8F4466131AA478004D1C78 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF8F4638131B5A2C004D1C78 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF8F465C131B5E4C004D1C78 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF8F4660131B5E63004D1C78 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF8F4661131B5E6A004D1C78 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF8F4662131B5E75004D1C78 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF8F4663131B5E7B004D1C78 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF8F4664131B5E81004D1C78 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BF91C6C10AB147DD00885032 /* XLDDefaultOutputTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDefaultOutputTask.h; sourceTree = "<group>"; };
+		BF91C6C20AB147DD00885032 /* XLDDefaultOutputTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDefaultOutputTask.m; sourceTree = "<group>"; };
+		BF91C6C50AB1481E00885032 /* XLDOutputTask.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDOutputTask.h; sourceTree = "<group>"; };
+		BF9AB2FD0E84D96A0089A313 /* gap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gap.c; sourceTree = "<group>"; };
+		BF9AB2FE0E84D96A0089A313 /* gap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gap.h; sourceTree = "<group>"; };
+		BF9AB2FF0E84D96A0089A313 /* isort.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = isort.c; sourceTree = "<group>"; };
+		BF9AB3000E84D96A0089A313 /* isort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = isort.h; sourceTree = "<group>"; };
+		BF9AB3020E84D96A0089A313 /* overlap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = overlap.c; sourceTree = "<group>"; };
+		BF9AB3030E84D96A0089A313 /* overlap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = overlap.h; sourceTree = "<group>"; };
+		BF9AB3050E84D96A0089A313 /* p_block.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = p_block.c; sourceTree = "<group>"; };
+		BF9AB3060E84D96A0089A313 /* p_block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = p_block.h; sourceTree = "<group>"; };
+		BF9AB3070E84D96A0089A313 /* paranoia.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = paranoia.c; sourceTree = "<group>"; };
+		BF9AB8B50A86FE5E00355496 /* XLDPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDPlayer.h; sourceTree = "<group>"; };
+		BF9AB8B60A86FE5E00355496 /* XLDPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDPlayer.m; sourceTree = "<group>"; };
+		BF9AB9940A8754C400355496 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
+		BF9AB9990A8754DA00355496 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
+		BF9FD55E0E66FDA800E8DFEE /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = English; path = English.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BF9FD5600E66FDB000E8DFEE /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = Japanese; path = Japanese.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BFA1297F0B02289100A8CEF7 /* play_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play_active.png; sourceTree = "<group>"; };
+		BFA129800B02289100A8CEF7 /* pause_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause_blue.png; sourceTree = "<group>"; };
+		BFA129810B02289100A8CEF7 /* pause_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause_active.png; sourceTree = "<group>"; };
+		BFA129820B02289100A8CEF7 /* play_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play_blue.png; sourceTree = "<group>"; };
+		BFA129C40B02338300A8CEF7 /* XLDPlayerWindow.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDPlayerWindow.h; sourceTree = "<group>"; };
+		BFA129C50B02338300A8CEF7 /* XLDPlayerWindow.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDPlayerWindow.m; sourceTree = "<group>"; };
+		BFAC8365128BFBB8001A3797 /* cachetest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cachetest.c; sourceTree = "<group>"; };
+		BFB24D1B10BA622D00E11EBF /* XLDShortenDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDShortenDecoder.bundle; path = ../XLDShortenDecoder/build/Release/XLDShortenDecoder.bundle; sourceTree = "<group>"; };
+		BFB7CEA7123A8B7200F0870D /* XLDMetadataTextParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDMetadataTextParser.m; sourceTree = "<group>"; };
+		BFB7CEA8123A8B7200F0870D /* XLDMetadataTextParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDMetadataTextParser.h; sourceTree = "<group>"; };
+		BFB9DC271281509E009445A3 /* XLDWavOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDWavOutput.h; sourceTree = "<group>"; };
+		BFB9DC281281509E009445A3 /* XLDWavOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDWavOutput.m; sourceTree = "<group>"; };
+		BFB9DC311281540B009445A3 /* XLDAiffOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDAiffOutput.h; sourceTree = "<group>"; };
+		BFB9DC321281540B009445A3 /* XLDAiffOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDAiffOutput.m; sourceTree = "<group>"; };
+		BFB9DC3612815472009445A3 /* XLDWave64Output.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDWave64Output.h; sourceTree = "<group>"; };
+		BFB9DC3712815472009445A3 /* XLDWave64Output.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDWave64Output.m; sourceTree = "<group>"; };
+		BFB9DC3B128155C0009445A3 /* XLDPcmBEOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDPcmBEOutput.h; sourceTree = "<group>"; };
+		BFB9DC3C128155C0009445A3 /* XLDPcmBEOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDPcmBEOutput.m; sourceTree = "<group>"; };
+		BFB9DC3E1281564E009445A3 /* XLDPcmLEOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDPcmLEOutput.h; sourceTree = "<group>"; };
+		BFB9DC3F1281564E009445A3 /* XLDPcmLEOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDPcmLEOutput.m; sourceTree = "<group>"; };
+		BFB9E02A12829A51009445A3 /* XLDCustomFormatManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCustomFormatManager.h; sourceTree = "<group>"; };
+		BFB9E02B12829A55009445A3 /* XLDCustomFormatManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDCustomFormatManager.m; sourceTree = "<group>"; };
+		BFB9E02F12829DCD009445A3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BFC1029F0E91DAEE00C18EEE /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
+		BFC1702D0A4BDC4400EA040C /* XLDAlacOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDAlacOutput.bundle; path = ../XLDAlacOutput/build/Release/XLDAlacOutput.bundle; sourceTree = "<group>"; };
+		BFC1B05914ADAADC003FE6DE /* XLDDiscogsRelease.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDiscogsRelease.h; sourceTree = "<group>"; };
+		BFC1B05A14ADAADC003FE6DE /* XLDDiscogsRelease.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDiscogsRelease.m; sourceTree = "<group>"; };
+		BFC1B34814B179C8003FE6DE /* XLDID3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XLDID3.framework; path = ../XLDID3/build/Release/XLDID3.framework; sourceTree = "<group>"; };
+		BFC5E7640E4D730300B3EF55 /* XLDCDDARipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCDDARipper.h; sourceTree = "<group>"; };
+		BFC5E7650E4D730300B3EF55 /* XLDCDDARipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDCDDARipper.m; sourceTree = "<group>"; };
+		BFC5E9F90E4E294300B3EF55 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
+		BFCAB0D80F74176B00A8480A /* oga.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = oga.icns; sourceTree = "<group>"; };
+		BFCAB0D90F74176B00A8480A /* flac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = flac.icns; sourceTree = "<group>"; };
+		BFCAB0DA0F74176B00A8480A /* tta.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = tta.icns; sourceTree = "<group>"; };
+		BFCAB0DB0F74176B00A8480A /* wv.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = wv.icns; sourceTree = "<group>"; };
+		BFCAB0DC0F74176B00A8480A /* ape.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ape.icns; sourceTree = "<group>"; };
+		BFCAB0DD0F74176B00A8480A /* cue.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = cue.icns; sourceTree = "<group>"; };
+		BFCD90051272A1B600695A94 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BFCD900A1272A32000695A94 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = Italian; path = Italian.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BFCD900B1272A35700695A94 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/Queue.xib; sourceTree = "<group>"; };
+		BFCD900D1272A36D00695A94 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BFCD90101272A39600695A94 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BFCD90121272A3AB00695A94 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BFD3CC381359C60400D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BFD3CC781359C61400D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/Queue.xib; sourceTree = "<group>"; };
+		BFD3CC801359C7B000D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/DiscView.xib; sourceTree = "<group>"; };
+		BFD3CC821359C7F700D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/ProfileManager.xib; sourceTree = "<group>"; };
+		BFD3CC831359C80E00D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/CustomFormatManager.xib; sourceTree = "<group>"; };
+		BFD3CC841359C81600D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/XLDDefaultOutput.xib; sourceTree = "<group>"; };
+		BFD3CC851359C81C00D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/MetadataEditor.xib; sourceTree = "<group>"; };
+		BFD3CC861359C82600D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BFD3CC981359CD9700D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = zh_TW; path = zh_TW.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BFD4BF7F0ADA4E290036C31D /* XLDRawDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDRawDecoder.h; sourceTree = "<group>"; };
+		BFD4BF800ADA4E290036C31D /* XLDRawDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDRawDecoder.m; sourceTree = "<group>"; };
+		BFD791F90CEEF0C400A1204F /* XLDQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDQueue.h; sourceTree = "<group>"; };
+		BFD791FA0CEEF0C400A1204F /* XLDQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDQueue.m; sourceTree = "<group>"; };
+		BFD792EB0CEF569E00A1204F /* XLDecoderCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDecoderCenter.h; sourceTree = "<group>"; };
+		BFD792EC0CEF569E00A1204F /* XLDecoderCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDecoderCenter.m; sourceTree = "<group>"; };
+		BFDBBA651334D0DC00718DAF /* cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cancel.png; sourceTree = "<group>"; };
+		BFDC10F90E1F34D20039A2AF /* XLDMetadataEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDMetadataEditor.h; sourceTree = "<group>"; };
+		BFDC10FA0E1F34D20039A2AF /* XLDMetadataEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDMetadataEditor.m; sourceTree = "<group>"; };
+		BFDD9CFA146EBDB500C9391C /* XLD_cmdline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLD_cmdline.m; sourceTree = "<group>"; };
+		BFE3A02A0ABAA9A000E64AF8 /* XLDFlacOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDFlacOutput.bundle; path = ../XLDFlacOutput/build/Release/XLDFlacOutput.bundle; sourceTree = "<group>"; };
+		BFE88E2C1318073200931123 /* XLDSilentDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDSilentDecoder.h; sourceTree = "<group>"; };
+		BFE88E2D1318073600931123 /* XLDSilentDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDSilentDecoder.m; sourceTree = "<group>"; };
+		BFE88E4E1318096A00931123 /* XLDDiscLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDiscLayout.h; sourceTree = "<group>"; };
+		BFE88E4F1318096F00931123 /* XLDDiscLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDiscLayout.m; sourceTree = "<group>"; };
+		BFE88E57131809A900931123 /* XLDMultipleFileWrappedDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDMultipleFileWrappedDecoder.h; sourceTree = "<group>"; };
+		BFE88E58131809AD00931123 /* XLDMultipleFileWrappedDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDMultipleFileWrappedDecoder.m; sourceTree = "<group>"; };
+		BFED73EF0F46CCAC002F6FF5 /* XLDCustomClasses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCustomClasses.h; sourceTree = "<group>"; };
+		BFED73F00F46CCAC002F6FF5 /* XLDCustomClasses.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDCustomClasses.m; sourceTree = "<group>"; };
+		BFF23045107262E20060118D /* Russian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Russian; path = Russian.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BFF32F4F1382C0D600B5DCDB /* XLDAmazonSearcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDAmazonSearcher.h; sourceTree = "<group>"; };
+		BFF32F501382C0D600B5DCDB /* XLDAmazonSearcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDAmazonSearcher.m; sourceTree = "<group>"; };
+		BFF3316413862CDC00B5DCDB /* XLDCoverArtSearcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCoverArtSearcher.h; sourceTree = "<group>"; };
+		BFF3316513862CDC00B5DCDB /* XLDCoverArtSearcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDCoverArtSearcher.m; sourceTree = "<group>"; };
+		BFF3316F1386359D00B5DCDB /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF337F21388FA2F00B5DCDB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF338361388FA3900B5DCDB /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF338371388FA3F00B5DCDB /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF338381388FA4700B5DCDB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF338391388FA5100B5DCDB /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF3383A1388FA5900B5DCDB /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF3383B1388FA6300B5DCDB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF3383C1388FA7600B5DCDB /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF3383D1388FA8D00B5DCDB /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/CoverArtSearcher.xib; sourceTree = "<group>"; };
+		BFF7C6A2137D753800192CA7 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = French; path = French.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BFF7E77D1126FEDD00300E40 /* XLDTakDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDTakDecoder.bundle; path = ../XLDTakDecoder/build/Release/XLDTakDecoder.bundle; sourceTree = "<group>"; };
+		BFFCC5CB0B0F7A45005CE0B7 /* XLDFlacDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDFlacDecoder.bundle; path = ../XLDFlacDecoder/build/Release/XLDFlacDecoder.bundle; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				BF9AB9950A8754C400355496 /* AudioToolbox.framework in Frameworks */,
+				BF9AB99A0A8754DA00355496 /* AudioUnit.framework in Frameworks */,
+				BFC5E9FA0E4E294300B3EF55 /* DiskArbitration.framework in Frameworks */,
+				BF24F1D80E829140007E24DE /* IOKit.framework in Frameworks */,
+				BF5593DD0EC9EEAA00562F2C /* CoreAudio.framework in Frameworks */,
+				BF85F5851371579E00D71081 /* DiscRecording.framework in Frameworks */,
+				BF85F5871371579E00D71081 /* DiscRecordingUI.framework in Frameworks */,
+				BF8CD8A615BEAC3000433B47 /* libcrypto.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BF7DF1340A38110F006893CB /* XLDController.h */,
+				BF7DF1350A38110F006893CB /* XLDController.m */,
+				BF7DF1690A384011006893CB /* XLDDefaultOutput.h */,
+				BF7DF16A0A384011006893CB /* XLDDefaultOutput.m */,
+				BFB9DC271281509E009445A3 /* XLDWavOutput.h */,
+				BFB9DC281281509E009445A3 /* XLDWavOutput.m */,
+				BFB9DC311281540B009445A3 /* XLDAiffOutput.h */,
+				BFB9DC321281540B009445A3 /* XLDAiffOutput.m */,
+				BFB9DC3612815472009445A3 /* XLDWave64Output.h */,
+				BFB9DC3712815472009445A3 /* XLDWave64Output.m */,
+				BFB9DC3B128155C0009445A3 /* XLDPcmBEOutput.h */,
+				BFB9DC3C128155C0009445A3 /* XLDPcmBEOutput.m */,
+				BFB9DC3E1281564E009445A3 /* XLDPcmLEOutput.h */,
+				BFB9DC3F1281564E009445A3 /* XLDPcmLEOutput.m */,
+				BF91C6C10AB147DD00885032 /* XLDDefaultOutputTask.h */,
+				BF91C6C20AB147DD00885032 /* XLDDefaultOutputTask.m */,
+				BF3755180A3ABA090003FD0E /* XLDCueParser.h */,
+				BF3755190A3ABA090003FD0E /* XLDCueParser.m */,
+				BF3755EC0A3BFD820003FD0E /* XLDTrack.h */,
+				BF3755ED0A3BFD820003FD0E /* XLDTrack.m */,
+				BF9AB8B50A86FE5E00355496 /* XLDPlayer.h */,
+				BF9AB8B60A86FE5E00355496 /* XLDPlayer.m */,
+				BF69CA74139025F6008332B5 /* XLDCDDBUtil.h */,
+				BF69CA6B139025E1008332B5 /* XLDCDDBUtil.m */,
+				BFD4BF7F0ADA4E290036C31D /* XLDRawDecoder.h */,
+				BFD4BF800ADA4E290036C31D /* XLDRawDecoder.m */,
+				BFA129C40B02338300A8CEF7 /* XLDPlayerWindow.h */,
+				BFA129C50B02338300A8CEF7 /* XLDPlayerWindow.m */,
+				BF23FBD20B04D1FC00A01A49 /* XLDPlayerSlider.h */,
+				BF23FBD30B04D1FC00A01A49 /* XLDPlayerSlider.m */,
+				BF45F7510CEAC78200749982 /* XLDConverterTask.h */,
+				BF45F7520CEAC78200749982 /* XLDConverterTask.m */,
+				BFD792EB0CEF569E00A1204F /* XLDecoderCenter.h */,
+				BFD792EC0CEF569E00A1204F /* XLDecoderCenter.m */,
+				BFD791F90CEEF0C400A1204F /* XLDQueue.h */,
+				BFD791FA0CEEF0C400A1204F /* XLDQueue.m */,
+				BFDC10F90E1F34D20039A2AF /* XLDMetadataEditor.h */,
+				BFDC10FA0E1F34D20039A2AF /* XLDMetadataEditor.m */,
+				BFB7CEA8123A8B7200F0870D /* XLDMetadataTextParser.h */,
+				BFB7CEA7123A8B7200F0870D /* XLDMetadataTextParser.m */,
+				BFC5E7640E4D730300B3EF55 /* XLDCDDARipper.h */,
+				BFC5E7650E4D730300B3EF55 /* XLDCDDARipper.m */,
+				BF7BA3230E5328EB0062F558 /* XLDCDDAResult.h */,
+				BF7BA3240E5328EB0062F558 /* XLDCDDAResult.m */,
+				BF6A1E150E580EE900C5E823 /* XLDAccurateRipDB.h */,
+				BF6A1E160E580EE900C5E823 /* XLDAccurateRipDB.m */,
+				BF2E0E2D0E5EDA4100A13E00 /* XLDAccurateRipChecker.h */,
+				BF2E0E2E0E5EDA4100A13E00 /* XLDAccurateRipChecker.m */,
+				BF001A250F6A1B4C0090585D /* XLDDDPParser.h */,
+				BF001A260F6A1B4C0090585D /* XLDDDPParser.m */,
+				BFB9E02A12829A51009445A3 /* XLDCustomFormatManager.h */,
+				BFB9E02B12829A55009445A3 /* XLDCustomFormatManager.m */,
+				BF2FFFED128E53AA00B01786 /* XLDSecureRipperEngine.h */,
+				BF2FFFEE128E53AA00B01786 /* XLDSecureRipperEngine.m */,
+				BF2B874712A00413002CB1FF /* XLDTrackValidator.h */,
+				BF2B874612A00413002CB1FF /* XLDTrackValidator.m */,
+				BFE88E2C1318073200931123 /* XLDSilentDecoder.h */,
+				BFE88E2D1318073600931123 /* XLDSilentDecoder.m */,
+				BFE88E4E1318096A00931123 /* XLDDiscLayout.h */,
+				BFE88E4F1318096F00931123 /* XLDDiscLayout.m */,
+				BFE88E57131809A900931123 /* XLDMultipleFileWrappedDecoder.h */,
+				BFE88E58131809AD00931123 /* XLDMultipleFileWrappedDecoder.m */,
+				BF8F4440131A8417004D1C78 /* XLDProfileManager.h */,
+				BF8F4441131A8417004D1C78 /* XLDProfileManager.m */,
+				BF3D6BAF13237F6F002CA462 /* XLDDiscView.h */,
+				BF3D6BB013237F6F002CA462 /* XLDDiscView.m */,
+				BF3D6BDC132382E1002CA462 /* XLDShadowedImageView.h */,
+				BF3D6BDD132382E1002CA462 /* XLDShadowedImageView.m */,
+				BF1539E41374F6BF003E1C69 /* XLDDiscBurner.h */,
+				BF1539E51374F6BF003E1C69 /* XLDDiscBurner.m */,
+				BF153A2313752BC3003E1C69 /* XLDTrackProducer.h */,
+				BF153A2413752BC3003E1C69 /* XLDTrackProducer.m */,
+				BFF32F4F1382C0D600B5DCDB /* XLDAmazonSearcher.h */,
+				BFF32F501382C0D600B5DCDB /* XLDAmazonSearcher.m */,
+				BFF3316413862CDC00B5DCDB /* XLDCoverArtSearcher.h */,
+				BFF3316513862CDC00B5DCDB /* XLDCoverArtSearcher.m */,
+				BF69CA751390264E008332B5 /* XLDMusicBrainzReleaseList.h */,
+				BF69CA761390264E008332B5 /* XLDMusicBrainzReleaseList.m */,
+				BF69CA831390268B008332B5 /* XLDMusicBrainzRelease.h */,
+				BF69CA841390268B008332B5 /* XLDMusicBrainzRelease.m */,
+				BFC1B05914ADAADC003FE6DE /* XLDDiscogsRelease.h */,
+				BFC1B05A14ADAADC003FE6DE /* XLDDiscogsRelease.m */,
+				BF476DA013FCE9B500E66093 /* XLDPluginManager.h */,
+				BF476DA113FCE9B500E66093 /* XLDPluginManager.m */,
+				BFED73EF0F46CCAC002F6FF5 /* XLDCustomClasses.h */,
+				BFED73F00F46CCAC002F6FF5 /* XLDCustomClasses.m */,
+				BF3755EB0A3BFD820003FD0E /* XLDDecoder.h */,
+				BF12FEFF0A3D4A7D00822690 /* XLDOutput.h */,
+				BF91C6C50AB1481E00885032 /* XLDOutputTask.h */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BF5593DC0EC9EEAA00562F2C /* CoreAudio.framework */,
+				BF24F1D70E829140007E24DE /* IOKit.framework */,
+				BFC5E9F90E4E294300B3EF55 /* DiskArbitration.framework */,
+				BF9AB9990A8754DA00355496 /* AudioUnit.framework */,
+				BF9AB9940A8754C400355496 /* AudioToolbox.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				BF85F5841371579E00D71081 /* DiscRecording.framework */,
+				BF85F5861371579E00D71081 /* DiscRecordingUI.framework */,
+				BF8CD8A515BEAC3000433B47 /* libcrypto.dylib */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BFC1B34814B179C8003FE6DE /* XLDID3.framework */,
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* XLD.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* XLD */ = {
+			isa = PBXGroup;
+			children = (
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				BF375B940A3D0D0F0003FD0E /* Plugin */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = XLD;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				BF9AB2FB0E84D96A0089A313 /* paranoia */,
+				32CA4F630368D1EE00C91783 /* XLD_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+				BFDD9CFA146EBDB500C9391C /* XLD_cmdline.m */,
+				BF1166A8128AF24D0058749F /* XLDCDDABackend.h */,
+				BF1166A6128AF2450058749F /* XLDCDDABackend.c */,
+				BF43BCE80B00C1FF00A676A0 /* sfifo.h */,
+				BF43BCE90B00C1FF00A676A0 /* sfifo.c */,
+				BF1192000E7B91DA004BC21D /* gain_analysis.h */,
+				BF1191FF0E7B91DA004BC21D /* gain_analysis.c */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BF2013F910BC62D800A82187 /* shn.icns */,
+				BFCAB0D80F74176B00A8480A /* oga.icns */,
+				BFCAB0D90F74176B00A8480A /* flac.icns */,
+				BFCAB0DA0F74176B00A8480A /* tta.icns */,
+				BFCAB0DB0F74176B00A8480A /* wv.icns */,
+				BFCAB0DC0F74176B00A8480A /* ape.icns */,
+				BFCAB0DD0F74176B00A8480A /* cue.icns */,
+				BF21887D0B1FD6F20010AA1E /* xld.icns */,
+				BFC1029F0E91DAEE00C18EEE /* dsa_pub.pem */,
+				BF8AD2A80A87CADD0070AA3C /* stop_active.png */,
+				BF8AD2A70A87CADD0070AA3C /* stop_blue.png */,
+				BF8AD2B50A87CBF00070AA3C /* next_active.png */,
+				BF8AD2B60A87CBF00070AA3C /* next_blue.png */,
+				BF8AD2B70A87CBF00070AA3C /* previous_active.png */,
+				BF8AD2B40A87CBF00070AA3C /* previous_blue.png */,
+				BFA1297F0B02289100A8CEF7 /* play_active.png */,
+				BFA129820B02289100A8CEF7 /* play_blue.png */,
+				BFA129810B02289100A8CEF7 /* pause_active.png */,
+				BFA129800B02289100A8CEF7 /* pause_blue.png */,
+				BF6E297510BDAF4400406393 /* batch.png */,
+				BF6E297710BDAF4400406393 /* general.png */,
+				BF6E297810BDAF4400406393 /* metadata.png */,
+				BF6E297910BDAF4400406393 /* cddb.png */,
+				BFDBBA651334D0DC00718DAF /* cancel.png */,
+				BF8AA6BF139B6CFB0041328A /* ExportStopPressed.png */,
+				BF8AA6C0139B6CFB0041328A /* ExportStop.png */,
+				BF476E4213FD14DD00E66093 /* SaveAs.png */,
+				8D1107310486CEB800E47090 /* Info.plist */,
+				BF24F1C30E828D8E007E24DE /* offsetlist.plist */,
+				BF9FD55D0E66FDA800E8DFEE /* Credits.rtfd */,
+				BF23B67A12338C1F00AF5305 /* MainMenu.xib */,
+				BF23B69012338DD800AF5305 /* Player.xib */,
+				BF23B69412338E0A00AF5305 /* Queue.xib */,
+				BF23B6A612338EF400AF5305 /* MetadataEditor.xib */,
+				BF23B6B712338F8D00AF5305 /* ARChecker.xib */,
+				BF23B6BA12338FC400AF5305 /* XLDDefaultOutput.xib */,
+				BFB9E02E12829DCD009445A3 /* CustomFormatManager.xib */,
+				BF8F4465131AA478004D1C78 /* ProfileManager.xib */,
+				BF3D6BCC1323814F002CA462 /* DiscView.xib */,
+				BFF3316E1386359D00B5DCDB /* CoverArtSearcher.xib */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				BF3755100A3AA78F0003FD0E /* Localizable.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BF375B940A3D0D0F0003FD0E /* Plugin */ = {
+			isa = PBXGroup;
+			children = (
+				BF2D3F970E72C5BD00BE32E5 /* XLDSparkleUpdater.bundle */,
+				BF7C725B0DE34D1D00325E88 /* XLDWavpackOutput.bundle */,
+				BF51575A0D7D937C001C0905 /* XLDHEAACOutput.bundle */,
+				BF6CA3C20D6579610089BAAA /* XLDMP3Decoder.bundle */,
+				BF310D9A0CE98882005083EC /* XLDAacOutput2.bundle */,
+				BFFCC5CB0B0F7A45005CE0B7 /* XLDFlacDecoder.bundle */,
+				BFE3A02A0ABAA9A000E64AF8 /* XLDFlacOutput.bundle */,
+				BFC1702D0A4BDC4400EA040C /* XLDAlacOutput.bundle */,
+				BF7E841F0A428C30004D738A /* XLDLameOutput.bundle */,
+				BF23610A0A3E8B670040DAC4 /* XLDAacOutput.bundle */,
+				BF12FF940A3D586D00822690 /* XLDVorbisOutput.bundle */,
+				BF3758C60A3C14090003FD0E /* XLDTtaDecoder.bundle */,
+				BF3758C70A3C14090003FD0E /* XLDWavpackDecoder.bundle */,
+				BF3758C80A3C14090003FD0E /* XLDAlacDecoder.bundle */,
+				BF3758C90A3C14090003FD0E /* XLDApeDecoder.bundle */,
+				BF3758CA0A3C14090003FD0E /* XLDLibsndfileDecoder.bundle */,
+				BFB24D1B10BA622D00E11EBF /* XLDShortenDecoder.bundle */,
+				BFF7E77D1126FEDD00300E40 /* XLDTakDecoder.bundle */,
+			);
+			name = Plugin;
+			sourceTree = "<group>";
+		};
+		BF9AB2FB0E84D96A0089A313 /* paranoia */ = {
+			isa = PBXGroup;
+			children = (
+				BF1166AB128AF2920058749F /* cdda_paranoia.h */,
+				BF9AB2FD0E84D96A0089A313 /* gap.c */,
+				BF9AB2FE0E84D96A0089A313 /* gap.h */,
+				BF9AB2FF0E84D96A0089A313 /* isort.c */,
+				BF9AB3000E84D96A0089A313 /* isort.h */,
+				BF9AB3020E84D96A0089A313 /* overlap.c */,
+				BF9AB3030E84D96A0089A313 /* overlap.h */,
+				BF9AB3050E84D96A0089A313 /* p_block.c */,
+				BF9AB3060E84D96A0089A313 /* p_block.h */,
+				BF9AB3070E84D96A0089A313 /* paranoia.c */,
+				BFAC8365128BFBB8001A3797 /* cachetest.c */,
+			);
+			path = paranoia;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* XLD */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "XLD" */;
+			buildPhases = (
+				BF12FE8E0A3D2EC900822690 /* CopyFiles */,
+				BF84DED00A4FC2F2000AA853 /* CopyFiles */,
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XLD;
+			productInstallPath = "$(HOME)/Applications";
+			productName = XLD;
+			productReference = 8D1107320486CEB800E47090 /* XLD.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "XLD_export" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				zh_CN,
+				Dutch,
+				Russian,
+				Du,
+				Italian,
+				Spanish,
+				zh_TW,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* XLD */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* XLD */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				BF3755110A3AA78F0003FD0E /* Localizable.strings in Resources */,
+				BF8AD2A90A87CADD0070AA3C /* stop_blue.png in Resources */,
+				BF8AD2AA0A87CADD0070AA3C /* stop_active.png in Resources */,
+				BF8AD2B80A87CBF00070AA3C /* previous_blue.png in Resources */,
+				BF8AD2B90A87CBF00070AA3C /* next_active.png in Resources */,
+				BF8AD2BA0A87CBF00070AA3C /* next_blue.png in Resources */,
+				BF8AD2BB0A87CBF00070AA3C /* previous_active.png in Resources */,
+				BFA129830B02289100A8CEF7 /* play_active.png in Resources */,
+				BFA129840B02289100A8CEF7 /* pause_blue.png in Resources */,
+				BFA129850B02289100A8CEF7 /* pause_active.png in Resources */,
+				BFA129860B02289100A8CEF7 /* play_blue.png in Resources */,
+				BF21887E0B1FD6F20010AA1E /* xld.icns in Resources */,
+				BF9FD55F0E66FDA800E8DFEE /* Credits.rtfd in Resources */,
+				BF24F1C40E828D8E007E24DE /* offsetlist.plist in Resources */,
+				BFC102A00E91DAEE00C18EEE /* dsa_pub.pem in Resources */,
+				BFCAB0DE0F74176B00A8480A /* oga.icns in Resources */,
+				BFCAB0DF0F74176B00A8480A /* flac.icns in Resources */,
+				BFCAB0E00F74176B00A8480A /* tta.icns in Resources */,
+				BFCAB0E10F74176B00A8480A /* wv.icns in Resources */,
+				BFCAB0E20F74176B00A8480A /* ape.icns in Resources */,
+				BFCAB0E30F74176B00A8480A /* cue.icns in Resources */,
+				BF2013FA10BC62D800A82187 /* shn.icns in Resources */,
+				BF6E297A10BDAF4400406393 /* batch.png in Resources */,
+				BF6E297C10BDAF4400406393 /* general.png in Resources */,
+				BF6E297D10BDAF4400406393 /* metadata.png in Resources */,
+				BF6E297E10BDAF4400406393 /* cddb.png in Resources */,
+				BFDBBA661334D0DC00718DAF /* cancel.png in Resources */,
+				BF23B67C12338C1F00AF5305 /* MainMenu.xib in Resources */,
+				BF23B69112338DD800AF5305 /* Player.xib in Resources */,
+				BF23B69612338E0A00AF5305 /* Queue.xib in Resources */,
+				BF23B6A812338EF400AF5305 /* MetadataEditor.xib in Resources */,
+				BF23B6B812338F8D00AF5305 /* ARChecker.xib in Resources */,
+				BF23B6BC12338FC400AF5305 /* XLDDefaultOutput.xib in Resources */,
+				BFB9E03012829DCD009445A3 /* CustomFormatManager.xib in Resources */,
+				BF8F4467131AA478004D1C78 /* ProfileManager.xib in Resources */,
+				BF3D6BCE1323814F002CA462 /* DiscView.xib in Resources */,
+				BFF331701386359D00B5DCDB /* CoverArtSearcher.xib in Resources */,
+				BF8AA6C1139B6CFB0041328A /* ExportStopPressed.png in Resources */,
+				BF8AA6C2139B6CFB0041328A /* ExportStop.png in Resources */,
+				BF476E4313FD14DD00E66093 /* SaveAs.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				BF7DF1360A381110006893CB /* XLDController.m in Sources */,
+				BF7DF16B0A384011006893CB /* XLDDefaultOutput.m in Sources */,
+				BF37551A0A3ABA090003FD0E /* XLDCueParser.m in Sources */,
+				BF3755EE0A3BFD820003FD0E /* XLDTrack.m in Sources */,
+				BF9AB8B80A86FE5E00355496 /* XLDPlayer.m in Sources */,
+				BF91C6C40AB147DD00885032 /* XLDDefaultOutputTask.m in Sources */,
+				BFD4BF820ADA4E290036C31D /* XLDRawDecoder.m in Sources */,
+				BF43BCEB0B00C1FF00A676A0 /* sfifo.c in Sources */,
+				BFA129C70B02338300A8CEF7 /* XLDPlayerWindow.m in Sources */,
+				BF23FBD50B04D1FC00A01A49 /* XLDPlayerSlider.m in Sources */,
+				BFD791FC0CEEF0C400A1204F /* XLDQueue.m in Sources */,
+				BFD792370CEF062B00A1204F /* XLDConverterTask.m in Sources */,
+				BFD792EE0CEF569E00A1204F /* XLDecoderCenter.m in Sources */,
+				BFDC10FC0E1F34D20039A2AF /* XLDMetadataEditor.m in Sources */,
+				BFC5E7670E4D730300B3EF55 /* XLDCDDARipper.m in Sources */,
+				BF7BA3260E5328EB0062F558 /* XLDCDDAResult.m in Sources */,
+				BF6A1E180E580EE900C5E823 /* XLDAccurateRipDB.m in Sources */,
+				BF2E0E300E5EDA4100A13E00 /* XLDAccurateRipChecker.m in Sources */,
+				BF1192010E7B91DA004BC21D /* gain_analysis.c in Sources */,
+				BF9AB3090E84D96A0089A313 /* gap.c in Sources */,
+				BF9AB30B0E84D96A0089A313 /* isort.c in Sources */,
+				BF9AB30E0E84D96A0089A313 /* overlap.c in Sources */,
+				BF9AB3110E84D96A0089A313 /* p_block.c in Sources */,
+				BF9AB3130E84D96A0089A313 /* paranoia.c in Sources */,
+				BFED73F20F46CCAD002F6FF5 /* XLDCustomClasses.m in Sources */,
+				BF001A280F6A1B4C0090585D /* XLDDDPParser.m in Sources */,
+				BFB7CEA9123A8B7200F0870D /* XLDMetadataTextParser.m in Sources */,
+				BFB9DC291281509E009445A3 /* XLDWavOutput.m in Sources */,
+				BFB9DC331281540B009445A3 /* XLDAiffOutput.m in Sources */,
+				BFB9DC3812815472009445A3 /* XLDWave64Output.m in Sources */,
+				BFB9DC3D128155C0009445A3 /* XLDPcmBEOutput.m in Sources */,
+				BFB9DC401281564E009445A3 /* XLDPcmLEOutput.m in Sources */,
+				BFB9E02C12829A55009445A3 /* XLDCustomFormatManager.m in Sources */,
+				BF1166A7128AF2450058749F /* XLDCDDABackend.c in Sources */,
+				BF2F0010128E75E800B01786 /* XLDSecureRipperEngine.m in Sources */,
+				BF2B874812A00413002CB1FF /* XLDTrackValidator.m in Sources */,
+				BFE88E2E1318073600931123 /* XLDSilentDecoder.m in Sources */,
+				BFE88E501318096F00931123 /* XLDDiscLayout.m in Sources */,
+				BFE88E59131809AD00931123 /* XLDMultipleFileWrappedDecoder.m in Sources */,
+				BF8F4442131A8417004D1C78 /* XLDProfileManager.m in Sources */,
+				BF3D6BB113237F6F002CA462 /* XLDDiscView.m in Sources */,
+				BF3D6BDE132382E1002CA462 /* XLDShadowedImageView.m in Sources */,
+				BF1539E61374F6BF003E1C69 /* XLDDiscBurner.m in Sources */,
+				BF153A2513752BC3003E1C69 /* XLDTrackProducer.m in Sources */,
+				BFF32F511382C0D600B5DCDB /* XLDAmazonSearcher.m in Sources */,
+				BFF3316613862CDC00B5DCDB /* XLDCoverArtSearcher.m in Sources */,
+				BF69CA6C139025E1008332B5 /* XLDCDDBUtil.m in Sources */,
+				BF69CA771390264E008332B5 /* XLDMusicBrainzReleaseList.m in Sources */,
+				BF69CA851390268B008332B5 /* XLDMusicBrainzRelease.m in Sources */,
+				BF476DA213FCE9B500E66093 /* XLDPluginManager.m in Sources */,
+				BFDD9CFB146EBDB500C9391C /* XLD_cmdline.m in Sources */,
+				BFC1B05B14ADAADC003FE6DE /* XLDDiscogsRelease.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF6A22820E5B11DF00C5E823 /* Japanese */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		BF23B67A12338C1F00AF5305 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF23B67B12338C1F00AF5305 /* English */,
+				BF23B68312338C3900AF5305 /* Japanese */,
+				BF23B68412338C4F00AF5305 /* French */,
+				BF23B68512338C5700AF5305 /* German */,
+				BF23B68612338C6000AF5305 /* Dutch */,
+				BF23B68712338C6800AF5305 /* Russian */,
+				BF23B68812338C7300AF5305 /* zh_CN */,
+				BFCD90051272A1B600695A94 /* Italian */,
+				BF564F591325592E00838FC4 /* Spanish */,
+				BFD3CC381359C60400D0E817 /* zh_TW */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		BF23B69412338E0A00AF5305 /* Queue.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF23B69512338E0A00AF5305 /* English */,
+				BF23B69812338E1A00AF5305 /* Japanese */,
+				BF23B69A12338E3300AF5305 /* French */,
+				BF23B69C12338E4A00AF5305 /* German */,
+				BF23B69E12338E5D00AF5305 /* Dutch */,
+				BF23B6A012338E8D00AF5305 /* Russian */,
+				BF23B6A212338E9B00AF5305 /* zh_CN */,
+				BFCD900B1272A35700695A94 /* Italian */,
+				BF564F5A1325593600838FC4 /* Spanish */,
+				BFD3CC781359C61400D0E817 /* zh_TW */,
+			);
+			name = Queue.xib;
+			sourceTree = "<group>";
+		};
+		BF23B6A612338EF400AF5305 /* MetadataEditor.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF23B6A712338EF400AF5305 /* English */,
+				BF23B6AA12338F0400AF5305 /* Japanese */,
+				BF23B6AC12338F1900AF5305 /* French */,
+				BF23B6AE12338F2D00AF5305 /* German */,
+				BF23B6B012338F4100AF5305 /* Dutch */,
+				BF23B6B212338F5400AF5305 /* Russian */,
+				BF23B6B412338F6800AF5305 /* zh_CN */,
+				BFCD900D1272A36D00695A94 /* Italian */,
+				BF564F5B1325593F00838FC4 /* Spanish */,
+				BFD3CC851359C81C00D0E817 /* zh_TW */,
+			);
+			name = MetadataEditor.xib;
+			sourceTree = "<group>";
+		};
+		BF23B6BA12338FC400AF5305 /* XLDDefaultOutput.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF23B6BB12338FC400AF5305 /* English */,
+				BF23B6BE12338FD300AF5305 /* Japanese */,
+				BF23B6C012338FE300AF5305 /* French */,
+				BF23B6C212338FF300AF5305 /* German */,
+				BF23B6C41233900400AF5305 /* Dutch */,
+				BF23B6C61233901600AF5305 /* Russian */,
+				BF23B6C81233902900AF5305 /* zh_CN */,
+				BFCD90101272A39600695A94 /* Italian */,
+				BF564F5C1325594400838FC4 /* Spanish */,
+				BFD3CC841359C81600D0E817 /* zh_TW */,
+			);
+			name = XLDDefaultOutput.xib;
+			sourceTree = "<group>";
+		};
+		BF3755100A3AA78F0003FD0E /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF37550E0A3AA7800003FD0E /* English */,
+				BF375A320A3C423F0003FD0E /* Japanese */,
+				BF1856E10D9FB266000A924A /* French */,
+				BF1856E00D9FB263000A924A /* German */,
+				BF4AA77710A69C50002441F3 /* Dutch */,
+				BFF23045107262E20060118D /* Russian */,
+				BF3811420CE9EB79008C7B47 /* zh_CN */,
+				BFCD90121272A3AB00695A94 /* Italian */,
+				BF564F621325599000838FC4 /* Spanish */,
+				BFD3CC861359C82600D0E817 /* zh_TW */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		BF3D6BCC1323814F002CA462 /* DiscView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF3D6E5B1324133F002CA462 /* English */,
+				BF3D6BCD1323814F002CA462 /* Japanese */,
+				BF564F3B1325447600838FC4 /* French */,
+				BF564F3C1325447E00838FC4 /* German */,
+				BF564F3D1325448B00838FC4 /* Dutch */,
+				BF564F3E1325449700838FC4 /* Russian */,
+				BF564F3F132544A400838FC4 /* zh_CN */,
+				BF564F40132544AB00838FC4 /* Italian */,
+				BF564F5F1325597500838FC4 /* Spanish */,
+				BFD3CC801359C7B000D0E817 /* zh_TW */,
+			);
+			name = DiscView.xib;
+			sourceTree = "<group>";
+		};
+		BF8F4465131AA478004D1C78 /* ProfileManager.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF8F4638131B5A2C004D1C78 /* English */,
+				BF8F4466131AA478004D1C78 /* Japanese */,
+				BF8F465C131B5E4C004D1C78 /* French */,
+				BF8F4660131B5E63004D1C78 /* German */,
+				BF8F4661131B5E6A004D1C78 /* Dutch */,
+				BF8F4662131B5E75004D1C78 /* Russian */,
+				BF8F4663131B5E7B004D1C78 /* zh_CN */,
+				BF8F4664131B5E81004D1C78 /* Italian */,
+				BF564F5D1325594D00838FC4 /* Spanish */,
+				BFD3CC821359C7F700D0E817 /* zh_TW */,
+			);
+			name = ProfileManager.xib;
+			sourceTree = "<group>";
+		};
+		BF9FD55D0E66FDA800E8DFEE /* Credits.rtfd */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF9FD55E0E66FDA800E8DFEE /* English */,
+				BF9FD5600E66FDB000E8DFEE /* Japanese */,
+				BFF7C6A2137D753800192CA7 /* French */,
+				BF46FC2D1236957100559B47 /* German */,
+				BF46FC2E1236957800559B47 /* Dutch */,
+				BF46FC2F1236957C00559B47 /* Russian */,
+				BF46FC301236958300559B47 /* zh_CN */,
+				BFCD900A1272A32000695A94 /* Italian */,
+				BF564F6713255BDF00838FC4 /* Spanish */,
+				BFD3CC981359CD9700D0E817 /* zh_TW */,
+			);
+			name = Credits.rtfd;
+			sourceTree = "<group>";
+		};
+		BFB9E02E12829DCD009445A3 /* CustomFormatManager.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF24428112857D4F00B6FD45 /* English */,
+				BFB9E02F12829DCD009445A3 /* Japanese */,
+				BF2442A612857D6000B6FD45 /* French */,
+				BF2442A712857D6800B6FD45 /* German */,
+				BF2442A812857D6F00B6FD45 /* Dutch */,
+				BF2442A912857D7600B6FD45 /* Russian */,
+				BF2442AA12857D7D00B6FD45 /* zh_CN */,
+				BF2442AB12857D8500B6FD45 /* Italian */,
+				BF564F5E1325595000838FC4 /* Spanish */,
+				BFD3CC831359C80E00D0E817 /* zh_TW */,
+			);
+			name = CustomFormatManager.xib;
+			sourceTree = "<group>";
+		};
+		BFF3316E1386359D00B5DCDB /* CoverArtSearcher.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFF337F21388FA2F00B5DCDB /* English */,
+				BFF3316F1386359D00B5DCDB /* Japanese */,
+				BFF338361388FA3900B5DCDB /* French */,
+				BFF338371388FA3F00B5DCDB /* German */,
+				BFF338381388FA4700B5DCDB /* Dutch */,
+				BFF338391388FA5100B5DCDB /* Russian */,
+				BFF3383A1388FA5900B5DCDB /* zh_CN */,
+				BFF3383B1388FA6300B5DCDB /* Italian */,
+				BFF3383C1388FA7600B5DCDB /* Spanish */,
+				BFF3383D1388FA8D00B5DCDB /* zh_TW */,
+			);
+			name = CoverArtSearcher.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)/../xld_frameworks",
+					"$(SRCROOT)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = XLD;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)/../xld_frameworks",
+					"$(SRCROOT)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = XLD;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLD_Prefix.pch;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lsndfile",
+					"-lcddb",
+				);
+				PREBINDING = NO;
+				USER_HEADER_SEARCH_PATHS = /usr/local/include;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLD_Prefix.pch;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lsndfile",
+					"-lcddb",
+				);
+				PREBINDING = NO;
+				USER_HEADER_SEARCH_PATHS = /usr/local/include;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "XLD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "XLD_export" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
