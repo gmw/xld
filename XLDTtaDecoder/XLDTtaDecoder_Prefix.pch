@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'XLDTtaDecoder' target in the 'XLDTtaDecoder' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
