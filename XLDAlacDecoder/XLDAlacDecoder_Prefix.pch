@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'XLDAlacDecoder' target in the 'XLDAlacDecoder' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
