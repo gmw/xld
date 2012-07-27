@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'XLDVorbisOutput' target in the 'XLDVorbisOutput' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
