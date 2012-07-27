@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'XLDID3' target in the 'XLDID3' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
