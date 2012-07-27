@@ -221,7 +221,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_LDFLAGS = "-lid3tag";
 				PREBINDING = NO;
 				VALID_ARCHS = "i386 ppc";
 			};
@@ -235,7 +234,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_LDFLAGS = "-lid3tag";
 				PREBINDING = NO;
 				VALID_ARCHS = "i386 ppc";
 			};
