@@ -1,0 +1,331 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		BFB24BF810B9C61400E11EBF /* array.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD010B9C61400E11EBF /* array.c */; };
+		BFB24BF910B9C61400E11EBF /* convert.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD110B9C61400E11EBF /* convert.c */; };
+		BFB24BFA10B9C61400E11EBF /* decode.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD210B9C61400E11EBF /* decode.c */; };
+		BFB24BFB10B9C61400E11EBF /* fixio.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD310B9C61400E11EBF /* fixio.c */; };
+		BFB24BFC10B9C61400E11EBF /* id3v2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD410B9C61400E11EBF /* id3v2.c */; };
+		BFB24BFD10B9C61400E11EBF /* misc.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD510B9C61400E11EBF /* misc.c */; };
+		BFB24BFE10B9C61400E11EBF /* output.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD610B9C61400E11EBF /* output.c */; };
+		BFB24BFF10B9C61400E11EBF /* seek.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD710B9C61400E11EBF /* seek.c */; };
+		BFB24C0010B9C61400E11EBF /* shorten.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD810B9C61400E11EBF /* shorten.c */; };
+		BFB24C0110B9C61400E11EBF /* sulawalaw.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BD910B9C61400E11EBF /* sulawalaw.c */; };
+		BFB24C0210B9C61400E11EBF /* vario.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BDA10B9C61400E11EBF /* vario.c */; };
+		BFB24C0310B9C61400E11EBF /* wave.c in Sources */ = {isa = PBXBuildFile; fileRef = BFB24BDB10B9C61400E11EBF /* wave.c */; };
+		BFB24C5010B9C96B00E11EBF /* XLDShortenDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB24C4F10B9C96B00E11EBF /* XLDShortenDecoder.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32DBCF630370AF2F00C91783 /* XLDShortenDecoder_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDShortenDecoder_Prefix.pch; sourceTree = "<group>"; };
+		8D5B49B6048680CD000E48DA /* XLDShortenDecoder.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XLDShortenDecoder.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BFB24BBF10B9C61400E11EBF /* decode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decode.h; sourceTree = "<group>"; };
+		BFB24BC010B9C61400E11EBF /* shn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shn.h; sourceTree = "<group>"; };
+		BFB24BC110B9C61400E11EBF /* shorten.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shorten.h; sourceTree = "<group>"; };
+		BFB24BD010B9C61400E11EBF /* array.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = array.c; sourceTree = "<group>"; };
+		BFB24BD110B9C61400E11EBF /* convert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert.c; sourceTree = "<group>"; };
+		BFB24BD210B9C61400E11EBF /* decode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = decode.c; sourceTree = "<group>"; };
+		BFB24BD310B9C61400E11EBF /* fixio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fixio.c; sourceTree = "<group>"; };
+		BFB24BD410B9C61400E11EBF /* id3v2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = id3v2.c; sourceTree = "<group>"; };
+		BFB24BD510B9C61400E11EBF /* misc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = misc.c; sourceTree = "<group>"; };
+		BFB24BD610B9C61400E11EBF /* output.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = output.c; sourceTree = "<group>"; };
+		BFB24BD710B9C61400E11EBF /* seek.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = seek.c; sourceTree = "<group>"; };
+		BFB24BD810B9C61400E11EBF /* shorten.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = shorten.c; sourceTree = "<group>"; };
+		BFB24BD910B9C61400E11EBF /* sulawalaw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sulawalaw.c; sourceTree = "<group>"; };
+		BFB24BDA10B9C61400E11EBF /* vario.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vario.c; sourceTree = "<group>"; };
+		BFB24BDB10B9C61400E11EBF /* wave.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wave.c; sourceTree = "<group>"; };
+		BFB24C1D10B9C82E00E11EBF /* bitshift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitshift.h; sourceTree = "<group>"; };
+		BFB24C4C10B9C95A00E11EBF /* XLDDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDecoder.h; sourceTree = "<group>"; };
+		BFB24C4E10B9C96B00E11EBF /* XLDShortenDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDShortenDecoder.h; sourceTree = "<group>"; };
+		BFB24C4F10B9C96B00E11EBF /* XLDShortenDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDShortenDecoder.m; sourceTree = "<group>"; };
+		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D5B49B3048680CD000E48DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* XLDShortenDecoder */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Classes */,
+				32C88E010371C26100C91783 /* Other Sources */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
+				19C28FB8FE9D52D311CA2CBB /* Products */,
+			);
+			name = XLDShortenDecoder;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
+				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
+			);
+			name = "Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B7048680CD000E48DA /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BFB24C4C10B9C95A00E11EBF /* XLDDecoder.h */,
+				BFB24C4E10B9C96B00E11EBF /* XLDShortenDecoder.h */,
+				BFB24C4F10B9C96B00E11EBF /* XLDShortenDecoder.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				089C167FFE841241C02AAC07 /* AppKit.framework */,
+				D2F7E65807B2D6F200F64583 /* CoreData.framework */,
+				089C1672FE841209C02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FB8FE9D52D311CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B6048680CD000E48DA /* XLDShortenDecoder.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		32C88E010371C26100C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				BFB24BB610B9C61400E11EBF /* shorten */,
+				32DBCF630370AF2F00C91783 /* XLDShortenDecoder_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		BFB24BB610B9C61400E11EBF /* shorten */ = {
+			isa = PBXGroup;
+			children = (
+				BFB24BBE10B9C61400E11EBF /* include */,
+				BFB24BC210B9C61400E11EBF /* src */,
+			);
+			path = shorten;
+			sourceTree = "<group>";
+		};
+		BFB24BBE10B9C61400E11EBF /* include */ = {
+			isa = PBXGroup;
+			children = (
+				BFB24BBF10B9C61400E11EBF /* decode.h */,
+				BFB24BC010B9C61400E11EBF /* shn.h */,
+				BFB24BC110B9C61400E11EBF /* shorten.h */,
+				BFB24C1D10B9C82E00E11EBF /* bitshift.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		BFB24BC210B9C61400E11EBF /* src */ = {
+			isa = PBXGroup;
+			children = (
+				BFB24BD010B9C61400E11EBF /* array.c */,
+				BFB24BD110B9C61400E11EBF /* convert.c */,
+				BFB24BD210B9C61400E11EBF /* decode.c */,
+				BFB24BD310B9C61400E11EBF /* fixio.c */,
+				BFB24BD410B9C61400E11EBF /* id3v2.c */,
+				BFB24BD510B9C61400E11EBF /* misc.c */,
+				BFB24BD610B9C61400E11EBF /* output.c */,
+				BFB24BD710B9C61400E11EBF /* seek.c */,
+				BFB24BD810B9C61400E11EBF /* shorten.c */,
+				BFB24BD910B9C61400E11EBF /* sulawalaw.c */,
+				BFB24BDA10B9C61400E11EBF /* vario.c */,
+				BFB24BDB10B9C61400E11EBF /* wave.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D5B49AC048680CD000E48DA /* XLDShortenDecoder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XLDShortenDecoder" */;
+			buildPhases = (
+				8D5B49AF048680CD000E48DA /* Resources */,
+				8D5B49B1048680CD000E48DA /* Sources */,
+				8D5B49B3048680CD000E48DA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XLDShortenDecoder;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = XLDShortenDecoder;
+			productReference = 8D5B49B6048680CD000E48DA /* XLDShortenDecoder.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XLDShortenDecoder_export" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 089C166AFE841209C02AAC07 /* XLDShortenDecoder */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D5B49AC048680CD000E48DA /* XLDShortenDecoder */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D5B49AF048680CD000E48DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D5B49B1048680CD000E48DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFB24BF810B9C61400E11EBF /* array.c in Sources */,
+				BFB24BF910B9C61400E11EBF /* convert.c in Sources */,
+				BFB24BFA10B9C61400E11EBF /* decode.c in Sources */,
+				BFB24BFB10B9C61400E11EBF /* fixio.c in Sources */,
+				BFB24BFC10B9C61400E11EBF /* id3v2.c in Sources */,
+				BFB24BFD10B9C61400E11EBF /* misc.c in Sources */,
+				BFB24BFE10B9C61400E11EBF /* output.c in Sources */,
+				BFB24BFF10B9C61400E11EBF /* seek.c in Sources */,
+				BFB24C0010B9C61400E11EBF /* shorten.c in Sources */,
+				BFB24C0110B9C61400E11EBF /* sulawalaw.c in Sources */,
+				BFB24C0210B9C61400E11EBF /* vario.c in Sources */,
+				BFB24C0310B9C61400E11EBF /* wave.c in Sources */,
+				BFB24C5010B9C96B00E11EBF /* XLDShortenDecoder.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB913B08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLDShortenDecoder_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = XLDShortenDecoder;
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB913C08733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLDShortenDecoder_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = XLDShortenDecoder;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1DEB913F08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PREBINDING = NO;
+				VALID_ARCHS = "i386 ppc";
+			};
+			name = Debug;
+		};
+		1DEB914008733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PREBINDING = NO;
+				VALID_ARCHS = "i386 ppc";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XLDShortenDecoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913B08733D840010E9CD /* Debug */,
+				1DEB913C08733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XLDShortenDecoder_export" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913F08733D840010E9CD /* Debug */,
+				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
