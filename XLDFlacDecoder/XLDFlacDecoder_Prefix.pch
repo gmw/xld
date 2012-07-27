@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'XLDFlacDecoder' target in the 'XLDFlacDecoder' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
