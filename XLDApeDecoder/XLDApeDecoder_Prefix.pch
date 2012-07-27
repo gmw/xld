@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'XLDApeDecoder' target in the 'XLDApeDecoder' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
