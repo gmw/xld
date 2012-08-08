@@ -108,7 +108,10 @@
 
 - (float)vbrQuality
 {
-	return ([[o_vbrQualityValue stringValue] floatValue]) > 9.999f ? 9.999f : [[o_vbrQualityValue stringValue] floatValue];
+	float quality = 10.0f - [o_vbrQuality floatValue];
+	if(quality > 9.999f) quality = 9.999f;
+	if(quality < 0.0f) quality = 0.0f;
+	return quality;
 }
 
 - (int)bitrate
@@ -290,11 +293,11 @@
 	}
 	if(obj=[cfg objectForKey:@"XLDLameOutput_VBRQuality_Float"]) {
 		[o_vbrQuality setDoubleValue:[obj floatValue]];
-		[o_vbrQuality performClick:nil];
+		[self setVbrQuality:o_vbrQuality];
 	}
 	else if(obj=[cfg objectForKey:@"XLDLameOutput_VBRQuality"]) {
 		[o_vbrQuality setIntValue:[obj intValue]+1];
-		[o_vbrQuality performClick:nil];
+		[self setVbrQuality:o_vbrQuality];
 	}
 	if(obj=[cfg objectForKey:@"XLDLameOutput_VBRMethod"]) {
 		if([obj intValue] < [o_vbrMethod numberOfItems]) [o_vbrMethod selectItemAtIndex:[obj intValue]];
