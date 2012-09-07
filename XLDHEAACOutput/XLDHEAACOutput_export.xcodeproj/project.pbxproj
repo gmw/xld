@@ -1,0 +1,296 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		BF5156EC0D7D8E91001C0905 /* XLDHEAACOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5156EB0D7D8E91001C0905 /* XLDHEAACOutput.m */; };
+		BF5156EF0D7D8EB3001C0905 /* XLDHEAACOutputTask.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5156EE0D7D8EB3001C0905 /* XLDHEAACOutputTask.m */; };
+		BF5157340D7D933D001C0905 /* aacplusenc in Resources */ = {isa = PBXBuildFile; fileRef = BF5157330D7D933D001C0905 /* aacplusenc */; };
+		BFB9DE871281E401009445A3 /* XLDHEAACOutput.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFB9DE851281E401009445A3 /* XLDHEAACOutput.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32DBCF630370AF2F00C91783 /* XLDHEAACOutput_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDHEAACOutput_Prefix.pch; sourceTree = "<group>"; };
+		8D5B49B6048680CD000E48DA /* XLDHEAACOutput.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XLDHEAACOutput.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF2306B91328A5B10000DC53 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/XLDHEAACOutput.xib; sourceTree = "<group>"; };
+		BF5156EA0D7D8E91001C0905 /* XLDHEAACOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDHEAACOutput.h; sourceTree = "<group>"; };
+		BF5156EB0D7D8E91001C0905 /* XLDHEAACOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDHEAACOutput.m; sourceTree = "<group>"; };
+		BF5156ED0D7D8EB3001C0905 /* XLDHEAACOutputTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDHEAACOutputTask.h; sourceTree = "<group>"; };
+		BF5156EE0D7D8EB3001C0905 /* XLDHEAACOutputTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDHEAACOutputTask.m; sourceTree = "<group>"; };
+		BF5156F00D7D8EF5001C0905 /* XLDTrack.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDTrack.h; sourceTree = "<group>"; };
+		BF5157160D7D8FD1001C0905 /* XLDOutput.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDOutput.h; sourceTree = "<group>"; };
+		BF51572C0D7D9303001C0905 /* XLDOutputTask.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDOutputTask.h; sourceTree = "<group>"; };
+		BF5157330D7D933D001C0905 /* aacplusenc */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = aacplusenc; sourceTree = "<group>"; };
+		BFB9DE861281E401009445A3 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/XLDHEAACOutput.xib; sourceTree = "<group>"; };
+		BFB9DE881281E409009445A3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/XLDHEAACOutput.xib; sourceTree = "<group>"; };
+		BFB9DE8B1281E40E009445A3 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/XLDHEAACOutput.xib; sourceTree = "<group>"; };
+		BFB9DE8C1281E415009445A3 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/XLDHEAACOutput.xib; sourceTree = "<group>"; };
+		BFB9DE8D1281E41C009445A3 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/XLDHEAACOutput.xib; sourceTree = "<group>"; };
+		BFD3CD251359D1AD00D0E817 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/XLDHEAACOutput.xib; sourceTree = "<group>"; };
+		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D5B49B3048680CD000E48DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* XLDHEAACOutput */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Classes */,
+				32C88E010371C26100C91783 /* Other Sources */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
+				19C28FB8FE9D52D311CA2CBB /* Products */,
+			);
+			name = XLDHEAACOutput;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
+				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
+			);
+			name = "Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BFB9DE851281E401009445A3 /* XLDHEAACOutput.xib */,
+				BF5157330D7D933D001C0905 /* aacplusenc */,
+				8D5B49B7048680CD000E48DA /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BF5156F00D7D8EF5001C0905 /* XLDTrack.h */,
+				BF5157160D7D8FD1001C0905 /* XLDOutput.h */,
+				BF51572C0D7D9303001C0905 /* XLDOutputTask.h */,
+				BF5156EA0D7D8E91001C0905 /* XLDHEAACOutput.h */,
+				BF5156EB0D7D8E91001C0905 /* XLDHEAACOutput.m */,
+				BF5156ED0D7D8EB3001C0905 /* XLDHEAACOutputTask.h */,
+				BF5156EE0D7D8EB3001C0905 /* XLDHEAACOutputTask.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				089C167FFE841241C02AAC07 /* AppKit.framework */,
+				D2F7E65807B2D6F200F64583 /* CoreData.framework */,
+				089C1672FE841209C02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FB8FE9D52D311CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B6048680CD000E48DA /* XLDHEAACOutput.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		32C88E010371C26100C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32DBCF630370AF2F00C91783 /* XLDHEAACOutput_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D5B49AC048680CD000E48DA /* XLDHEAACOutput */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XLDHEAACOutput" */;
+			buildPhases = (
+				8D5B49AF048680CD000E48DA /* Resources */,
+				8D5B49B1048680CD000E48DA /* Sources */,
+				8D5B49B3048680CD000E48DA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XLDHEAACOutput;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = XLDHEAACOutput;
+			productReference = 8D5B49B6048680CD000E48DA /* XLDHEAACOutput.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XLDHEAACOutput_export" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				zh_CN,
+				Spanish,
+				zh_TW,
+			);
+			mainGroup = 089C166AFE841209C02AAC07 /* XLDHEAACOutput */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D5B49AC048680CD000E48DA /* XLDHEAACOutput */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D5B49AF048680CD000E48DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF5157340D7D933D001C0905 /* aacplusenc in Resources */,
+				BFB9DE871281E401009445A3 /* XLDHEAACOutput.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D5B49B1048680CD000E48DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF5156EC0D7D8E91001C0905 /* XLDHEAACOutput.m in Sources */,
+				BF5156EF0D7D8EB3001C0905 /* XLDHEAACOutputTask.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		BFB9DE851281E401009445A3 /* XLDHEAACOutput.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFB9DE861281E401009445A3 /* English */,
+				BFB9DE881281E409009445A3 /* Japanese */,
+				BFB9DE8B1281E40E009445A3 /* German */,
+				BFB9DE8C1281E415009445A3 /* French */,
+				BFB9DE8D1281E41C009445A3 /* zh_CN */,
+				BF2306B91328A5B10000DC53 /* Spanish */,
+				BFD3CD251359D1AD00D0E817 /* zh_TW */,
+			);
+			name = XLDHEAACOutput.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB913B08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLDHEAACOutput_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = XLDHEAACOutput;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1DEB913C08733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLDHEAACOutput_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = XLDHEAACOutput;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1DEB913F08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_VERSION = 4.0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				VALID_ARCHS = "i386 ppc";
+			};
+			name = Debug;
+		};
+		1DEB914008733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_VERSION = 4.0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				VALID_ARCHS = "i386 ppc";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XLDHEAACOutput" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913B08733D840010E9CD /* Debug */,
+				1DEB913C08733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XLDHEAACOutput_export" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913F08733D840010E9CD /* Debug */,
+				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
