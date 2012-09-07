@@ -394,13 +394,9 @@ int xld_cdda_read(xld_cdread_t *disc, void *buffer, int beginLSN, int nSectors)
 
 int xld_cdda_read_with_c2(xld_cdread_t *disc, void *buffer, int beginLSN, int nSectors)
 {
+	int sectorsToRead = nSectors;
+	int sectorsDone = 0;
 	dk_cd_read_t cdread;
-	memset(&cdread, 0, sizeof(cdread));
-	cdread.sectorArea = kCDSectorAreaUser | kCDSectorAreaErrorFlags;
-	cdread.sectorType = kCDSectorTypeCDDA;
-	cdread.offset = beginLSN * (2352+294);
-	cdread.bufferLength = (2352+294)*nSectors;
-	cdread.buffer = buffer;
 	
 	if(xld_cdda_sector_gettrack(disc,beginLSN) == -1) {
 		//fprintf(stderr,"warning: trying to read lead-out from %d\n",beginLSN);
@@ -409,23 +405,35 @@ int xld_cdda_read_with_c2(xld_cdread_t *disc, void *buffer, int beginLSN, int nS
 	}
 	else if(xld_cdda_sector_gettrack(disc,beginLSN+nSectors-1) == -1) {
 		//fprintf(stderr,"warning: trying to read into lead-out from %d\n",beginLSN);
-		cdread.bufferLength = (2352+294)*(xld_cdda_track_lastsector(disc,xld_cdda_sector_gettrack(disc,beginLSN))+1-beginLSN);
+		sectorsToRead = xld_cdda_track_lastsector(disc,xld_cdda_sector_gettrack(disc,beginLSN))+1-beginLSN;
 	}
-	int ret = ioctl(disc->fd, DKIOCCDREAD, &cdread);
-	if(ret < 0) {
-		perror("read error");
-		return -1;
+	
+	while(sectorsDone < sectorsToRead) {
+		int sectorsPerLoop = 40;
+		if(sectorsToRead - sectorsDone < 40) sectorsPerLoop = sectorsToRead - sectorsDone;
+		memset(&cdread, 0, sizeof(cdread));
+		cdread.sectorArea = kCDSectorAreaUser | kCDSectorAreaErrorFlags;
+		cdread.sectorType = kCDSectorTypeCDDA;
+		cdread.offset = (beginLSN+sectorsDone) * (2352+294);
+		cdread.bufferLength = (2352+294)*sectorsPerLoop;
+		cdread.buffer = (unsigned char *)buffer+sectorsDone*(2352+294);
+		
+		int ret = ioctl(disc->fd, DKIOCCDREAD, &cdread);
+		if(ret < 0) {
+			perror("read error");
+			return -1;
+		}
+		sectorsDone += sectorsPerLoop;
 	}
-	if(xld_cdda_sector_gettrack(disc,beginLSN+nSectors-1) == -1) {
-		memset((char *)(cdread.buffer)+cdread.bufferLength,0,(2352+294)*nSectors - cdread.bufferLength);
-		//cdread.bufferLength = (2352+294)*nSectors;
+	
+	if(sectorsDone < nSectors) {
+		memset((char *)(cdread.buffer)+(2352+294)*sectorsDone,0,(2352+294)*(nSectors - sectorsDone));
 	}
 #ifdef _BIG_ENDIAN
 	unsigned char *buf = buffer;
 	unsigned char tmp;
 	int i,j;
-	ret = cdread.bufferLength/(2352+294);
-	for(i=0;i<ret;i++) {
+	for(i=0;i<sectorsDone;i++) {
 		for(j=0;j<2352;j+=2) {
 			tmp = buf[i*(2352+294)+j+1];
 			buf[i*(2352+294)+j+1] = buf[i*(2352+294)+j];
@@ -434,7 +442,7 @@ int xld_cdda_read_with_c2(xld_cdread_t *disc, void *buffer, int beginLSN, int nS
 	}
 #endif
 	
-	return cdread.bufferLength/(2352+294);
+	return sectorsDone;
 }
 
 int xld_cdda_disc_firstsector(xld_cdread_t *disc)

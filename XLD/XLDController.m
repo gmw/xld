@@ -2267,7 +2267,14 @@ end:
 		openingFiles = NO;
 		return;
 	}
-	NSArray *sortedQueue = [queue sortedArrayUsingSelector:@selector(compare:)];
+	NSArray *sortedQueue;
+	if([NSString instancesRespondToSelector:@selector(localizedStandardCompare:)]) {
+		sortedQueue = [queue sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
+	}
+	else {
+		sortedQueue = [queue sortedArrayUsingSelector:@selector(localizedCompare:)];
+	}
+	
 	//NSLog([sortedQueue description]);
 	NSMutableArray *taskArray = [[NSMutableArray alloc] init];
 	NSMutableArray *trackArray = [[NSMutableArray alloc] init];
@@ -2588,7 +2595,6 @@ end:
 			}
 			outputDir = [op filename];
 		}
-		
 		XLDConverterTask *task = [[XLDConverterTask alloc] initWithQueue:taskQueue];
 		XLDTrack *track = [[XLDTrack alloc] init];
 		[track setSeconds:[decoder totalFrames]/[decoder samplerate]];
@@ -2648,7 +2654,6 @@ end:
 		//[task setTrack:track]; //not here...
 		
 		[decoder closeFile];
-		
 		if([o_editTags state] == NSOnState) {
 #if 0
 			BOOL ret = [metadataEditor editSingleTracks:[NSArray arrayWithObject:track] atIndex:0];

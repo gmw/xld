@@ -321,12 +321,6 @@ static char *base64enc(const unsigned  char *input, int length)
 			cddb_track_t *track = cddb_disc_get_track(disc, i);
 			if(flag&XLDCDDBQueryTrackTitleMask) {
 				tmp = cddb_track_get_title(track);
-				int j;
-				fprintf(stderr,"track %d\n",i+1);
-				for(j=0;j<strlen(tmp);j++) {
-					fprintf(stderr,"%02x ",(unsigned char)tmp[j]);
-				}
-				putchar('\n');
 				if(tmp && (strlen(tmp) > 0)) {
 					if(!(flag&XLDCDDBQueryEmptyOnlyMask) || ((flag&XLDCDDBQueryEmptyOnlyMask) && ![[trk metadata] objectForKey:XLD_METADATA_TITLE]))
 						[[trk metadata] setObject:[NSString stringWithUTF8String:tmp] forKey:XLD_METADATA_TITLE];

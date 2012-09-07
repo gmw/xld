@@ -465,6 +465,7 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 	sf_w = NULL;
 	
 	FILE *fp = fopen([path UTF8String], "r+");
+	if(!fp) return;
 	int tmp;
 	char atom[4];
 	
