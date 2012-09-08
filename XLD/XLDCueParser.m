@@ -285,6 +285,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	writable = NO;
 	errorMsg = nil;
 	representedFilename = nil;
+	preferredEncoding = 0;
 }
 
 - (BOOL)isCompilationForTracks:(NSArray *)tracks
@@ -337,7 +338,8 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	unsigned char bom[] = {0xEF,0xBB,0xBF};
 	unsigned char tmp[3];
 	
-	if(!delegate || [delegate encoding] == 0xFFFFFFFF) {
+	if(preferredEncoding) enc = preferredEncoding;
+	else if(!delegate || [delegate encoding] == 0xFFFFFFFF || preferredEncoding == 0xFFFFFFFF) {
 		enc = detectEncoding(fp);
 	}
 	else {
@@ -612,7 +614,8 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	int maxBps = 0;
 	int isFloat = -1;
 	
-	if([delegate encoding] == 0xFFFFFFFF) {
+	if(preferredEncoding) enc = preferredEncoding;
+	else if([delegate encoding] == 0xFFFFFFFF || preferredEncoding == 0xFFFFFFFF) {
 		enc = detectEncoding(fp);
 	}
 	else {
@@ -994,7 +997,8 @@ last:
 	NSString *path = nil;
 	id decoder;
 	
-	if([delegate encoding] == 0xFFFFFFFF) {
+	if(preferredEncoding) enc = preferredEncoding;
+	else if(!delegate || [delegate encoding] == 0xFFFFFFFF || preferredEncoding == 0xFFFFFFFF) {
 		enc = detectEncoding(fp);
 	}
 	else {
@@ -2135,6 +2139,11 @@ last:
 - (NSString *)representedFilename
 {
 	return representedFilename;
+}
+
+- (void)setPreferredEncoding:(NSStringEncoding)enc
+{
+	preferredEncoding = enc;
 }
 
 @end

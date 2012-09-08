@@ -42,7 +42,7 @@ static const char* ID3v1GenreList[] = {
     "Indie", "BritPop", "NegerPunk", "Polsk Punk", "Beat",
     "Christian Gangsta", "Heavy Metal", "Black Metal", "Crossover", "Contemporary C",
     "Christian Rock", "Merengue", "Salsa", "Thrash Metal", "Anime", "JPop",
-    "SynthPop",
+    "SynthPop", "Bootleg",
 };
 
 @implementation XLDMetadataEditor

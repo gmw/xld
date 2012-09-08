@@ -285,6 +285,10 @@ int cmdline_main(int argc, char *argv[])
 	XLDPluginManager *pluginManager = [[XLDPluginManager alloc] init];
 	XLDecoderCenter *decoderCenter = [[XLDecoderCenter alloc] initWithPlugins:[pluginManager plugins]];
 	XLDCueParser *cueParser = [[XLDCueParser alloc] initWithDelegate:nil];
+	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+	if([pref objectForKey:@"CuesheetEncodings2"]) {
+		[cueParser setPreferredEncoding:[[pref objectForKey:@"CuesheetEncodings2"] unsignedIntValue]];
+	}
 	
 	while ((ch = getopt_long(argc, argv, "c:et:do:f:", options, &option_index)) != -1){
 		switch (ch){

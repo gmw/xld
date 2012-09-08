@@ -38,6 +38,7 @@ enum
 	BOOL writable;
 	NSString *errorMsg;
 	NSString *representedFilename;
+	NSStringEncoding preferredEncoding;
 }
 
 - (id)initWithDelegate:(id)del;
@@ -81,4 +82,5 @@ enum
 - (NSString *)setTrackData:(NSMutableArray *)tracks forCueFile:(NSString *)file withDecoder:(id)decoder;
 - (NSString *)errorMsg;
 - (NSString *)representedFilename;
+- (void)setPreferredEncoding:(NSStringEncoding)enc;
 @end
