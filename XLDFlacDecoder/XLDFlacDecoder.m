@@ -20,7 +20,7 @@ void metadata_callback_dummy(const FLAC__StreamDecoder *decoder, const FLAC__Str
 
 void error_callback_dummy(const FLAC__StreamDecoder *decoder, FLAC__StreamDecoderErrorStatus status, void *client_data)
 {
-
+	
 }
 
 FLAC__StreamDecoderWriteStatus write_callback_dummy(const FLAC__StreamDecoder *decoder, const FLAC__Frame *frame, const FLAC__int32 *const buffer[], void *client_data)
@@ -33,13 +33,12 @@ void metadata_callback(const FLAC__StreamDecoder *decoder, const FLAC__StreamMet
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	XLDFlacDecoder *delegate = (XLDFlacDecoder *)client_data;
 	
-	if(metadata->type == FLAC__METADATA_TYPE_STREAMINFO) {
+	if(metadata->type == FLAC__METADATA_TYPE_STREAMINFO && !delegate->samplerate) {
 		FLAC__StreamMetadata_StreamInfo info = metadata->data.stream_info;
 		delegate->samplerate = info.sample_rate;
 		delegate->channels = info.channels;
 		delegate->bps = info.bits_per_sample >> 3;
 		delegate->totalFrames = info.total_samples;
-		
 	}
 	else if(metadata->type == FLAC__METADATA_TYPE_VORBIS_COMMENT) {
 		FLAC__StreamMetadata_VorbisComment comment = metadata->data.vorbis_comment;
@@ -502,14 +501,18 @@ FLAC__StreamDecoderWriteStatus write_callback(const FLAC__StreamDecoder *decoder
 
 - (BOOL)openFile:(char *)path
 {
-	
 	flac = FLAC__stream_decoder_new();
 	if(!flac) {
 		error = YES;
 		return NO;
 	}
 	
-	FLAC__stream_decoder_set_metadata_respond_all(flac);
+	if(FLAC__stream_decoder_set_metadata_respond_all(flac) == false) {
+		error = YES;
+		FLAC__stream_decoder_delete(flac);
+		flac = NULL;
+		return NO;
+	}
 	
 	FILE *fp = fopen(path,"rb");
 	char temp[4];
@@ -533,6 +536,7 @@ FLAC__StreamDecoderWriteStatus write_callback(const FLAC__StreamDecoder *decoder
 		}
 	}
 	
+	samplerate = 0;
 	if(FLAC__stream_decoder_process_until_end_of_metadata(flac) == false) {
 		error = YES;
 		FLAC__stream_decoder_delete(flac);
