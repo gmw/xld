@@ -373,7 +373,7 @@ void metadata_callback(const FLAC__StreamDecoder *decoder, const FLAC__StreamMet
 			if([delegate->metadataDic objectForKey:XLD_METADATA_COVER]) goto metadata_callback_end;
 		}
 		NSData *imgData = [NSData dataWithBytes:picture.data length:picture.data_length];
-		[delegate->metadataDic setObject:imgData forKey:XLD_METADATA_COVER];
+		if(imgData) [delegate->metadataDic setObject:imgData forKey:XLD_METADATA_COVER];
 	}
   metadata_callback_end:
 	[pool release];
