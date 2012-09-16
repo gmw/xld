@@ -21,6 +21,8 @@
 #include <unistd.h>
 #include "XLDCDDABackend.h"
 
+#define C2READ_PER_LOOP 40
+
 static char isrc2Ascii(unsigned char c)
 {
 	if (c <= 9)
@@ -409,8 +411,8 @@ int xld_cdda_read_with_c2(xld_cdread_t *disc, void *buffer, int beginLSN, int nS
 	}
 	
 	while(sectorsDone < sectorsToRead) {
-		int sectorsPerLoop = 40;
-		if(sectorsToRead - sectorsDone < 40) sectorsPerLoop = sectorsToRead - sectorsDone;
+		int sectorsPerLoop = C2READ_PER_LOOP;
+		if(sectorsToRead - sectorsDone < C2READ_PER_LOOP) sectorsPerLoop = sectorsToRead - sectorsDone;
 		memset(&cdread, 0, sizeof(cdread));
 		cdread.sectorArea = kCDSectorAreaUser | kCDSectorAreaErrorFlags;
 		cdread.sectorType = kCDSectorTypeCDDA;

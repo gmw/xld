@@ -42,14 +42,25 @@
 				NSString *title = [[objs objectAtIndex:0] stringValue];
 				NSString *country = nil;
 				NSString *date = nil;
+				NSString *disambiguation = nil;
 				objs = [rel nodesForXPath:@"./country" error:nil];
 				if([objs count]) country = [[objs objectAtIndex:0] stringValue];
 				objs = [rel nodesForXPath:@"./date" error:nil];
 				if([objs count]) date = [[objs objectAtIndex:0] stringValue];
-				if(title && country && date) [dic setObject:[NSString stringWithFormat:@"%@ (%@, %@)",title,country,date] forKey:@"Title"];
-				else if(title && country) [dic setObject:[NSString stringWithFormat:@"%@ (%@)",title,country] forKey:@"Title"];
-				else if(title && date) [dic setObject:[NSString stringWithFormat:@"%@ (%@)",title,date] forKey:@"Title"];
-				else if(title) [dic setObject:title forKey:@"Title"];
+				objs = [rel nodesForXPath:@"./disambiguation" error:nil];
+				if([objs count]) disambiguation = [[objs objectAtIndex:0] stringValue];
+				if(disambiguation) {
+					if(title && country && date) [dic setObject:[NSString stringWithFormat:@"%@ (%@, %@, %@)",title,disambiguation,date,country] forKey:@"Title"];
+					else if(title && country) [dic setObject:[NSString stringWithFormat:@"%@ (%@, %@)",title,disambiguation,country] forKey:@"Title"];
+					else if(title && date) [dic setObject:[NSString stringWithFormat:@"%@ (%@, %@)",title,disambiguation,date] forKey:@"Title"];
+					else if(title) [dic setObject:[NSString stringWithFormat:@"%@ (%@)",title,disambiguation] forKey:@"Title"];
+				}
+				else {
+					if(title && country && date) [dic setObject:[NSString stringWithFormat:@"%@ (%@, %@)",title,date,country] forKey:@"Title"];
+					else if(title && country) [dic setObject:[NSString stringWithFormat:@"%@ (%@)",title,country] forKey:@"Title"];
+					else if(title && date) [dic setObject:[NSString stringWithFormat:@"%@ (%@)",title,date] forKey:@"Title"];
+					else if(title) [dic setObject:title forKey:@"Title"];
+				}
 			}
 		}
 		objs = [rel nodesForXPath:@"./artist-credit/name-credit/artist/name" error:nil];
