@@ -708,6 +708,7 @@ tagExist:
 		[dat getBytes:&atomLength range:NSMakeRange(current,4)];
 		[dat getBytes:atom range:NSMakeRange(current+4,4)];
 		atomLength = NSSwapBigIntToHost(atomLength);
+		if(atomLength <= 8) goto last;
 		
 		if(!memcmp("\251nam",atom,4)) {
 			[dat getBytes:&tmp range:NSMakeRange(current+8,4)];
