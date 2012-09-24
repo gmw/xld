@@ -229,7 +229,7 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 {
 	format = fmt;
 	if(format.bps > 4) return NO;
-	if(format.channels > 2) return NO;
+	if(format.channels > 255) return NO;
 	
 	return YES;
 }
@@ -263,9 +263,28 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 	
 	/* setup header */
 	header.channels=format.channels;
-	header.nb_coupled=format.channels>1?1:0;
-	header.nb_streams=1;
-	header.channel_mapping=0;
+	header.nb_coupled=0;
+	header.nb_streams=header.channels;
+	int force_narrow=0;
+	if(header.channels <= 8){
+		static const unsigned char opusenc_streams[8][10]={
+			/*Coupled, NB_bitmap, mapping...*/
+			/*1*/ {0,   0, 0},
+			/*2*/ {1,   0, 0,1},
+			/*3*/ {1,   0, 0,2,1},
+			/*4*/ {2,   0, 0,1,2,3},
+			/*5*/ {2,   0, 0,4,1,2,3},
+			/*6*/ {2,1<<3, 0,4,1,2,3,5},
+			/*7*/ {2,1<<4, 0,4,1,2,3,5,6},
+			/*6*/ {3,1<<4, 0,6,1,2,3,4,5,7}
+		};
+		for(i=0;i<header.channels;i++)mapping[i]=opusenc_streams[header.channels-1][i+2];
+		force_narrow=opusenc_streams[header.channels-1][1];
+		header.nb_coupled=opusenc_streams[header.channels-1][0];
+		header.nb_streams=header.channels-header.nb_coupled;
+	}
+	header.channel_mapping=header.channels>8?255:header.nb_streams>1;
+	if(header.channel_mapping>0)for(i=0;i<header.channels;i++)header.stream_map[i]=mapping[i];
 	header.gain=0;
 	header.input_sample_rate=format.samplerate;
 	
@@ -302,6 +321,19 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 	ret = opus_multistream_encoder_ctl(st, OPUS_SET_COMPLEXITY(10));
 	if(ret != OPUS_OK) {
 		goto fail;
+	}
+	
+	if(force_narrow!=0){
+		for(i=0;i<header.nb_streams;i++){
+			if(force_narrow&(1<<i)){
+				OpusEncoder *oe;
+				opus_multistream_encoder_ctl(st,OPUS_MULTISTREAM_GET_ENCODER_STATE(i,&oe));
+				ret = opus_encoder_ctl(oe, OPUS_SET_MAX_BANDWIDTH(OPUS_BANDWIDTH_NARROWBAND));
+				if(ret != OPUS_OK){
+					goto fail;
+				}
+			}
+		}
 	}
 	
 	opus_int32 lookahead;
@@ -662,20 +694,23 @@ fail:
 - (void)finalize
 {
 	int pos=0,i,nb_samples=-1,eos=0;
-	float *paddingBuffer = NULL;
 	int extra_samples = (int)header.preskip*(format.samplerate/48000.);
 	if(extra_samples) {
 		float *lpc_in = resampler?resamplerBuffer:input;
 		int lpc_samples = resampler?bufferedResamplerSamples:bufferedSamples;
 		int lpc_order = 32;
 		if(lpc_samples>lpc_order*2){
-			paddingBuffer=calloc(format.channels * extra_samples, sizeof(float));
+			float *paddingBuffer=calloc(format.channels * extra_samples, sizeof(float));
 			float *lpc=alloca(lpc_order*sizeof(*lpc));
 			for(i=0;i<format.channels;i++){
 				vorbis_lpc_from_data(lpc_in+i,lpc,lpc_samples,lpc_order,format.channels);
 				vorbis_lpc_predict(lpc,lpc_in+i+(lpc_samples-lpc_order)*format.channels,
 								   lpc_order,paddingBuffer+i,extra_samples,format.channels);
 			}
+			memcpy(lpc_in+lpc_samples*format.channels,paddingBuffer,extra_samples*format.channels*sizeof(float));
+			if(resampler) bufferedResamplerSamples += extra_samples;
+			else bufferedSamples += extra_samples;
+			free(paddingBuffer);
 		}
 	}
 	if(resampler) {
@@ -692,26 +727,6 @@ fail:
 				bufferedSamples += outSamples;
 				if(!usedSamples || !bufferedResamplerSamples) break;
 			}
-		}
-		if(paddingBuffer) {
-			spx_uint32_t usedSamples=extra_samples;
-			spx_uint32_t outSamples=extra_samples*ratio;
-			speex_resampler_process_interleaved_float(resampler,paddingBuffer,&usedSamples,input+bufferedSamples*format.channels,&outSamples);
-			int extra = frame_size - (bufferedSamples - (bufferedSamples/frame_size)*frame_size);
-			if(extra>outSamples) extra = outSamples;
-			//fprintf(stderr,"extra padding: %d(%d,%d)\n",extra,outSamples,usedSamples);
-			bufferedSamples += extra;
-			free(paddingBuffer);
-		}
-	}
-	else {
-		if(paddingBuffer) {
-			int extra = frame_size - (bufferedSamples - (bufferedSamples/frame_size)*frame_size);
-			if(extra>extra_samples) extra = extra_samples;
-			//fprintf(stderr,"extra padding: %d(%d)\n",extra,extra_samples);
-			if(extra) memcpy(input+bufferedSamples*format.channels,paddingBuffer,extra*format.channels*sizeof(float));
-			bufferedSamples += extra;
-			free(paddingBuffer);
 		}
 	}
 	//fprintf(stderr, "%d,%d\n",bufferedSamples,frame_size);
