@@ -583,43 +583,32 @@ fail:
 	if(resampler) {
 		int ratio = coding_rate/format.samplerate + 1;
 		spx_uint32_t usedSamples=counts+bufferedResamplerSamples;
+		if(!resamplerBuffer || bufferSize < counts) {
+			resamplerBuffer = realloc(resamplerBuffer,sizeof(float)*(counts+2048)*format.channels);
+			input = realloc(input,sizeof(float)*((counts+2048)*ratio+frame_size*2)*format.channels);
+			bufferSize = counts;
+		}
+		if(format.isFloat) {
+			memcpy(resamplerBuffer+bufferedResamplerSamples*format.channels, buffer, counts*format.channels*sizeof(float));
+		}
+		else {
+			int total = counts*format.channels;
+			int offset = bufferedResamplerSamples*format.channels;
+			for(i=0;i<total;i++) {
+				resamplerBuffer[offset+i] = buffer[i] * 4.656612873e-10f;
+			}
+		}
 		if(usedSamples >= 2048) {
 			usedSamples -= 1024;
 			spx_uint32_t outSamples=usedSamples*ratio;
-			if(!resamplerBuffer || bufferSize < counts) {
-				resamplerBuffer = realloc(resamplerBuffer,sizeof(float)*(counts+2048)*format.channels);
-				input = realloc(input,sizeof(float)*((counts+2048)*ratio+frame_size*2)*format.channels);
-				bufferSize = counts;
-			}
-			if(format.isFloat) {
-				memcpy(resamplerBuffer+bufferedResamplerSamples*format.channels, buffer, counts*format.channels*sizeof(float));
-			}
-			else {
-				int total = counts*format.channels;
-				int offset = bufferedResamplerSamples*format.channels;
-				for(i=0;i<total;i++) {
-					resamplerBuffer[offset+i] = buffer[i] * 4.656612873e-10f;
-				}
-			}
 			speex_resampler_process_interleaved_float(resampler,resamplerBuffer,&usedSamples,input+bufferedSamples*format.channels,&outSamples);
-			
-			if(usedSamples < counts+bufferedResamplerSamples) {
-				bufferedResamplerSamples = counts+bufferedResamplerSamples-usedSamples;
+			bufferedResamplerSamples = counts+bufferedResamplerSamples-usedSamples;
+			if(bufferedResamplerSamples) {
 				memmove(resamplerBuffer, resamplerBuffer+usedSamples*format.channels, bufferedResamplerSamples*sizeof(float)*format.channels);
 			}
 			bufferedSamples += outSamples;
 		}
 		else {
-			if(format.isFloat) {
-				memcpy(resamplerBuffer+bufferedResamplerSamples*format.channels, buffer, counts*format.channels*sizeof(float));
-			}
-			else {
-				int total = counts*format.channels;
-				int offset = bufferedResamplerSamples*format.channels;
-				for(i=0;i<total;i++) {
-					resamplerBuffer[offset+i] = buffer[i] * 4.656612873e-10f;
-				}
-			}
 			bufferedResamplerSamples += counts;
 			return YES;
 		}
@@ -647,8 +636,7 @@ fail:
 		
 		nb_samples = frame_size;
 		bufferedSamples -= nb_samples;
-		if(nb_samples<frame_size) op.e_o_s=1;
-		else op.e_o_s=0;
+		op.e_o_s=0;
 		
 		cur_frame_size=frame_size;
 		
@@ -721,8 +709,8 @@ fail:
 	}
 	if(resampler) {
 		//fprintf(stderr, "buffered resampler samples: %d\n",bufferedResamplerSamples);
-		int ratio = coding_rate/format.samplerate + 1;
 		if(bufferedResamplerSamples) {
+			int ratio = coding_rate/format.samplerate + 1;
 			float *ptr = resamplerBuffer;
 			while(1) {
 				spx_uint32_t usedSamples=bufferedResamplerSamples;
