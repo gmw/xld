@@ -8,6 +8,7 @@
 
 #import "XLDOpusOutput.h"
 #import "XLDOpusOutputTask.h"
+#import <opus/opus.h>
 
 @implementation XLDOpusOutput
 
@@ -25,6 +26,7 @@
 {
 	[super init];
 	[NSBundle loadNibNamed:@"XLDOpusOutput" owner:self];
+	[o_credit setStringValue:[NSString stringWithFormat:@"%@%s",[o_credit stringValue],opus_get_version_string()]];
 	srand(time(NULL));
 	return self;
 }

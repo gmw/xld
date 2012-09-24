@@ -14,6 +14,7 @@
 	IBOutlet id o_bitrate;
 	IBOutlet id o_frameSize;
 	IBOutlet id o_prefPane;
+	IBOutlet id o_credit;
 }
 
 + (NSString *)pluginName;

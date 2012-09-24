@@ -595,8 +595,10 @@ fail:
 				memcpy(resamplerBuffer+bufferedResamplerSamples*format.channels, buffer, counts*format.channels*sizeof(float));
 			}
 			else {
-				for(i=0;i<counts*format.channels;i++) {
-					resamplerBuffer[bufferedResamplerSamples*format.channels+i] = buffer[i] / 2147483648.0;
+				int total = counts*format.channels;
+				int offset = bufferedResamplerSamples*format.channels;
+				for(i=0;i<total;i++) {
+					resamplerBuffer[offset+i] = buffer[i] * 4.656612873e-10f;
 				}
 			}
 			speex_resampler_process_interleaved_float(resampler,resamplerBuffer,&usedSamples,input+bufferedSamples*format.channels,&outSamples);
@@ -612,8 +614,10 @@ fail:
 				memcpy(resamplerBuffer+bufferedResamplerSamples*format.channels, buffer, counts*format.channels*sizeof(float));
 			}
 			else {
-				for(i=0;i<counts*format.channels;i++) {
-					resamplerBuffer[bufferedResamplerSamples*format.channels+i] = buffer[i] / 2147483648.0;
+				int total = counts*format.channels;
+				int offset = bufferedResamplerSamples*format.channels;
+				for(i=0;i<total;i++) {
+					resamplerBuffer[offset+i] = buffer[i] * 4.656612873e-10f;
 				}
 			}
 			bufferedResamplerSamples += counts;
@@ -629,8 +633,10 @@ fail:
 			memcpy(input+bufferedSamples*format.channels, buffer, counts*format.channels*sizeof(float));
 		}
 		else {
-			for(i=0;i<counts*format.channels;i++) {
-				input[bufferedSamples*format.channels+i] = buffer[i] / 2147483648.0;
+			int total = counts*format.channels;
+			int offset = bufferedSamples*format.channels;
+			for(i=0;i<total;i++) {
+				input[offset+i] = buffer[i] * 4.656612873e-10f;
 			}
 		}
 		bufferedSamples += counts;
