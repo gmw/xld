@@ -1,0 +1,330 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		BF9B97E1160F3EDF009228F3 /* resample.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9B97DF160F3EDF009228F3 /* resample.c */; };
+		BF9B9938160F7994009228F3 /* lpc.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9B9936160F7994009228F3 /* lpc.c */; };
+		BF9B9AE41610362B009228F3 /* XLDOpusOutput.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF9B9AE31610362B009228F3 /* XLDOpusOutput.xib */; };
+		BF9B9B2D16103A0D009228F3 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B9B2C16103A0D009228F3 /* libcrypto.dylib */; };
+		BFD377EC15D3DEF3009FA0BD /* XLDOpusOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BFD377EB15D3DEF3009FA0BD /* XLDOpusOutput.m */; };
+		BFD377EF15D3DEFD009FA0BD /* XLDOpusOutputTask.m in Sources */ = {isa = PBXBuildFile; fileRef = BFD377EE15D3DEFD009FA0BD /* XLDOpusOutputTask.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32DBCF630370AF2F00C91783 /* XLDOpusOutput_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOpusOutput_Prefix.pch; sourceTree = "<group>"; };
+		8D5B49B6048680CD000E48DA /* XLDOpusOutput.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XLDOpusOutput.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF9B97DE160F3EDF009228F3 /* resample_sse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resample_sse.h; sourceTree = "<group>"; };
+		BF9B97DF160F3EDF009228F3 /* resample.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = resample.c; sourceTree = "<group>"; };
+		BF9B97E0160F3EDF009228F3 /* speex_resampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_resampler.h; sourceTree = "<group>"; };
+		BF9B97FB160F405A009228F3 /* arch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = arch.h; sourceTree = "<group>"; };
+		BF9B97FC160F405A009228F3 /* stack_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stack_alloc.h; sourceTree = "<group>"; };
+		BF9B9936160F7994009228F3 /* lpc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lpc.c; path = "../../opus-tools-0.1.5/src/lpc.c"; sourceTree = SOURCE_ROOT; };
+		BF9B9937160F7994009228F3 /* lpc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lpc.h; path = "../../opus-tools-0.1.5/src/lpc.h"; sourceTree = SOURCE_ROOT; };
+		BF9B9A61161021A5009228F3 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/XLDOpusOutput.xib; sourceTree = "<group>"; };
+		BF9B9AE516103632009228F3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/XLDOpusOutput.xib; sourceTree = "<group>"; };
+		BF9B9B2C16103A0D009228F3 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
+		BFD377E615D3DEE3009FA0BD /* XLDOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOutput.h; sourceTree = "<group>"; };
+		BFD377E715D3DEE3009FA0BD /* XLDOutputTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOutputTask.h; sourceTree = "<group>"; };
+		BFD377E815D3DEE3009FA0BD /* XLDTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDTrack.h; sourceTree = "<group>"; };
+		BFD377EA15D3DEF3009FA0BD /* XLDOpusOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOpusOutput.h; sourceTree = "<group>"; };
+		BFD377EB15D3DEF3009FA0BD /* XLDOpusOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDOpusOutput.m; sourceTree = "<group>"; };
+		BFD377ED15D3DEFD009FA0BD /* XLDOpusOutputTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOpusOutputTask.h; sourceTree = "<group>"; };
+		BFD377EE15D3DEFD009FA0BD /* XLDOpusOutputTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDOpusOutputTask.m; sourceTree = "<group>"; };
+		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D5B49B3048680CD000E48DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
+				BF9B9B2D16103A0D009228F3 /* libcrypto.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* XLDOpusOutput */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Classes */,
+				32C88E010371C26100C91783 /* Other Sources */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
+				19C28FB8FE9D52D311CA2CBB /* Products */,
+			);
+			name = XLDOpusOutput;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
+				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
+			);
+			name = "Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B7048680CD000E48DA /* Info.plist */,
+				BF9B9AE31610362B009228F3 /* XLDOpusOutput.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BFD377EA15D3DEF3009FA0BD /* XLDOpusOutput.h */,
+				BFD377EB15D3DEF3009FA0BD /* XLDOpusOutput.m */,
+				BFD377ED15D3DEFD009FA0BD /* XLDOpusOutputTask.h */,
+				BFD377EE15D3DEFD009FA0BD /* XLDOpusOutputTask.m */,
+				BFD377E615D3DEE3009FA0BD /* XLDOutput.h */,
+				BFD377E715D3DEE3009FA0BD /* XLDOutputTask.h */,
+				BFD377E815D3DEE3009FA0BD /* XLDTrack.h */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+				BF9B9B2C16103A0D009228F3 /* libcrypto.dylib */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				089C167FFE841241C02AAC07 /* AppKit.framework */,
+				D2F7E65807B2D6F200F64583 /* CoreData.framework */,
+				089C1672FE841209C02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FB8FE9D52D311CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B6048680CD000E48DA /* XLDOpusOutput.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		32C88E010371C26100C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				BF9B97FB160F405A009228F3 /* arch.h */,
+				BF9B97FC160F405A009228F3 /* stack_alloc.h */,
+				BF9B97DE160F3EDF009228F3 /* resample_sse.h */,
+				BF9B97DF160F3EDF009228F3 /* resample.c */,
+				BF9B97E0160F3EDF009228F3 /* speex_resampler.h */,
+				BF9B9936160F7994009228F3 /* lpc.c */,
+				BF9B9937160F7994009228F3 /* lpc.h */,
+				32DBCF630370AF2F00C91783 /* XLDOpusOutput_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D5B49AC048680CD000E48DA /* XLDOpusOutput */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XLDOpusOutput" */;
+			buildPhases = (
+				8D5B49AF048680CD000E48DA /* Resources */,
+				8D5B49B1048680CD000E48DA /* Sources */,
+				8D5B49B3048680CD000E48DA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XLDOpusOutput;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = XLDOpusOutput;
+			productReference = 8D5B49B6048680CD000E48DA /* XLDOpusOutput.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XLDOpusOutput_export" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 089C166AFE841209C02AAC07 /* XLDOpusOutput */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D5B49AC048680CD000E48DA /* XLDOpusOutput */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D5B49AF048680CD000E48DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF9B9AE41610362B009228F3 /* XLDOpusOutput.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D5B49B1048680CD000E48DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFD377EC15D3DEF3009FA0BD /* XLDOpusOutput.m in Sources */,
+				BFD377EF15D3DEFD009FA0BD /* XLDOpusOutputTask.m in Sources */,
+				BF9B97E1160F3EDF009228F3 /* resample.c in Sources */,
+				BF9B9938160F7994009228F3 /* lpc.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		BF9B9AE31610362B009228F3 /* XLDOpusOutput.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF9B9A61161021A5009228F3 /* English */,
+				BF9B9AE516103632009228F3 /* Japanese */,
+			);
+			name = XLDOpusOutput.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB913B08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLDOpusOutput_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = XLDOpusOutput;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1DEB913C08733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = XLDOpusOutput_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = XLDOpusOutput;
+				STRIP_INSTALLED_PRODUCT = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1DEB913F08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"RANDOM_PREFIX=xldopusoutput",
+					FLOATING_POINT,
+					OUTSIDE_SPEEX,
+					"SPX_RESAMPLE_EXPORT=",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-logg",
+					"-lopus",
+				);
+				PREBINDING = NO;
+				VALID_ARCHS = "i386 ppc";
+			};
+			name = Debug;
+		};
+		1DEB914008733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"RANDOM_PREFIX=xldopusoutput",
+					FLOATING_POINT,
+					OUTSIDE_SPEEX,
+					"SPX_RESAMPLE_EXPORT=",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_LDFLAGS = (
+					"-logg",
+					"-lopus",
+				);
+				PREBINDING = NO;
+				VALID_ARCHS = "i386 ppc";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XLDOpusOutput" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913B08733D840010E9CD /* Debug */,
+				1DEB913C08733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XLDOpusOutput_export" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913F08733D840010E9CD /* Debug */,
+				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
