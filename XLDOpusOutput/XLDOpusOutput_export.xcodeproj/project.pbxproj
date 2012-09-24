@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		BF9B97E1160F3EDF009228F3 /* resample.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9B97DF160F3EDF009228F3 /* resample.c */; };
-		BF9B9938160F7994009228F3 /* lpc.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9B9936160F7994009228F3 /* lpc.c */; };
 		BF9B9AE41610362B009228F3 /* XLDOpusOutput.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF9B9AE31610362B009228F3 /* XLDOpusOutput.xib */; };
 		BF9B9B2D16103A0D009228F3 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9B9B2C16103A0D009228F3 /* libcrypto.dylib */; };
+		BF9B9B4C16103AC6009228F3 /* lpc.c in Sources */ = {isa = PBXBuildFile; fileRef = BF9B9B4A16103AC6009228F3 /* lpc.c */; };
 		BFD377EC15D3DEF3009FA0BD /* XLDOpusOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BFD377EB15D3DEF3009FA0BD /* XLDOpusOutput.m */; };
 		BFD377EF15D3DEFD009FA0BD /* XLDOpusOutputTask.m in Sources */ = {isa = PBXBuildFile; fileRef = BFD377EE15D3DEFD009FA0BD /* XLDOpusOutputTask.m */; };
 /* End PBXBuildFile section */
@@ -28,11 +28,11 @@
 		BF9B97E0160F3EDF009228F3 /* speex_resampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_resampler.h; sourceTree = "<group>"; };
 		BF9B97FB160F405A009228F3 /* arch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = arch.h; sourceTree = "<group>"; };
 		BF9B97FC160F405A009228F3 /* stack_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stack_alloc.h; sourceTree = "<group>"; };
-		BF9B9936160F7994009228F3 /* lpc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lpc.c; path = "../../opus-tools-0.1.5/src/lpc.c"; sourceTree = SOURCE_ROOT; };
-		BF9B9937160F7994009228F3 /* lpc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lpc.h; path = "../../opus-tools-0.1.5/src/lpc.h"; sourceTree = SOURCE_ROOT; };
 		BF9B9A61161021A5009228F3 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/XLDOpusOutput.xib; sourceTree = "<group>"; };
 		BF9B9AE516103632009228F3 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/XLDOpusOutput.xib; sourceTree = "<group>"; };
 		BF9B9B2C16103A0D009228F3 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
+		BF9B9B4A16103AC6009228F3 /* lpc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lpc.c; sourceTree = "<group>"; };
+		BF9B9B4B16103AC6009228F3 /* lpc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lpc.h; sourceTree = "<group>"; };
 		BFD377E615D3DEE3009FA0BD /* XLDOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOutput.h; sourceTree = "<group>"; };
 		BFD377E715D3DEE3009FA0BD /* XLDOutputTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDOutputTask.h; sourceTree = "<group>"; };
 		BFD377E815D3DEE3009FA0BD /* XLDTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDTrack.h; sourceTree = "<group>"; };
@@ -135,8 +135,8 @@
 				BF9B97DE160F3EDF009228F3 /* resample_sse.h */,
 				BF9B97DF160F3EDF009228F3 /* resample.c */,
 				BF9B97E0160F3EDF009228F3 /* speex_resampler.h */,
-				BF9B9936160F7994009228F3 /* lpc.c */,
-				BF9B9937160F7994009228F3 /* lpc.h */,
+				BF9B9B4A16103AC6009228F3 /* lpc.c */,
+				BF9B9B4B16103AC6009228F3 /* lpc.h */,
 				32DBCF630370AF2F00C91783 /* XLDOpusOutput_Prefix.pch */,
 			);
 			name = "Other Sources";
@@ -206,7 +206,7 @@
 				BFD377EC15D3DEF3009FA0BD /* XLDOpusOutput.m in Sources */,
 				BFD377EF15D3DEFD009FA0BD /* XLDOpusOutputTask.m in Sources */,
 				BF9B97E1160F3EDF009228F3 /* resample.c in Sources */,
-				BF9B9938160F7994009228F3 /* lpc.c in Sources */,
+				BF9B9B4C16103AC6009228F3 /* lpc.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
