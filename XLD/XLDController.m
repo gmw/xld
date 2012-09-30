@@ -174,7 +174,10 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	composer = [[trk metadata] objectForKey:XLD_METADATA_COMPOSER];
 	genre = [[trk metadata] objectForKey:XLD_METADATA_GENRE];
 	if(aartist == nil) albumartist = artist;
-	else albumartist = [aartist isEqualToString:@""] ? nil : aartist;
+	else {
+		if([[trk metadata] objectForKey:XLD_METADATA_ALBUMARTIST]) aartist = [[trk metadata] objectForKey:XLD_METADATA_ALBUMARTIST];
+		albumartist = [aartist isEqualToString:@""] ? artist : aartist;
+	}
 	if([[trk metadata] objectForKey:XLD_METADATA_COMPILATION] && ![[trk metadata] objectForKey:XLD_METADATA_ALBUMARTIST]) {
 		if([[[trk metadata] objectForKey:XLD_METADATA_COMPILATION] boolValue])
 			albumartist = (NSMutableString *)@"Compilations";
