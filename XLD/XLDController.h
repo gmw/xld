@@ -6,8 +6,6 @@
 #import <sys/param.h>
 #import <sys/mount.h>
 
-typedef struct __DASession * DASessionRef;
-
 @interface XLDController : NSObject
 {
     IBOutlet id o_formatList;
@@ -150,7 +148,6 @@ typedef struct __DASession * DASessionRef;
 	BOOL openingFiles;
 	BOOL cancelScan;
 	NSTimeInterval launchDate;
-	DASessionRef daSession;
 	id customFormatManager;
 	id profileManager;
 	id discView;

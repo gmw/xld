@@ -62,6 +62,13 @@ static void diskDisappeared(DADiskRef disk, void *context)
 	[(id)context updateCDDAList:nil];
 }
 
+static DADissenterRef diskMounted(DADiskRef disk, void *context)
+{
+	//NSLog(@"mount");
+	[(id)context performSelector:@selector(updateCDDAListAndMount:) withObject:nil afterDelay:1.0];
+	return NULL;
+}
+
 static int intSort(id num1, id num2, void *context)
 {
     int v1 = [num1 intValue];
@@ -1731,13 +1738,16 @@ end:
 	discView = [[XLDDiscView alloc] initWithDelegate:self];
 	coverArtSearcher = [[XLDCoverArtSearcher alloc] initWithDelegate:self];
 	
-	daSession = DASessionCreate(kCFAllocatorDefault);
+	DASessionRef daSession = DASessionCreate(kCFAllocatorDefault);
+	DAApprovalSessionRef daASession = DAApprovalSessionCreate(kCFAllocatorDefault);
 	NSDictionary *matchedCD = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"IOCDMedia", [NSNumber numberWithBool:YES], nil]
 														  forKeys:[NSArray arrayWithObjects:(NSString *)kDADiskDescriptionMediaKindKey, kDADiskDescriptionMediaWholeKey, nil]];
 
 	DASessionScheduleWithRunLoop(daSession, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+	DAApprovalSessionScheduleWithRunLoop(daASession, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
     DARegisterDiskAppearedCallback(daSession, (CFDictionaryRef)matchedCD, diskAppeared, self);
     DARegisterDiskDisappearedCallback(daSession, (CFDictionaryRef)matchedCD, diskDisappeared, self);
+	DARegisterDiskMountApprovalCallback(daASession, (CFDictionaryRef)matchedCD, diskMounted, self);
 	
 	[pluginManager release];
 	
