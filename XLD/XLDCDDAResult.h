@@ -17,6 +17,7 @@ typedef struct {
 	BOOL cancelled;
 	BOOL testEnabled;
 	BOOL testFinished;
+	BOOL pending;
 	NSString *filename;
 	NSMutableArray *filelist;
 	int errorCount;

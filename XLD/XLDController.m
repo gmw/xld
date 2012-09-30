@@ -704,7 +704,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		else if([op respondsToSelector:@selector(_setIncludeNewFolderButton:)])
 			[op _setIncludeNewFolderButton:YES];
 		
-		int ret = [op runModalForDirectory:nil file:nil types:nil];
+		int ret = [op runModal];
 		if((ret != NSOKButton) || ![[NSFileManager defaultManager] isWritableFileAtPath:[op filename]]) 
 		{
 			NSRunCriticalAlertPanel(LS(@"error"), LS(@"no write permission"), @"OK", nil, nil);
@@ -964,7 +964,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	else if([op respondsToSelector:@selector(_setIncludeNewFolderButton:)])
 		[op _setIncludeNewFolderButton:YES];
 	
-	int ret = [op runModalForDirectory:nil file:nil types:nil];
+	int ret = [op runModal];
 	if(ret != NSOKButton) return;
 	
 	[o_outputDir setStringValue:[op filename]];
@@ -978,7 +978,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	[op setCanChooseFiles:YES];
 	[op setAllowsMultipleSelection:YES];
 	
-	int ret = [op runModalForDirectory:nil file:nil types:nil];
+	int ret = [op runModal];
 	if(ret != NSOKButton) return;
 	
 	[queue removeAllObjects];
@@ -997,7 +997,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	
 	int ret;
 	if(path) ret = [op runModalForDirectory:[path stringByDeletingLastPathComponent] file:[path lastPathComponent] types:nil];
-	else ret = [op runModalForDirectory:nil file:nil types:nil];
+	else ret = [op runModal];
 	[op setAccessoryView:nil];
 	[o_rawFormatView setFrame:origFrame];
 	if(ret != NSOKButton) return;
@@ -1594,7 +1594,7 @@ end:
 	[o_htoaLengthF setIntValue:0];
 	[op setAccessoryView:o_htoaView];
 	
-	int ret = [op runModalForDirectory:nil file:nil types:nil];
+	int ret = [op runModal];
 	[op setAccessoryView:nil];
 	if(ret != NSOKButton) return;
 	xldoffset_t offset = 588*([o_htoaLengthM intValue]*60*75+[o_htoaLengthS intValue]*75+[o_htoaLengthF intValue]);
@@ -2586,7 +2586,7 @@ end:
 			else if([op respondsToSelector:@selector(_setIncludeNewFolderButton:)])
 				[op _setIncludeNewFolderButton:YES];
 			
-			int ret = [op runModalForDirectory:nil file:nil types:nil];
+			int ret = [op runModal];
 			if((ret != NSOKButton) || ![[NSFileManager defaultManager] isWritableFileAtPath:[op filename]]) 
 			{
 				NSRunCriticalAlertPanel(LS(@"error"), LS(@"no write permission"), @"OK", nil, nil);
@@ -2846,7 +2846,7 @@ end:
 			else if([op respondsToSelector:@selector(_setIncludeNewFolderButton:)])
 				[op _setIncludeNewFolderButton:YES];
 			
-			int ret = [op runModalForDirectory:nil file:nil types:nil];
+			int ret = [op runModal];
 			if((ret != NSOKButton) || ![[NSFileManager defaultManager] isWritableFileAtPath:[op filename]]) 
 			{
 				NSRunCriticalAlertPanel(LS(@"error"), LS(@"no write permission"), @"OK", nil, nil);
@@ -3167,6 +3167,7 @@ end:
 	
 	DASessionRef session = DASessionCreate(NULL);
 	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,[dev UTF8String]);
+	DADiskUnmount(disk,kDADiskUnmountOptionWhole,NULL,NULL);
 	DADiskEject(disk,kDADiskEjectOptionDefault,NULL,NULL);
 	CFRelease(disk);
 	CFRelease(session);

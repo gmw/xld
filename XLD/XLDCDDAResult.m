@@ -260,6 +260,7 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 	for(i=0;i<trackNumber+1;i++) {
 		if(results[i].enabled && !results[i].finished) return NO;
 		if(results[i].testEnabled && !results[i].testFinished) return NO;
+		if(results[i].pending) return NO; // this means pending skipped/stopped results found
 	}
 	return YES;
 }

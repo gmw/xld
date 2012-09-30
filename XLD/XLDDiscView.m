@@ -438,7 +438,7 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	[op setAllowsMultipleSelection:NO];
 	
 	int ret;
-	ret = [op runModalForDirectory:nil file:nil types:nil];
+	ret = [op runModal];
 	if(ret != NSOKButton) return;
 	ret = [o_imageView setImageData:[NSData dataWithContentsOfFile:[op filename]]];
 	if(ret) { // succesfully loaded

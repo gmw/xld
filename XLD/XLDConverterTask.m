@@ -12,7 +12,6 @@
 #import "XLDRawDecoder.h"
 #import "XLDDefaultOutputTask.h"
 #import "XLDCDDARipper.h"
-#import "XLDCDDAResult.h"
 #import "XLDAccurateRipDB.h"
 #import "XLDCustomClasses.h"
 #import "XLDTrackValidator.h"
@@ -313,6 +312,14 @@ typedef struct {
 		[(XLDCDDARipper *)decoder setRetryCount:retryCount];
 		[(XLDCDDARipper *)decoder setOffsetCorrectionValue:offsetCorrectionValue];
 		if(testMode) [(XLDCDDARipper *)decoder setTestMode];
+		if(resultObj) {
+			id obj = [[track metadata] objectForKey:XLD_METADATA_TRACK];
+			if(obj) currentTrack = [obj intValue];
+			else currentTrack = 0;
+			totalTrack = ((XLDCDDAResult *)resultObj)->trackNumber;
+			ripResult = [resultObj resultForIndex:currentTrack];
+			if(currentTrack == 0) ripResult->parent = resultObj;
+		}
 	}
 	
 	if(![(id <XLDDecoder>)decoder openFile:(char *)[inFile UTF8String]]) {
@@ -323,6 +330,7 @@ typedef struct {
 		[statusField setStringValue:LS(@"Error: cannot open the input file")];
 		[statusField setHidden:NO];
 		[decoder closeFile];
+		if(ripResult) ripResult->pending = YES;
 		//[self hideProgress];
 		[queue performSelectorOnMainThread:@selector(convertFinished:) withObject:self waitUntilDone:NO];
 		return;
@@ -349,6 +357,7 @@ typedef struct {
 				[statusField setStringValue:LS(@"Error: cannot write the output file")];
 				[statusField setHidden:NO];
 				[decoder closeFile];
+				if(ripResult) ripResult->pending = YES;
 				//[self hideProgress];
 				[queue performSelectorOnMainThread:@selector(convertFinished:) withObject:self waitUntilDone:NO];
 				return;
@@ -361,6 +370,7 @@ typedef struct {
 					[statusField setStringValue:LS(@"Skipped: file already exists in the output path")];
 					[statusField setHidden:NO];
 					[decoder closeFile];
+					if(ripResult) ripResult->pending = YES;
 					//[self hideProgress];
 					[queue performSelectorOnMainThread:@selector(convertFinished:) withObject:self waitUntilDone:NO];
 					return;
@@ -416,6 +426,7 @@ typedef struct {
 					[statusField setStringValue:LS(@"Error: cannot write the output file")];
 					[statusField setHidden:NO];
 					[decoder closeFile];
+					if(ripResult) ripResult->pending = YES;
 					//[self hideProgress];
 					[queue performSelectorOnMainThread:@selector(convertFinished:) withObject:self waitUntilDone:NO];
 					return;
@@ -445,6 +456,7 @@ typedef struct {
 				[statusField setStringValue:LS(@"Skipped: file already exists in the output path")];
 				[statusField setHidden:NO];
 				[decoder closeFile];
+				if(ripResult) ripResult->pending = YES;
 				//[self hideProgress];
 				[queue performSelectorOnMainThread:@selector(convertFinished:) withObject:self waitUntilDone:NO];
 				return;
@@ -502,18 +514,12 @@ typedef struct {
 	}
 	
 	if([NSStringFromClass(decoderClass) isEqualToString:@"XLDCDDARipper"] && resultObj) {
-		id obj = [[track metadata] objectForKey:XLD_METADATA_TRACK];
-		if(obj) currentTrack = [obj intValue];
-		else currentTrack = 0;
-		totalTrack = ((XLDCDDAResult *)resultObj)->trackNumber;
-		cddaRipResult *result = [resultObj resultForIndex:currentTrack];
-		if(currentTrack == 0) result->parent = resultObj;
-		[(XLDCDDARipper *)decoder setResultStructure:result];
-		if(testMode) result->testEnabled = YES;
+		[(XLDCDDARipper *)decoder setResultStructure:ripResult];
+		if(testMode) ripResult->testEnabled = YES;
 		else {
-			result->enabled = YES;
-			if(encoder) result->filename = [outputPathStr retain];
-			else result->filelist = [outputPathStrArray retain];
+			ripResult->enabled = YES;
+			if(encoder) ripResult->filename = [outputPathStr retain];
+			else ripResult->filelist = [outputPathStrArray retain];
 		}
 		
 		if(!testMode && [resultObj accurateRipDB] && (currentTrack > 0)) detectOffset = YES;
@@ -756,17 +762,16 @@ typedef struct {
 	}
 	
 	if(detectOffset) {
-		cddaRipResult *result = [resultObj resultForIndex:currentTrack];
 		int *tmp = malloc(2352*4*2);
 		if((currentTrack != 1) && (index != firstAudioFrame)) {
 			[decoder seekToFrame:index-2352];
 			[decoder decodeToBufferWithoutReport:tmp frames:2352];
-			[result->validator commitPreTrackSamples:tmp];
+			[ripResult->validator commitPreTrackSamples:tmp];
 		}
 		if((currentTrack != totalTrack) && (index+totalFrame != lastAudioFrame)) {
 			[decoder seekToFrame:index+totalFrame];
 			[decoder decodeToBufferWithoutReport:tmp frames:2352];
-			[result->validator commitPostTrackSamples:tmp];
+			[ripResult->validator commitPostTrackSamples:tmp];
 		}
 		[decoder seekToFrame:index];
 		free(tmp);
@@ -1001,24 +1006,23 @@ finish:
 	free(info->buffer);
 	[decoder closeFile];
 	if(resultObj && [NSStringFromClass(decoderClass) isEqualToString:@"XLDCDDARipper"]) {
-		cddaRipResult *result = [resultObj resultForIndex:currentTrack];
 		if(testMode) {
-			result->testFinished = YES;
+			ripResult->testFinished = YES;
 		}
 		else {
-			result->finished = YES;
-			if(stopConvert) result->cancelled = YES;
+			ripResult->finished = YES;
+			if(stopConvert) ripResult->cancelled = YES;
 			if(currentTrack) {
 				cddaRipResult *topResult = [resultObj resultForIndex:0];
-				topResult->errorCount += result->errorCount;
-				topResult->skipCount += result->skipCount;
-				topResult->edgeJitterCount += result->edgeJitterCount;
-				topResult->atomJitterCount += result->atomJitterCount;
-				topResult->droppedCount += result->droppedCount;
-				topResult->duplicatedCount += result->duplicatedCount;
-				topResult->driftCount += result->driftCount;
-				topResult->retrySectorCount += result->retrySectorCount;
-				topResult->damagedSectorCount += result->damagedSectorCount;
+				topResult->errorCount += ripResult->errorCount;
+				topResult->skipCount += ripResult->skipCount;
+				topResult->edgeJitterCount += ripResult->edgeJitterCount;
+				topResult->atomJitterCount += ripResult->atomJitterCount;
+				topResult->droppedCount += ripResult->droppedCount;
+				topResult->duplicatedCount += ripResult->duplicatedCount;
+				topResult->driftCount += ripResult->driftCount;
+				topResult->retrySectorCount += ripResult->retrySectorCount;
+				topResult->damagedSectorCount += ripResult->damagedSectorCount;
 				if(stopConvert) topResult->cancelled = YES;
 			}
 		}
@@ -1314,6 +1318,11 @@ finish:
 - (void)taskDeselected
 {
 	[nameField setTextColor:[NSColor blackColor]];
+}
+
+- (cddaRipResult *)cddaRipResult
+{
+	return ripResult;
 }
 
 @end

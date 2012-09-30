@@ -10,6 +10,7 @@
 #import "XLDTrack.h"
 #import "XLDCustomClasses.h"
 #import "XLDDiscLayout.h"
+#import "XLDCDDAResult.h"
 
 @interface XLDConverterTask : NSObject {
 	id encoder;
@@ -82,6 +83,7 @@
 	BOOL removeOriginalFile;
 	XLDRipperMode ripperMode;
 	XLDDiscLayout *discLayout;
+	cddaRipResult *ripResult;
 }
 
 - (id)initWithQueue:(id)q;
@@ -129,4 +131,5 @@
 - (void)setDiscLayout:(XLDDiscLayout *)layout;
 - (void)taskSelected;
 - (void)taskDeselected;
+- (cddaRipResult *)cddaRipResult;
 @end

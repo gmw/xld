@@ -271,7 +271,6 @@ static char *base64enc(const unsigned  char *input, int length)
 			  @"Unknown Title",
 			  nil]];
 		}
-		
 	}
 	
 	if(matches && matchesMB && preferredService == XLDCDDBMusicBrainzPreferred) {

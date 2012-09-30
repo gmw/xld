@@ -955,7 +955,7 @@ static const char* ID3v1GenreList[] = {
 	[op setAllowsMultipleSelection:NO];
 	
 	int ret;
-	ret = [op runModalForDirectory:nil file:nil types:nil];
+	ret = [op runModal];
 	if(ret != NSOKButton) return;
 	/*NSImage *img = [[NSImage alloc] initWithData:[NSData dataWithContentsOfFile:[op filename]]];
 	if(!img) return;

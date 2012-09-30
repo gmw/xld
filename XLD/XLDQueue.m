@@ -67,6 +67,7 @@
 {
 	[lock lock];
 	int idx = [taskArr indexOfObject:task];
+	cddaRipResult *result = [task cddaRipResult];
 	
 	int i;
 	/*for(i=idx+1;i<[taskArr count];i++) {
@@ -125,6 +126,7 @@
 		if(checkUpdateStatus) [delegate setCheckUpdateStatus:YES];
 	}
 	if(resultObj) {
+		if(result && result->pending) result->pending = NO;
 		if([resultObj allTasksFinished]) [delegate discRippedWithResult:resultObj];
 		[resultObj release];
 	}
