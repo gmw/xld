@@ -15,6 +15,22 @@
 
 @implementation XLDProfileManager
 
++ (NSDictionary *)profileForName:(NSString *)name
+{
+	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+	id obj;
+	if(obj=[pref objectForKey:@"Profiles"]) {
+		int i;
+		for(i=0;i<[obj count];i++) {
+			NSDictionary *dic = [obj objectAtIndex:i];
+			if([name isEqualToString:[dic objectForKey:@"XLDProfileManager_ProfileName"]]) {
+				return dic;
+			}
+		}
+	}
+	return nil;
+}
+
 - (id)initWithDelegate:(id)del
 {
 	[super init];

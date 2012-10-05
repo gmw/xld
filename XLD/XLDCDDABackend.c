@@ -229,13 +229,16 @@ static int is_recordable_media(xld_cdread_t *disc)
 	cdTOC.buffer = atipData;
 	
 	if(ioctl(disc->fd, DKIOCCDREADTOC, &cdTOC) != -1) {
-		/*printf("ATIP:\n");
-		printf(" dataLength: %d\n", atipData->dataLength);
-		printf(" discType: %d\n", atipData->discType);
-		printf(" discSubtype: %d\n", atipData->discSubType);
-		printf(" ATIP Lead-in: %d:%d:%d\n", atipData->startTimeOfLeadIn.minute,atipData->startTimeOfLeadIn.second,atipData->startTimeOfLeadIn.frame);*/
+		fprintf(stderr,"ATIP:\n");
+		fprintf(stderr," dataLength: %d\n", atipData->dataLength);
+		fprintf(stderr," discType: 0x%02x\n", atipData->discType);
+		fprintf(stderr," discSubtype: 0x%02x\n", atipData->discSubType);
+		fprintf(stderr," ATIP Lead-in: %02d:%02d:%02d\n", atipData->startTimeOfLeadIn.minute,atipData->startTimeOfLeadIn.second,atipData->startTimeOfLeadIn.frame);
 		free(atipData);
 		return 1;
+	}
+	else {
+		fprintf(stderr,"Not a CD-R/RW media.\n");
 	}
 	free(atipData);
 	return 0;

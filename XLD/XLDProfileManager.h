@@ -17,6 +17,7 @@
 	id delegate;
 }
 
++ (NSDictionary *)profileForName:(NSString *)name;
 - (IBAction)addProfile:(id)sender;
 - (IBAction)removeProfile:(id)sender;
 - (IBAction)loadProfile:(id)sender;

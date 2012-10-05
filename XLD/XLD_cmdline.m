@@ -16,6 +16,7 @@
 #import "XLDecoderCenter.h"
 #import "XLDPluginManager.h"
 #import "XLDDefaultOutputTask.h"
+#import "XLDProfileManager.h"
 #import <dlfcn.h>
 
 /*
@@ -238,6 +239,7 @@ static void usage(void)
 	fprintf(stderr,"\t--correct-30samples: Correct \"30 samples moved offset\" problem\n");
 	fprintf(stderr,"\t--ddpms: DDPMS file (assumes that the associated file is Raw PCM)\n");
 	fprintf(stderr,"\t--stdout: write output to stdout (-o option is ignored)\n");
+	fprintf(stderr,"\t--profile <name>: Choose a profile saved as <name> in GUI\n");
 }
 
 int cmdline_main(int argc, char *argv[])
@@ -262,6 +264,7 @@ int cmdline_main(int argc, char *argv[])
 	Class customOutputClass = nil;
 	id encoder = nil;
 	BOOL acceptStdoutWriting = YES;
+	NSDictionary *profileDic;
 	
 	int		ch;
 	extern char	*optarg;
@@ -278,6 +281,7 @@ int cmdline_main(int argc, char *argv[])
 		{"correct-30samples", 0, NULL, 0},
 		{"ddpms", 1, NULL, 0},
 		{"stdout", 0, NULL, 0},
+		{"profile", 1, NULL, 0},
 		{"cmdline", 0, NULL, 0},
 		{0, 0, 0, 0}
 	};
@@ -319,6 +323,9 @@ int cmdline_main(int argc, char *argv[])
 				}
 				else if(!strncmp(options[option_index].name, "stdout", 6)) {
 					writeToStdout = 1;
+				}
+				else if(!strncmp(options[option_index].name, "profile", 7)) {
+					profileDic = [XLDProfileManager profileForName:[NSString stringWithUTF8String:optarg]];
 				}
 				else if(!strncmp(options[option_index].name, "cmdline", 7)) {
 					//skip
@@ -443,6 +450,105 @@ int cmdline_main(int argc, char *argv[])
 		return -1; 
 	}
 	
+	if(profileDic) {
+		NSString *outFormatStr = [profileDic objectForKey:@"OutputFormatName"];
+		if([outFormatStr isEqualToString:@"WAV"]) {
+			sf_format = SF_FORMAT_WAV;
+			customOutputClass = (Class)objc_lookUpClass("XLDWavOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: Wav output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = YES;
+		}
+		else if([outFormatStr isEqualToString:@"AIFF"]) {
+			sf_format = SF_FORMAT_AIFF;
+			customOutputClass = (Class)objc_lookUpClass("XLDAiffOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: AIFF output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = YES;
+		}
+		else if([profileDic objectForKey:@"XLDPcmBEOutput_BitDepth"]) {
+			sf_format = SF_FORMAT_RAW|SF_ENDIAN_BIG;
+			customOutputClass = (Class)objc_lookUpClass("XLDPCMBEOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: PCM (big endian) output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = YES;
+		}
+		else if([profileDic objectForKey:@"XLDPcmLEOutput_BitDepth"]) {
+			sf_format = SF_FORMAT_RAW|SF_ENDIAN_LITTLE;
+			customOutputClass = (Class)objc_lookUpClass("XLDPCMLEOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: PCM (little endian) output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = YES;
+		}
+		else if([outFormatStr isEqualToString:@"Wave64"]) {
+			customOutputClass = (Class)objc_lookUpClass("XLDWave64Output");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: Wave64 output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = NO;
+		}
+		else if([outFormatStr isEqualToString:@"LAME MP3"]) {
+			customOutputClass = (Class)objc_lookUpClass("XLDLameOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: MP3 output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = NO;
+		}
+		else if([outFormatStr isEqualToString:@"MPEG-4 AAC"]) {
+			customOutputClass = (Class)objc_lookUpClass("XLDAacOutput2");
+			if(!customOutputClass) {
+				customOutputClass = (Class)objc_lookUpClass("XLDAacOutput");
+				if(!customOutputClass) {
+					fprintf(stderr,"error: AAC output plugin not loaded\n");
+					return -1;
+				}
+			}
+			acceptStdoutWriting = NO;
+		}
+		else if([outFormatStr isEqualToString:@"FLAC"]) {
+			customOutputClass = (Class)objc_lookUpClass("XLDFlacOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: FLAC output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = NO;
+		}
+		else if([outFormatStr isEqualToString:@"Apple Lossless"]) {
+			customOutputClass = (Class)objc_lookUpClass("XLDAlacOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: FLAC output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = NO;
+		}
+		else if([outFormatStr isEqualToString:@"Ogg Vorbis"]) {
+			customOutputClass = (Class)objc_lookUpClass("XLDVorbisOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: Ogg Vorbis output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = NO;
+		}
+		else if([outFormatStr isEqualToString:@"WavPack"]) {
+			customOutputClass = (Class)objc_lookUpClass("XLDWavpackOutput");
+			if(!customOutputClass) {
+				fprintf(stderr,"error: WavPack output plugin not loaded\n");
+				return -1;
+			}
+			acceptStdoutWriting = NO;
+		}
+	}
+	
 	if(writeToStdout && !acceptStdoutWriting) {
 		fprintf(stderr,"error: writing to stdout does not work with this encoder.\n");
 		return -1;
@@ -535,6 +641,7 @@ int cmdline_main(int argc, char *argv[])
 		
 		encoder = [[customOutputClass alloc] init];
 		[encoder loadPrefs];
+		if(profileDic) [encoder loadConfigurations:profileDic];
 		id tmpTask = [encoder createTaskForOutput];
 		extStr = [tmpTask extensionStr];
 		[tmpTask release];
