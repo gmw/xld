@@ -15,8 +15,13 @@ typedef int64_t xldoffset_t;
 #import <openssl/bio.h>
 #import <openssl/evp.h>
 #import <openssl/buffer.h>
+#ifdef __i386__
+#import <xmmintrin.h>
+#endif
 
 static const int max_ogg_delay=48000;
+
+static const float s32tof32scaler[4]  __attribute__((aligned(16))) = {4.656612873e-10f,4.656612873e-10f,4.656612873e-10f,4.656612873e-10f};
 
 typedef enum
 {
@@ -592,11 +597,79 @@ fail:
 			memcpy(resamplerBuffer+bufferedResamplerSamples*format.channels, buffer, counts*format.channels*sizeof(float));
 		}
 		else {
+#if defined(__i386__) && 0
+			int total = counts*format.channels;
+			int *src = buffer;
+			float *dest = resamplerBuffer + bufferedResamplerSamples*format.channels;
+			__m128 v0, v1, v2, v3, v4;
+			__asm__ __volatile__ (
+				"movaps		(%8), %4		\n\t"
+				"jmp		2f				\n\t"
+				"1:							\n\t"
+				"subl		$16, %5			\n\t"
+				"cvtdq2ps	(%6), %0		\n\t"
+				"cvtdq2ps	16(%6), %1		\n\t"
+				"cvtdq2ps	32(%6), %2		\n\t"
+				"cvtdq2ps	48(%6), %3		\n\t"
+				"addl		$64, %6			\n\t"
+				"mulps		%4, %0			\n\t"
+				"mulps		%4, %1			\n\t"
+				"mulps		%4, %2			\n\t"
+				"mulps		%4, %3			\n\t"
+				"movups		%0, (%7)		\n\t"
+				"movups		%1, 16(%7)		\n\t"
+				"movups		%2, 32(%7)		\n\t"
+				"movups		%3, 48(%7)		\n\t"
+				"addl		$64, %7			\n\t"
+				"2:							\n\t"
+				"cmpl		$15, %5			\n\t"
+				"ja			1b				\n\t"
+				"jmp		4f				\n\t"
+				"3:							\n\t"
+				"subl		$8, %5			\n\t"
+				"cvtdq2ps	(%6), %0		\n\t"
+				"cvtdq2ps	16(%6), %1		\n\t"
+				"addl		$32, %6			\n\t"
+				"mulps		%4, %0			\n\t"
+				"mulps		%4, %1			\n\t"
+				"movups		%0, (%7)		\n\t"
+				"movups		%1, 16(%7)		\n\t"
+				"addl		$32, %7			\n\t"
+				"4:							\n\t"
+				"cmpl		$7, %5			\n\t"
+				"ja			3b				\n\t"
+				"jmp		6f				\n\t"
+				"5:							\n\t"
+				"subl		$4, %5			\n\t"
+				"cvtdq2ps	(%6), %0		\n\t"
+				"addl		$16, %6			\n\t"
+				"mulps		%4, %0			\n\t"
+				"movups		%0, (%7)		\n\t"
+				"addl		$16, %7			\n\t"
+				"6:							\n\t"
+				"cmpl		$3, %5			\n\t"
+				"ja			5b				\n\t"
+				"jmp		8f				\n\t"
+				"7:							\n\t"
+				"subl		$1, %5			\n\t"
+				"cvtsi2ss	(%6), %0		\n\t"
+				"addl		$4, %6			\n\t"
+				"mulss		%4, %0			\n\t"
+				"movss		%0, (%7)		\n\t"
+				"addl		$4, %7			\n\t"
+				"8:							\n\t"
+				"cmpl		$0, %5			\n\t"
+				"jne		3b				\n\t"
+				: "=x"(v0), "=x"(v1), "=x"(v2), "=x"(v3), "=x"(v4), "+r"(total), "+r"(src), "+r"(dest)
+				: "r"(s32tof32scaler)
+			);
+#else
 			int total = counts*format.channels;
 			int offset = bufferedResamplerSamples*format.channels;
 			for(i=0;i<total;i++) {
 				resamplerBuffer[offset+i] = buffer[i] * 4.656612873e-10f;
 			}
+#endif
 		}
 		if(usedSamples >= 2048) {
 			usedSamples -= 1024;
