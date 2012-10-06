@@ -123,6 +123,35 @@ int getApeTag(CAPETag *tag, wchar_t *field, char *buf, int *length)
 		free(buf);
 	}
 	len = 1;
+	getApeTag(tag, L"album artist", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"album artist", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			[metadataDic setObject:str forKey:XLD_METADATA_ALBUMARTIST];
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
+	getApeTag(tag, L"albumartist", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"albumartist", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			if(![metadataDic objectForKey:XLD_METADATA_ALBUMARTIST])
+				[metadataDic setObject:str forKey:XLD_METADATA_ALBUMARTIST];
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
 	getApeTag(tag, L"genre", buf_tmp, &len);
 	if(len) {
 		char *buf = (char *)malloc(len+10);
@@ -162,6 +191,10 @@ int getApeTag(CAPETag *tag, wchar_t *field, char *buf, int *length)
 		if(str) {
 			int track = [str intValue];
 			if(track > 0) [metadataDic setObject:[NSNumber numberWithInt:track] forKey:XLD_METADATA_TRACK];
+			if([str rangeOfString:@"/"].location != NSNotFound) {
+				track = [[str substringFromIndex:[str rangeOfString:@"/"].location+1] intValue];
+				if(track > 0) [metadataDic setObject:[NSNumber numberWithInt:track] forKey:XLD_METADATA_TOTALTRACKS];
+			}
 			[str release];
 		}
 		free(buf);
@@ -177,6 +210,10 @@ int getApeTag(CAPETag *tag, wchar_t *field, char *buf, int *length)
 		if(str) {
 			int disc = [str intValue];
 			if(disc > 0) [metadataDic setObject:[NSNumber numberWithInt:disc] forKey:XLD_METADATA_DISC];
+			if([str rangeOfString:@"/"].location != NSNotFound) {
+				disc = [[str substringFromIndex:[str rangeOfString:@"/"].location+1] intValue];
+				if(disc > 0) [metadataDic setObject:[NSNumber numberWithInt:disc] forKey:XLD_METADATA_TOTALDISCS];
+			}
 			[str release];
 		}
 		free(buf);
@@ -387,6 +424,62 @@ int getApeTag(CAPETag *tag, wchar_t *field, char *buf, int *length)
 		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
 		if(str) {
 			[metadataDic setObject:str forKey:XLD_METADATA_MB_WORKID];
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
+	getApeTag(tag, L"REPLAYGAIN_TRACK_GAIN", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"REPLAYGAIN_TRACK_GAIN", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN];
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
+	getApeTag(tag, L"REPLAYGAIN_TRACK_PEAK", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"REPLAYGAIN_TRACK_PEAK", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK];
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
+	getApeTag(tag, L"REPLAYGAIN_ALBUM_GAIN", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"REPLAYGAIN_ALBUM_GAIN", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
+	getApeTag(tag, L"REPLAYGAIN_ALBUM_PEAK", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"REPLAYGAIN_ALBUM_PEAK", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
 			[str release];
 		}
 		free(buf);
