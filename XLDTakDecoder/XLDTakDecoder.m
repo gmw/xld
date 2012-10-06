@@ -24,6 +24,29 @@
 #define XLD_METADATA_LYRICS		@"Lyrics"
 #define XLD_METADATA_ISRC		@"ISRC"
 #define XLD_METADATA_COVER		@"Cover"
+#define XLD_METADATA_ALBUMARTIST	@"AlbumArtist"
+#define XLD_METADATA_REPLAYGAIN_TRACK_GAIN	@"RGTrackGain"
+#define XLD_METADATA_REPLAYGAIN_ALBUM_GAIN	@"RGAlbumGain"
+#define XLD_METADATA_REPLAYGAIN_TRACK_PEAK	@"RGTrackPeak"
+#define XLD_METADATA_REPLAYGAIN_ALBUM_PEAK	@"RGAlbumPeak"
+#define XLD_METADATA_COMPILATION	@"Compilation"
+#define XLD_METADATA_GROUP		@"Group"
+#define XLD_METADATA_GRACENOTE		@"Gracenote"
+#define XLD_METADATA_CATALOG		@"Catalog"
+#define XLD_METADATA_PREEMPHASIS	@"Emphasis"
+#define XLD_METADATA_FREEDBDISCID	@"DISCID"
+#define XLD_METADATA_BPM		@"BPM"
+#define XLD_METADATA_COPYRIGHT	@"Copyright"
+#define XLD_METADATA_GAPLESSALBUM	@"GaplessAlbum"
+#define XLD_METADATA_CREATIONDATE	@"CreationDate"
+#define XLD_METADATA_MODIFICATIONDATE	@"ModificationDate"
+#define XLD_METADATA_ORIGINALFILENAME	@"OriginalFilename"
+#define XLD_METADATA_DATATRACK @"DataTrack"
+#define XLD_METADATA_TITLESORT	@"TitleSort"
+#define XLD_METADATA_ARTISTSORT	@"ArtistSort"
+#define XLD_METADATA_ALBUMSORT	@"AlbumSort"
+#define XLD_METADATA_ALBUMARTISTSORT	@"AlbumArtistSort"
+#define XLD_METADATA_COMPOSERSORT	@"ComposerSort"
 #define XLD_METADATA_GRACENOTE2		@"Gracenote2"
 #define XLD_METADATA_MB_TRACKID		@"MusicBrainz_TrackID"
 #define XLD_METADATA_MB_ALBUMID	@"MusicBrainz_AlbumID"
@@ -173,13 +196,28 @@
 	if(length) {
 		NSString *str = [[NSString alloc] initWithData:[readHandle readDataOfLength:length] encoding:NSUTF8StringEncoding];
 		if(!str) return;
-		if(!strcmp(key,"track")) {
+		if(!strcasecmp(key,"track")) {
 			int track = [str intValue];
 			if(track>0) [metadataDic setObject:[NSNumber numberWithInt:track] forKey:XLD_METADATA_TRACK];
+			if([str rangeOfString:@"/"].location != NSNotFound) {
+				track = [[str substringFromIndex:[str rangeOfString:@"/"].location+1] intValue];
+				if(track > 0) [metadataDic setObject:[NSNumber numberWithInt:track] forKey:XLD_METADATA_TOTALTRACKS];
+			}
 		}
-		else if(!strcmp(key,"year")) {
+		else if(!strcasecmp(key,"disc")) {
+			int disc = [str intValue];
+			if(disc>0) [metadataDic setObject:[NSNumber numberWithInt:disc] forKey:XLD_METADATA_DISC];
+			if([str rangeOfString:@"/"].location != NSNotFound) {
+				disc = [[str substringFromIndex:[str rangeOfString:@"/"].location+1] intValue];
+				if(disc > 0) [metadataDic setObject:[NSNumber numberWithInt:disc] forKey:XLD_METADATA_TOTALDISCS];
+			}
+		}
+		else if(!strcasecmp(key,"year")) {
 			int year = [str intValue];
 			if(year >= 1000 && year < 3000) [metadataDic setObject:[NSNumber numberWithInt:year] forKey:XLD_METADATA_YEAR];
+		}
+		else if(!strncasecmp(key,"REPLAYGAIN_",11)) {
+			[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:dicKey];
 		}
 		else [metadataDic setObject:str forKey:dicKey];
 		//NSLog(str);
@@ -272,10 +310,13 @@
 	[self findTagForKey:"title" andRegisterWithKey:XLD_METADATA_TITLE];
 	[self findTagForKey:"artist" andRegisterWithKey:XLD_METADATA_ARTIST];
 	[self findTagForKey:"album" andRegisterWithKey:XLD_METADATA_ALBUM];
+	[self findTagForKey:"albumartist" andRegisterWithKey:XLD_METADATA_ALBUMARTIST];
+	[self findTagForKey:"album artist" andRegisterWithKey:XLD_METADATA_ALBUMARTIST];
 	[self findTagForKey:"genre" andRegisterWithKey:XLD_METADATA_GENRE];
 	[self findTagForKey:"year" andRegisterWithKey:XLD_METADATA_YEAR];
 	[self findTagForKey:"composer" andRegisterWithKey:XLD_METADATA_COMPOSER];
 	[self findTagForKey:"track" andRegisterWithKey:XLD_METADATA_TRACK];
+	[self findTagForKey:"disc" andRegisterWithKey:XLD_METADATA_DISC];
 	[self findTagForKey:"comment" andRegisterWithKey:XLD_METADATA_COMMENT];
 	[self findTagForKey:"lyrics" andRegisterWithKey:XLD_METADATA_LYRICS];
 	[self findTagForKey:"isrc" andRegisterWithKey:XLD_METADATA_ISRC];
@@ -292,6 +333,10 @@
 	[self findTagForKey:"RELEASECOUNTRY" andRegisterWithKey:XLD_METADATA_MB_RELEASECOUNTRY];
 	[self findTagForKey:"MUSICBRAINZ_RELEASEGROUPID" andRegisterWithKey:XLD_METADATA_MB_RELEASEGROUPID];
 	[self findTagForKey:"MUSICBRAINZ_WORKID" andRegisterWithKey:XLD_METADATA_MB_WORKID];
+	[self findTagForKey:"REPLAYGAIN_TRACK_GAIN" andRegisterWithKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN];
+	[self findTagForKey:"REPLAYGAIN_TRACK_PEAK" andRegisterWithKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK];
+	[self findTagForKey:"REPLAYGAIN_ALBUM_GAIN" andRegisterWithKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
+	[self findTagForKey:"REPLAYGAIN_ALBUM_PEAK" andRegisterWithKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
 	[self findBinaryTagForKey:"Cover Art (front)" andRegisterWithKey:XLD_METADATA_COVER];
 	
 	if(srcPath) [srcPath release];
