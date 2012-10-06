@@ -124,47 +124,64 @@ static int write_block (void *id, void *data, int32_t length)
 	if(addTag) {
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TITLE]) {
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TITLE] UTF8String];
-			WavpackAppendTagItem(wpc,"TITLE",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"Title",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTIST]) {
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTIST] UTF8String];
-			WavpackAppendTagItem(wpc,"ARTIST",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"Artist",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ALBUM]) {
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ALBUM] UTF8String];
-			WavpackAppendTagItem(wpc,"ALBUM",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"Album",tag,strlen(tag));
+			tagAdded = YES;
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ALBUMARTIST]) {
+			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ALBUMARTIST] UTF8String];
+			WavpackAppendTagItem(wpc,"Album Artist",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"ALBUMARTIST",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_GENRE]) {
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_GENRE] UTF8String];
-			WavpackAppendTagItem(wpc,"GENRE",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"Genre",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMPOSER]) {
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMPOSER] UTF8String];
-			WavpackAppendTagItem(wpc,"COMPOSER",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"Composer",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TRACK]) {
-			const char *tag = [[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TRACK] stringValue] UTF8String];
-			WavpackAppendTagItem(wpc,"TRACK",tag,strlen(tag));
+			const char *tag;
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALTRACKS])
+				tag = [[NSString stringWithFormat:@"%d/%d",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TRACK] intValue],[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALTRACKS] intValue]] UTF8String];
+			else tag = [[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TRACK] stringValue] UTF8String];
+			WavpackAppendTagItem(wpc,"Track",tag,strlen(tag));
+			tagAdded = YES;
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DISC]) {
+			const char *tag;
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALDISCS])
+				tag = [[NSString stringWithFormat:@"%d/%d",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DISC] intValue],[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALDISCS] intValue]] UTF8String];
+			else tag = [[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DISC] stringValue] UTF8String];
+			WavpackAppendTagItem(wpc,"Disc",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR]) {
 			const char *tag = [[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR] stringValue] UTF8String];
-			WavpackAppendTagItem(wpc,"YEAR",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"Year",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMMENT]) {
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMMENT] UTF8String];
-			WavpackAppendTagItem(wpc,"COMMENT",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"Comment",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS]) {
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS] UTF8String];
-			WavpackAppendTagItem(wpc,"LYRICS",tag,strlen(tag));
+			WavpackAppendTagItem(wpc,"Lyrics",tag,strlen(tag));
 			tagAdded = YES;
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ISRC]) {
@@ -231,6 +248,28 @@ static int write_block (void *id, void *data, int32_t length)
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_WORKID] UTF8String];
 			WavpackAppendTagItem(wpc,"MUSICBRAINZ_WORKID",tag,strlen(tag));
 			tagAdded = YES;
+		}
+		if(!(config.flags & CONFIG_HYBRID_FLAG)) {
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN]) {
+				const char *tag = [[NSString stringWithFormat:@"%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] floatValue]] UTF8String];
+				WavpackAppendTagItem(wpc,"REPLAYGAIN_TRACK_GAIN",tag,strlen(tag));
+				tagAdded = YES;
+			}
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK]) {
+				const char *tag = [[NSString stringWithFormat:@"%.7f",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK] floatValue]] UTF8String];
+				WavpackAppendTagItem(wpc,"REPLAYGAIN_TRACK_PEAK",tag,strlen(tag));
+				tagAdded = YES;
+			}
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN]) {
+				const char *tag = [[NSString stringWithFormat:@"%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN] floatValue]] UTF8String];
+				WavpackAppendTagItem(wpc,"REPLAYGAIN_ALBUM_GAIN",tag,strlen(tag));
+				tagAdded = YES;
+			}
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK]) {
+				const char *tag = [[NSString stringWithFormat:@"%.7f",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK] floatValue]] UTF8String];
+				WavpackAppendTagItem(wpc,"REPLAYGAIN_ALBUM_PEAK",tag,strlen(tag));
+				tagAdded = YES;
+			}
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_CUESHEET] && [[configurations objectForKey:@"AllowEmbeddedCuesheet"] boolValue]) {
 			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_CUESHEET] UTF8String];
