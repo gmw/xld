@@ -78,4 +78,5 @@ typedef struct
 - (void)cancel;
 - (void)setRipperMode:(XLDRipperMode)mode;
 - (NSString *)driveStr;
+- (void)analyzeTrackGain;
 @end

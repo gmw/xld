@@ -916,6 +916,12 @@ typedef struct {
 		}
 		[pool2 release];
 	} while(1);
+	if(!info->error && [decoder respondsToSelector:@selector(analyzeTrackGain)]) {
+		[decoder analyzeTrackGain];
+		if(resultObj && currentTrack) {
+			[resultObj commitReplayGainTagForTrack:currentTrack];
+		}
+	}
 	if(encoderTask) {
 		if(!info->error) [encoderTask finalize];
 		[encoderTask closeFile];

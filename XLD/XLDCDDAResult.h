@@ -115,4 +115,5 @@ typedef struct {
 - (void)setProcessOfExistingFiles:(int)value;
 - (void)setIncludeHTOA:(BOOL)flag;
 - (void)analyzeGain;
+- (void)commitReplayGainTagForTrack:(int)trk;
 @end

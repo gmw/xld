@@ -623,6 +623,8 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
     xld_cdda_close(&cdread);
 	p_paranoia = NULL;
 	secureRipper = nil;
+#if 0
+	/* moved to -analyzeTrackGain */
 	if(result) {
 		if(result->scanReplayGain && !testMode) {
 			if(!result->parent) {
@@ -631,6 +633,7 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 			}
 		}
 	}
+#endif
 	error = NO;
 }
 
@@ -694,6 +697,18 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 - (NSString *)driveStr
 {
 	return [NSString stringWithFormat:@"%s %s (revision %s)",cdread.vendor,cdread.product,cdread.revision];
+}
+
+- (void)analyzeTrackGain
+{
+	if(result) {
+		if(result->scanReplayGain && !testMode) {
+			if(!result->parent) {
+				result->trackGain = PINK_REF-gain_get_title(result->rg);
+				result->peak = peak_get_title(result->rg);
+			}
+		}
+	}
 }
 
 @end

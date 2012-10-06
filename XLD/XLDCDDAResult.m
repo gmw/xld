@@ -348,6 +348,14 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 	}
 }
 
+- (void)commitReplayGainTagForTrack:(int)trk
+{
+	if(trk > trackNumber) return;
+	if(!results[trk].enabled || !results[trk].scanReplayGain) return;
+	[[[trackList objectAtIndex:trk-1] metadata] setObject:[NSNumber numberWithFloat:results[trk].trackGain] forKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN];
+	[[[trackList objectAtIndex:trk-1] metadata] setObject:[NSNumber numberWithFloat:results[trk].peak] forKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK];
+}
+
 - (NSString *)logStr
 {
 	if(!results) return nil;
