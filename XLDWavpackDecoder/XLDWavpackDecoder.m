@@ -109,6 +109,29 @@ int WavpackGetTagItemIndexed (WavpackContext *wpc, int index, char *item, int si
 			}
 			free(buf);
 		}
+		else if(!strcasecmp(tagIdx,"album artist")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:str forKey:XLD_METADATA_ALBUMARTIST];
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"albumartist")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				if(![metadataDic objectForKey:XLD_METADATA_ALBUMARTIST])
+					[metadataDic setObject:str forKey:XLD_METADATA_ALBUMARTIST];
+				[str release];
+			}
+			free(buf);
+		}
 		else if(!strcasecmp(tagIdx,"genre")) {
 			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
 			char *buf = (char *)malloc(size+10);
@@ -151,6 +174,26 @@ int WavpackGetTagItemIndexed (WavpackContext *wpc, int index, char *item, int si
 			if(str) {
 				int track = [str intValue];
 				if(track > 0) [metadataDic setObject:[NSNumber numberWithInt:track] forKey:XLD_METADATA_TRACK];
+				if([str rangeOfString:@"/"].location != NSNotFound) {
+					track = [[str substringFromIndex:[str rangeOfString:@"/"].location+1] intValue];
+					if(track > 0) [metadataDic setObject:[NSNumber numberWithInt:track] forKey:XLD_METADATA_TOTALTRACKS];
+				}
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"disc")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				int disc = [str intValue];
+				if(disc > 0) [metadataDic setObject:[NSNumber numberWithInt:disc] forKey:XLD_METADATA_DISC];
+				if([str rangeOfString:@"/"].location != NSNotFound) {
+					disc = [[str substringFromIndex:[str rangeOfString:@"/"].location+1] intValue];
+					if(disc > 0) [metadataDic setObject:[NSNumber numberWithInt:disc] forKey:XLD_METADATA_TOTALDISCS];
+				}
 				[str release];
 			}
 			free(buf);
@@ -316,6 +359,50 @@ int WavpackGetTagItemIndexed (WavpackContext *wpc, int index, char *item, int si
 			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
 			if(str) {
 				[metadataDic setObject:str forKey:XLD_METADATA_MB_WORKID];
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"REPLAYGAIN_TRACK_GAIN")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN];
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"REPLAYGAIN_TRACK_PEAK")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK];
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"REPLAYGAIN_ALBUM_GAIN")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"REPLAYGAIN_ALBUM_PEAK")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:[NSNumber numberWithFloat:[str floatValue]] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
 				[str release];
 			}
 			free(buf);
