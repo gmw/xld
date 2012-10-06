@@ -322,6 +322,34 @@ void metadata_callback(const FLAC__StreamDecoder *decoder, const FLAC__StreamMet
 					[dat release];
 				}
 			}
+			else if(!strncasecmp((char *)comment.comments[i].entry,"REPLAYGAIN_TRACK_GAIN=",22)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+22 length:comment.comments[i].length-22+nullFix] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[delegate->metadataDic setObject:[NSNumber numberWithFloat:[dat floatValue]] forKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp((char *)comment.comments[i].entry,"REPLAYGAIN_TRACK_PEAK=",22)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+22 length:comment.comments[i].length-22+nullFix] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[delegate->metadataDic setObject:[NSNumber numberWithFloat:[dat floatValue]] forKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp((char *)comment.comments[i].entry,"REPLAYGAIN_ALBUM_GAIN=",22)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+22 length:comment.comments[i].length-22+nullFix] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[delegate->metadataDic setObject:[NSNumber numberWithFloat:[dat floatValue]] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp((char *)comment.comments[i].entry,"REPLAYGAIN_ALBUM_PEAK=",22)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+22 length:comment.comments[i].length-22+nullFix] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[delegate->metadataDic setObject:[NSNumber numberWithFloat:[dat floatValue]] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
+					[dat release];
+				}
+			}
 			else if(!strncasecmp((char *)comment.comments[i].entry,"encoder=",8)) {
 				// do nothing
 			}
