@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "XLDOutputTask.h"
-#import <flac/all.h>
+#import <FLAC/all.h>
 
 #define XLD_METADATA_TITLE		@"Title"
 #define XLD_METADATA_ARTIST		@"Artist"
@@ -73,6 +73,7 @@
 	int internalBufferSize;
 	NSString *path;
 	NSDictionary *configurations;
+	NSMutableDictionary *metadataDic;
 }
 
 - (BOOL)setOutputFormat:(XLDFormat)fmt;
