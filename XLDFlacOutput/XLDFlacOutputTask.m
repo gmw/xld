@@ -477,7 +477,7 @@ typedef int64_t xldoffset_t;
 	FLAC__stream_encoder_finish(encoder);
 	
 	/* update metadata */
-	if([metadataDic objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] || [metadataDic objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK]) {
+	if(addTag && ([metadataDic objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] || [metadataDic objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK])) {
 		FLAC__Metadata_SimpleIterator *mi = FLAC__metadata_simple_iterator_new();
 		if(mi) {
 			if(encoder) FLAC__stream_encoder_delete(encoder);
