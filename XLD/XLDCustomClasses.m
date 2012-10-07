@@ -634,6 +634,21 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	return [NSURLConnection sendSynchronousRequest:req returningResponse:&resp error:nil];
 }
 
++ (NSData *)fastDataWithContentsOfURL:(NSURL *)url error:(NSError **)err
+{
+	NSURLResponse *resp;
+	NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
+	if(floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+		int sels[2] = { CTL_KERN , KERN_OSRELEASE };
+		char darwin[32];
+		size_t size = 32;
+		sysctl(sels,2,&darwin,&size,NULL,0);
+		NSBundle *cfnetwork = [NSBundle bundleWithPath:@"/System/Library/Frameworks/CoreServices.framework/Frameworks/CFNetwork.framework"];
+		[req addValue:[NSString stringWithFormat:@"XLD/%@ CFNetwork/%@ Darwin/%s",[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleVersion"],[[cfnetwork infoDictionary] objectForKey:@"CFBundleVersion"],darwin] forHTTPHeaderField:@"User-Agent"];
+	}
+	return [NSURLConnection sendSynchronousRequest:req returningResponse:&resp error:err];
+}
+
 @end
 
 @implementation NSFlippedView

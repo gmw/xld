@@ -98,6 +98,7 @@
 
 @interface NSData (FasterSynchronusDownload)
 + (NSData *)fastDataWithContentsOfURL:(NSURL *)url;
++ (NSData *)fastDataWithContentsOfURL:(NSURL *)url error:(NSError **)err;
 @end
 
 @interface NSFlippedView : NSView {

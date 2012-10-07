@@ -23,6 +23,7 @@
 	NSMutableArray *itemArray;
 	NSMutableArray *variants;
 	NSMutableDictionary *variant;
+	NSString *errorMsg;
 }
 
 - (id)initWithDomain:(const char *)d;
@@ -35,5 +36,6 @@
 - (NSString *)ASIN;
 - (NSURL *)imageURL;
 - (NSArray *)items;
+- (NSString *)errorMessage;
 
 @end

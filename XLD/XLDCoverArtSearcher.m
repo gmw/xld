@@ -93,6 +93,9 @@ extern OSStatus CGSNewConnection(const void **attributes, CGSConnection * id);
 	[o_messageField setBordered:NO];
 	[o_messageField setDrawsBackground:NO];
 	[o_messageField setEditable:NO];
+	if([NSCell instanceMethodForSelector:@selector(setLineBreakMode:)]) {
+		[[o_messageField cell] setLineBreakMode:NSLineBreakByTruncatingTail];
+	}
 	o_progress = [[NSProgressIndicator alloc] init];
 	[o_progress setStyle:NSProgressIndicatorBarStyle];
 	[o_progress setIndeterminate:NO];
@@ -102,7 +105,7 @@ extern OSStatus CGSNewConnection(const void **attributes, CGSConnection * id);
 	NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:@"Search"];
 	[item setView:o_searchField];
 	[item setMinSize:NSMakeSize(200,22)];
-	[item setMaxSize:NSMakeSize(500,2)];
+	[item setMaxSize:NSMakeSize(500,22)];
 	[item setTarget:self];
 	[item setAction:@selector(search:)];
 	[toolbarItems setObject:item forKey:@"Search"];
@@ -110,13 +113,13 @@ extern OSStatus CGSNewConnection(const void **attributes, CGSConnection * id);
 	item = [[NSToolbarItem alloc] initWithItemIdentifier:@"Message"];
 	[item setView:o_messageField];
 	[item setMinSize:NSMakeSize(100,16)];
-	[item setMaxSize:NSMakeSize(250,16)];
+	[item setMaxSize:NSMakeSize(1000,16)];
 	[toolbarItems setObject:item forKey:@"Message"];
 	[item release];
 	item = [[NSToolbarItem alloc] initWithItemIdentifier:@"Progress"];
 	[item setView:o_progress];
 	[item setMinSize:NSMakeSize(50,20)];
-	[item setMaxSize:NSMakeSize(200,20)];
+	[item setMaxSize:NSMakeSize(150,20)];
 	[toolbarItems setObject:item forKey:@"Progress"];
 	[item release];
 	
@@ -239,8 +242,18 @@ extern OSStatus CGSNewConnection(const void **attributes, CGSConnection * id);
 	}
 	//NSLog(@"%@",[results description]);
 	
-	if(![results count]) [o_messageField setStringValue:LS(@"Not found")];
-	else [o_messageField setStringValue:@""];
+	[o_messageField setTextColor:[NSColor blackColor]];
+	if(![results count]) {
+		if([searcher errorMessage]) {
+			[o_messageField setTextColor:[NSColor redColor]];
+			[o_messageField setStringValue:[searcher errorMessage]];
+			[o_messageField setToolTip:[searcher errorMessage]];
+		}
+		else [o_messageField setStringValue:LS(@"Not found")];
+	}
+	else {
+		[o_messageField setStringValue:@""];
+	}
 
 	int i;
 	for(i=0;i<[results count];i++) {

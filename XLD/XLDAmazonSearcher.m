@@ -27,6 +27,7 @@ enum
 	AWSReadingVariantLargeImage,
 	AWSReadingVariantMediumImage,
 	AWSReadingVariantSmallImage,
+	AWSReadingErrorResponse,
 };
 
 const char *server1 = "ecs.amazonaws";
@@ -162,6 +163,7 @@ static char *base64enc(const unsigned char *input, int length)
 	if(secretKey) [secretKey release];
 	if(imageURL) [imageURL release];
 	[itemArray release];
+	if(errorMsg) [errorMsg release];
 	[super dealloc];
 }
 
@@ -224,11 +226,18 @@ static char *base64enc(const unsigned char *input, int length)
 	//NSLog(@"%@",str);
 	
 	NSURL *url = [NSURL URLWithString:str];
-	NSData *data = [NSData fastDataWithContentsOfURL:url];
-	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
-	[parser setDelegate:self];
-	[parser parse];
-	[parser release];
+	NSError *err;
+	NSData *data = [NSData fastDataWithContentsOfURL:url error:&err];
+	if(data) {
+		NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+		[parser setDelegate:self];
+		[parser parse];
+		[parser release];
+	}
+	else {
+		if(errorMsg) [errorMsg release];
+		errorMsg = [[NSString alloc] initWithFormat:@"Network connection error: %@",[err localizedDescription]];
+	}
 }
 
 - (NSString *)ASIN
@@ -246,6 +255,11 @@ static char *base64enc(const unsigned char *input, int length)
 	return itemArray;
 }
 
+- (NSString *)errorMessage
+{
+	return errorMsg;
+}
+
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
 {
 	if(currentStr) {
@@ -255,7 +269,8 @@ static char *base64enc(const unsigned char *input, int length)
 
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
 {
-	//NSLog(@"parseErrorOccurred");
+	if(errorMsg) [errorMsg release];
+	errorMsg = [[NSString alloc] initWithFormat:@"Parse error: %@",[parseError localizedDescription]];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName attributes:(NSDictionary *)attributeDict
@@ -339,6 +354,12 @@ static char *base64enc(const unsigned char *input, int length)
 		if([elementName isEqualToString:@"URL"]) {
 			currentStr = [[NSMutableString alloc] init];
 		}
+	}
+	else if(state == AWSNone && [elementName isEqualToString:@"ItemSearchErrorResponse"]) {
+		state = AWSReadingErrorResponse;
+	}
+	else if(state == AWSReadingErrorResponse && [elementName isEqualToString:@"Message"]) {
+		currentStr = [[NSMutableString alloc] init];
 	}
 }
 
@@ -468,6 +489,18 @@ static char *base64enc(const unsigned char *input, int length)
 			}
 			[currentStr release];
 			currentStr = nil;
+		}
+	}
+	else if(state == AWSReadingErrorResponse) {
+		if([elementName isEqualToString:@"Message"]) {
+			if(currentStr) {
+				if(errorMsg) [errorMsg release];
+				errorMsg = currentStr;
+				currentStr = nil;
+			}
+		}
+		else if([elementName isEqualToString:@"ItemSearchErrorResponse"]) {
+			state = AWSNone;
 		}
 	}
 }
