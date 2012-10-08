@@ -204,8 +204,8 @@ static char *base64enc(const unsigned char *input, int length)
 
 - (void)setAccessKey:(NSString *)key andSecretKey:(NSString *)skey
 {
-	[arguments setObject:key forKey:@"AWSAccessKeyId"];
-	secretKey = [skey retain];
+	[arguments setObject:[key stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"AWSAccessKeyId"];
+	secretKey = [[skey stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
 }
 
 - (void)doSearch
@@ -358,6 +358,9 @@ static char *base64enc(const unsigned char *input, int length)
 	else if(state == AWSNone && [elementName isEqualToString:@"ItemSearchErrorResponse"]) {
 		state = AWSReadingErrorResponse;
 	}
+	else if(state == AWSNone && [elementName isEqualToString:@"Errors"]) {
+		state = AWSReadingErrorResponse;
+	}
 	else if(state == AWSReadingErrorResponse && [elementName isEqualToString:@"Message"]) {
 		currentStr = [[NSMutableString alloc] init];
 	}
@@ -500,6 +503,9 @@ static char *base64enc(const unsigned char *input, int length)
 			}
 		}
 		else if([elementName isEqualToString:@"ItemSearchErrorResponse"]) {
+			state = AWSNone;
+		}
+		else if([elementName isEqualToString:@"Errors"]) {
 			state = AWSNone;
 		}
 	}
