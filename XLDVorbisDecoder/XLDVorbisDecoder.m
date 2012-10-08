@@ -260,6 +260,34 @@ static unsigned char *base64dec(char *input, int length)
 						[metadataDic setObject:pictData forKey:XLD_METADATA_COVER];
 				}
 			}
+			else if(!strncasecmp(comments->user_comments[i],"REPLAYGAIN_TRACK_GAIN=",22)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comments->user_comments[i]+22 length:comments->comment_lengths[i]-22] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[metadataDic setObject:[NSNumber numberWithFloat:[dat floatValue]] forKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp(comments->user_comments[i],"REPLAYGAIN_TRACK_PEAK=",22)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comments->user_comments[i]+22 length:comments->comment_lengths[i]-22] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[metadataDic setObject:[NSNumber numberWithFloat:[dat floatValue]] forKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp(comments->user_comments[i],"REPLAYGAIN_ALBUM_GAIN=",22)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comments->user_comments[i]+22 length:comments->comment_lengths[i]-22] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[metadataDic setObject:[NSNumber numberWithFloat:[dat floatValue]] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp(comments->user_comments[i],"REPLAYGAIN_ALBUM_PEAK=",22)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comments->user_comments[i]+22 length:comments->comment_lengths[i]-22] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[metadataDic setObject:[NSNumber numberWithFloat:[dat floatValue]] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
+					[dat release];
+				}
+			}
 			else if(!strncasecmp(comments->user_comments[i],"encoder=",8)) {
 				// do nothing
 			}
