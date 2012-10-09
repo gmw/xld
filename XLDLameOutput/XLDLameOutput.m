@@ -108,7 +108,7 @@
 
 - (float)vbrQuality
 {
-	float quality = 10.0f - [o_vbrQuality floatValue];
+	float quality = roundf((10.0f - [o_vbrQuality floatValue])*10.0f)*0.1f;
 	if(quality > 9.999f) quality = 9.999f;
 	if(quality < 0.0f) quality = 0.0f;
 	return quality;
