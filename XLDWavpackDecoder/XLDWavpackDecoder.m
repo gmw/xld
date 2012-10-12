@@ -432,8 +432,10 @@ int WavpackGetTagItemIndexed (WavpackContext *wpc, int index, char *item, int si
 			int i=0;
 			while(buf[i] != 0) i++;
 			i++;
-			NSData *imgData = [NSData dataWithBytes:buf+i length:size-i];
-			[metadataDic setObject:imgData forKey:XLD_METADATA_COVER];
+			if(size-i > 0) {
+				NSData *imgData = [NSData dataWithBytes:buf+i length:size-i];
+				if(imgData) [metadataDic setObject:imgData forKey:XLD_METADATA_COVER];
+			}
 			free(buf);
 		}
 	}
