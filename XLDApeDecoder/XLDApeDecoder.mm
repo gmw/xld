@@ -492,8 +492,10 @@ int getApeTag(CAPETag *tag, wchar_t *field, char *buf, int *length)
 		int i=0;
 		while(buf[i] != 0) i++;
 		i++;
-		NSData *imgData = [NSData dataWithBytes:buf+i length:len-i];
-		[metadataDic setObject:imgData forKey:XLD_METADATA_COVER];
+		if(len-i > 0) {
+			NSData *imgData = [NSData dataWithBytes:buf+i length:len-i];
+			if(imgData) [metadataDic setObject:imgData forKey:XLD_METADATA_COVER];
+		}
 		free(buf);
 	}
 	
