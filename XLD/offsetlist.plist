@@ -136,6 +136,8 @@
 	<integer>6</integer>
 	<key>BD DRV BC-5600S</key>
 	<integer>48</integer>
+	<key>BD DRV BD-5841H5</key>
+	<integer>48</integer>
 	<key>BD E  DS6E2LH</key>
 	<integer>6</integer>
 	<key>BD E  DS6E2SH</key>
@@ -237,6 +239,8 @@
 	<key>BD-CMB UJ141ES</key>
 	<integer>103</integer>
 	<key>BD-CMB UJ152</key>
+	<integer>103</integer>
+	<key>BD-CMB UJ160</key>
 	<integer>103</integer>
 	<key>BD-CMB UJ242AS</key>
 	<integer>103</integer>
@@ -486,6 +490,8 @@
 	<integer>667</integer>
 	<key>BD-W26SS-B</key>
 	<integer>667</integer>
+	<key>BDBurner 800L v1</key>
+	<integer>6</integer>
 	<key>BDDVDR PX-B310SA</key>
 	<integer>6</integer>
 	<key>BDDVDR PX-B310U</key>
@@ -1586,6 +1592,8 @@
 	<integer>6</integer>
 	<key>CDDVDW SH-216ALN</key>
 	<integer>6</integer>
+	<key>CDDVDW SH-216BB</key>
+	<integer>6</integer>
 	<key>CDDVDW SH-222AB</key>
 	<integer>6</integer>
 	<key>CDDVDW SH-222AL</key>
@@ -2238,10 +2246,14 @@
 	<integer>6</integer>
 	<key>DRW-24B5ST</key>
 	<integer>6</integer>
+	<key>DRW-24D1ST</key>
+	<integer>667</integer>
 	<key>DRW-24D1ST   a</key>
 	<integer>6</integer>
 	<key>DRW4410</key>
 	<integer>91</integer>
+	<key>DS8A5SH</key>
+	<integer>6</integer>
 	<key>DSW2080</key>
 	<integer>691</integer>
 	<key>DUW1608-12X</key>
@@ -2444,6 +2456,8 @@
 	<integer>6</integer>
 	<key>DVD A  DH16ABSH</key>
 	<integer>6</integer>
+	<key>DVD A  DH16ACSH</key>
+	<integer>6</integer>
 	<key>DVD A  DH16AYH</key>
 	<integer>6</integer>
 	<key>DVD A  DH18A1P</key>
@@ -2485,6 +2499,8 @@
 	<key>DVD A  DH24AAS</key>
 	<integer>6</integer>
 	<key>DVD A  DH24ABS</key>
+	<integer>6</integer>
+	<key>DVD A  DH24ACSH</key>
 	<integer>6</integer>
 	<key>DVD A  DH24AYL</key>
 	<integer>48</integer>
@@ -2537,6 +2553,8 @@
 	<key>DVD A  DS8AZP</key>
 	<integer>594</integer>
 	<key>DVD A  LH-1H18A</key>
+	<integer>6</integer>
+	<key>DVD A  LH-1P20A</key>
 	<integer>6</integer>
 	<key>DVD A DH16ABS</key>
 	<integer>6</integer>
@@ -2856,6 +2874,8 @@
 	<integer>48</integer>
 	<key>DVD RW AD-7593A</key>
 	<integer>48</integer>
+	<key>DVD RW AD-7593B</key>
+	<integer>48</integer>
 	<key>DVD RW AD-7630A</key>
 	<integer>48</integer>
 	<key>DVD RW AD-7633A</key>
@@ -2896,7 +2916,11 @@
 	<integer>48</integer>
 	<key>DVD RW AD-7740I</key>
 	<integer>48</integer>
+	<key>DVD RW AD-7760H</key>
+	<integer>48</integer>
 	<key>DVD RW AD-7800H</key>
+	<integer>48</integer>
+	<key>DVD RW AD-7803H</key>
 	<integer>48</integer>
 	<key>DVD RW AD-7910A</key>
 	<integer>48</integer>
@@ -3083,6 +3107,8 @@
 	<key>DVD Writer 1260r</key>
 	<integer>48</integer>
 	<key>DVD Writer 1260t</key>
+	<integer>6</integer>
+	<key>DVD Writer 1260v</key>
 	<integer>6</integer>
 	<key>DVD Writer 1270d</key>
 	<integer>6</integer>
@@ -3868,6 +3894,8 @@
 	<integer>6</integer>
 	<key>DVD-RAM UJ8B2</key>
 	<integer>102</integer>
+	<key>DVD-RAM UJ8C0</key>
+	<integer>103</integer>
 	<key>DVD-RAM UJE844S</key>
 	<integer>102</integer>
 	<key>DVD-RAM VW-BN1-2</key>
@@ -3938,6 +3966,8 @@
 	<integer>-24</integer>
 	<key>DVD-ROM DROM6316</key>
 	<integer>6</integer>
+	<key>DVD-ROM DT31N</key>
+	<integer>103</integer>
 	<key>DVD-ROM DU10N</key>
 	<integer>102</integer>
 	<key>DVD-ROM DU20N</key>
@@ -4082,6 +4112,8 @@
 	<integer>102</integer>
 	<key>DVD-ROM GDR-H30N</key>
 	<integer>6</integer>
+	<key>DVD-ROM GDR-M10N</key>
+	<integer>102</integer>
 	<key>DVD-ROM GDR-R10N</key>
 	<integer>102</integer>
 	<key>DVD-ROM GDR-T10N</key>
@@ -4816,7 +4848,13 @@
 	<integer>102</integer>
 	<key>DVDRAM GP30NB20</key>
 	<integer>6</integer>
+	<key>DVDRAM GP30NB30</key>
+	<integer>103</integer>
+	<key>DVDRAM GP30NW20</key>
+	<integer>6</integer>
 	<key>DVDRAM GP40LB10</key>
+	<integer>6</integer>
+	<key>DVDRAM GP40NB40</key>
 	<integer>6</integer>
 	<key>DVDRAM GS20F</key>
 	<integer>667</integer>
@@ -5604,6 +5642,8 @@
 	<integer>48</integer>
 	<key>SBW-06C2X-U</key>
 	<integer>48</integer>
+	<key>SBW-06D2X-U</key>
+	<integer>48</integer>
 	<key>SCB-2408</key>
 	<integer>-582</integer>
 	<key>SCB-2424V</key>
@@ -5924,6 +5964,8 @@
 	<integer>6</integer>
 	<key>iHAS524   B</key>
 	<integer>6</integer>
+	<key>iHAS524   D</key>
+	<integer>6</integer>
 	<key>iHAS624   A</key>
 	<integer>6</integer>
 	<key>iHAS624   B</key>
@@ -5955,6 +5997,8 @@
 	<key>iHES208   2</key>
 	<integer>6</integer>
 	<key>iHES212   3</key>
+	<integer>702</integer>
+	<key>iHES312   3</key>
 	<integer>702</integer>
 	<key>iHOS104</key>
 	<integer>696</integer>
