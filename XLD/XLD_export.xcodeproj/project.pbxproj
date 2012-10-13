@@ -91,6 +91,7 @@
 		BFA129850B02289100A8CEF7 /* pause_active.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA129810B02289100A8CEF7 /* pause_active.png */; };
 		BFA129860B02289100A8CEF7 /* play_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA129820B02289100A8CEF7 /* play_blue.png */; };
 		BFA129C70B02338300A8CEF7 /* XLDPlayerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = BFA129C50B02338300A8CEF7 /* XLDPlayerWindow.m */; };
+		BFA7C90416296F6700C5116B /* XLDOpusOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFA7C90316296F6700C5116B /* XLDOpusOutput.bundle */; };
 		BFB24D1C10BA622D00E11EBF /* XLDShortenDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFB24D1B10BA622D00E11EBF /* XLDShortenDecoder.bundle */; };
 		BFB7CEA9123A8B7200F0870D /* XLDMetadataTextParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB7CEA7123A8B7200F0870D /* XLDMetadataTextParser.m */; };
 		BFB9DC291281509E009445A3 /* XLDWavOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB9DC281281509E009445A3 /* XLDWavOutput.m */; };
@@ -138,6 +139,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				BFA7C90416296F6700C5116B /* XLDOpusOutput.bundle in CopyFiles */,
 				BFF7E77E1126FEDD00300E40 /* XLDTakDecoder.bundle in CopyFiles */,
 				BFB24D1C10BA622D00E11EBF /* XLDShortenDecoder.bundle in CopyFiles */,
 				BF2D3F980E72C5BD00BE32E5 /* XLDSparkleUpdater.bundle in CopyFiles */,
@@ -362,6 +364,7 @@
 		BFA129820B02289100A8CEF7 /* play_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play_blue.png; sourceTree = "<group>"; };
 		BFA129C40B02338300A8CEF7 /* XLDPlayerWindow.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDPlayerWindow.h; sourceTree = "<group>"; };
 		BFA129C50B02338300A8CEF7 /* XLDPlayerWindow.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDPlayerWindow.m; sourceTree = "<group>"; };
+		BFA7C90316296F6700C5116B /* XLDOpusOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDOpusOutput.bundle; path = ../XLDOpusOutput/build/Release/XLDOpusOutput.bundle; sourceTree = "<group>"; };
 		BFAC8365128BFBB8001A3797 /* cachetest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cachetest.c; sourceTree = "<group>"; };
 		BFB24D1B10BA622D00E11EBF /* XLDShortenDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDShortenDecoder.bundle; path = ../XLDShortenDecoder/build/Release/XLDShortenDecoder.bundle; sourceTree = "<group>"; };
 		BFB7CEA7123A8B7200F0870D /* XLDMetadataTextParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDMetadataTextParser.m; sourceTree = "<group>"; };
@@ -707,6 +710,7 @@
 				BF3758CA0A3C14090003FD0E /* XLDLibsndfileDecoder.bundle */,
 				BFB24D1B10BA622D00E11EBF /* XLDShortenDecoder.bundle */,
 				BFF7E77D1126FEDD00300E40 /* XLDTakDecoder.bundle */,
+				BFA7C90316296F6700C5116B /* XLDOpusOutput.bundle */,
 			);
 			name = Plugin;
 			sourceTree = "<group>";
