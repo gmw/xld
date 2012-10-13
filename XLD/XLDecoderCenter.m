@@ -40,6 +40,12 @@
 			[decoderArr addObject:[decoderArr objectAtIndex:i]];
 			[decoderArr removeObjectAtIndex:i];
 		}
+#if 0
+		if([[[decoderArr objectAtIndex:i] description] isEqualToString:@"XLDTakDecoder"]) {
+			[decoderArr addObject:[decoderArr objectAtIndex:i]];
+			[decoderArr removeObjectAtIndex:i];
+		}
+#endif
 	}
 	
 	return self;
