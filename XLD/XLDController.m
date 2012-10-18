@@ -524,6 +524,9 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			if([util asin] && [util coverURL]) {
 				[[discView imageView] loadImageFromASIN:[util asin] andAlternateURL:[util coverURL]];
 			}
+			else if([util coverURL]) {
+				[[discView imageView] loadImageFromURL:[util coverURL]];
+			}
 		}
 		[util release];
 		util = nil;
@@ -542,6 +545,9 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			NSBeginCriticalAlertSheet(LS(@"CDDB connection"), @"OK", nil, nil, [discView window], nil, nil, nil, NULL, LS(@"CDDB connection failure"));
 			if([util asin] && [util coverURL]) {
 				[[discView imageView] loadImageFromASIN:[util asin] andAlternateURL:[util coverURL]];
+			}
+			else if([util coverURL]) {
+				[[discView imageView] loadImageFromURL:[util coverURL]];
 			}
 		}
 		[util release];
@@ -569,6 +575,9 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		else {
 			if([util asin] && [util coverURL]) {
 				[[discView imageView] loadImageFromASIN:[util asin] andAlternateURL:[util coverURL]];
+			}
+			else if([util coverURL]) {
+				[[discView imageView] loadImageFromURL:[util coverURL]];
 			}
 			if(result != XLDCDDBSuccess) {
 				NSBeginCriticalAlertSheet(LS(@"CDDB connection"), @"OK", nil, nil, [discView window], nil, nil, nil, NULL, LS(@"CDDB connection failure"));
@@ -4084,6 +4093,9 @@ end:
 		else {
 			if([util asin] && [util coverURL]) {
 				[[discView imageView] loadImageFromASIN:[util asin] andAlternateURL:[util coverURL]];
+			}
+			else if([util coverURL]) {
+				[[discView imageView] loadImageFromURL:[util coverURL]];
 			}
 			if(result != XLDCDDBSuccess) {
 				NSBeginCriticalAlertSheet(LS(@"CDDB connection"), @"OK", nil, nil, [discView window], nil, nil, nil, NULL, LS(@"CDDB connection failure"));

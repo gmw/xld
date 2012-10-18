@@ -14,6 +14,7 @@
 	NSMutableDictionary *release;
 	int threads;
 }
++ (NSURL *)coverURLFromReleaseID:(NSString *)releaseid;
 - (id)initWithReleaseID:(NSString *)releaseid discID:(NSString *)discid totalTracks:(int)totalTracks totalSectors:(int)sectors ambiguous:(BOOL)ambiguous;
 - (NSDictionary *)disc;
 @end

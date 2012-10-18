@@ -471,18 +471,26 @@ static char *base64enc(const unsigned  char *input, int length)
 GetCover:
 	if(getCover && !coverURL) {
 		if(info && ![[info objectAtIndex:0] isEqualToString:@"MusicBrainz"]) {
-			for(i=0;!asin&&!mcn&&i<[queryResult count];i++) { // check if mb query exists for image download
+			for(i=0;!coverURL&&i<[queryResult count];i++) { // check if mb query exists for image download
 				if(![[[queryResult objectAtIndex:i] objectAtIndex:0] isEqualToString:@"MusicBrainz"]) continue;
-				XLDMusicBrainzRelease *release = [[XLDMusicBrainzRelease alloc] initWithReleaseID:[[queryResult objectAtIndex:i] objectAtIndex:2] discID:[NSString stringWithUTF8String:discid] totalTracks:totalAudioTrack totalSectors:totalSectors ambiguous:NO];
-				if(release) {
-					NSDictionary *dic = [release disc];
-					asin = [[dic objectForKey:@"ASIN"] retain];
-					mcn = [dic objectForKey:@"Barcode"];
-					[release release];
+				if(!mcn && !asin) {
+					XLDMusicBrainzRelease *release = [[XLDMusicBrainzRelease alloc] initWithReleaseID:[[queryResult objectAtIndex:i] objectAtIndex:2] discID:[NSString stringWithUTF8String:discid] totalTracks:totalAudioTrack totalSectors:totalSectors ambiguous:NO];
+					if(release) {
+						NSDictionary *dic = [release disc];
+						if(!mcn) mcn = [dic objectForKey:@"Barcode"];
+						if(!asin) asin = [[dic objectForKey:@"ASIN"] retain];
+						coverURL = [[dic objectForKey:@"CoverURL"] retain];
+						[release release];
+					}
 				}
+				else coverURL = [[XLDMusicBrainzRelease coverURLFromReleaseID:[[queryResult objectAtIndex:i] objectAtIndex:2]] retain];
 			}
 		}
-		
+		if(coverURL) {
+			if(asin) [asin release];
+			asin = nil;
+			goto end;
+		}
 		if(!asin) {
 			if(!mcn) mcn = [[[trackArr objectAtIndex:0] metadata] objectForKey:XLD_METADATA_CATALOG];
 			NSDictionary *dic = [delegate awsKeys];
@@ -513,6 +521,7 @@ GetCover:
 		}
 		//NSLog(@"%@",coverURL);
 	}
+end:
 	if(searcher) [searcher release];
 	return result;
 }

@@ -8,8 +8,56 @@
 
 #import "XLDMusicBrainzRelease.h"
 #import "XLDCustomClasses.h"
+#import <SystemConfiguration/SystemConfiguration.h>
+#import <sys/sysctl.h>
+
+#define NSAppKitVersionNumber10_4 824
 
 @implementation XLDMusicBrainzRelease
+
++ (NSURL *)coverURLFromReleaseID:(NSString *)releaseid
+{
+	NSURL *coverURL = nil;
+	/* cover art information
+	 use CFNetwork APIs to get only headers synchronously */
+	CFURLRef url = CFURLCreateWithString(NULL, (CFStringRef)[NSString stringWithFormat:@"http://coverartarchive.org/release/%@/front",releaseid], NULL);
+	//NSLog(@"%@",[(NSURL*)url description]);
+	CFHTTPMessageRef httpRequest = CFHTTPMessageCreateRequest(NULL, CFSTR("HEAD"), url, kCFHTTPVersion1_1);
+	if(floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+		int sels[2] = { CTL_KERN , KERN_OSRELEASE };
+		char darwin[32];
+		size_t size = 32;
+		sysctl(sels,2,&darwin,&size,NULL,0);
+		NSBundle *cfnetwork = [NSBundle bundleWithPath:@"/System/Library/Frameworks/CoreServices.framework/Frameworks/CFNetwork.framework"];
+		CFHTTPMessageSetHeaderFieldValue(httpRequest,CFSTR("User-Agent"),(CFStringRef)[NSString stringWithFormat:@"XLD/%@ CFNetwork/%@ Darwin/%s",[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleVersion"],[[cfnetwork infoDictionary] objectForKey:@"CFBundleVersion"],darwin]);
+	}
+	CFReadStreamRef readStream = CFReadStreamCreateForHTTPRequest(NULL, httpRequest);
+	CFDictionaryRef proxyDict = SCDynamicStoreCopyProxies(NULL);
+	CFReadStreamSetProperty(readStream, kCFStreamPropertyHTTPProxy, proxyDict);
+	CFRelease(proxyDict);
+	CFReadStreamOpen(readStream);
+	CFIndex n;
+	UInt8 buf[1024];
+	while(1) {
+		n = CFReadStreamRead(readStream, buf, sizeof(buf));
+		if(n == 0) break;
+	}
+	CFHTTPMessageRef responseHeader = (CFHTTPMessageRef)CFReadStreamCopyProperty(readStream, kCFStreamPropertyHTTPResponseHeader);
+	if(responseHeader) {
+		CFDictionaryRef headers = CFHTTPMessageCopyAllHeaderFields(responseHeader);
+		//NSLog(@"%@",[(NSDictionary*)headers description]);
+		if([(NSDictionary *)headers objectForKey:@"Location"]) {
+			coverURL = [NSURL URLWithString:[(NSDictionary *)headers objectForKey:@"Location"]];
+		}
+		CFRelease(headers);
+		CFRelease(responseHeader);
+	}
+	CFRelease(readStream);
+	CFRelease(httpRequest);
+	CFRelease(url);
+	
+	return coverURL;
+}
 
 - (NSString *)getComposerFromRecordingID:(NSString *)recordingid
 {
@@ -346,6 +394,10 @@ last:
 	}
 	
 	if(![release objectForKey:@"Tracks"]) [release removeAllObjects];
+	else {
+		NSURL *coverURL = [XLDMusicBrainzRelease coverURLFromReleaseID:releaseid];
+		if(coverURL) [release setObject:coverURL forKey:@"CoverURL"];
+	}
 	
 	/*while(threads) {
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];

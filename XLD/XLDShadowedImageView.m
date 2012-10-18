@@ -219,6 +219,12 @@
 	loading = NO;
 }
 
+- (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
+{
+	/* explicit redirection is needed on OSX 10.4 */
+	return request;
+}
+
 - (void)connection:(NSURLConnection *)conn didReceiveResponse:(NSURLResponse *)response
 {
 	int length = 0;
