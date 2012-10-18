@@ -220,6 +220,7 @@ last:
 	[release setObject:discid forKey:@"DiscID"];
 	
 	NSArray *discs = [rel nodesForXPath:@"./medium-list/medium" error:nil];
+	if([discs count] > 1) [release setObject:[NSNumber numberWithInt:[discs count]] forKey:@"TotalDiscs"];
 	int i,j;
 	for(i=0;i<[discs count];i++) {
 		id disc = [discs objectAtIndex:i];
@@ -335,7 +336,13 @@ last:
 			if(trackNum) [trackList setObject:track forKey:[NSNumber numberWithInt:trackNum]];
 		}
 		[release setObject:trackList forKey:@"Tracks"];
-		if(match) break;
+		if(match) {
+			if([discs count] > 1) {
+				objs = [disc nodesForXPath:@"./position" error:nil];
+				if([objs count]) [release setObject:[NSNumber numberWithInt:[[[objs objectAtIndex:0] stringValue] intValue]] forKey:@"DiscNumber"];
+			}
+			break;
+		}
 	}
 	
 	if(![release objectForKey:@"Tracks"]) [release removeAllObjects];

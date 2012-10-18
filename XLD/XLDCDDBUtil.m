@@ -445,6 +445,13 @@ static char *base64enc(const unsigned  char *input, int length)
 				if([currentTrack objectForKey:@"ISRC"] && ![[trk metadata] objectForKey:XLD_METADATA_ISRC]) {
 					[[trk metadata] setObject:[currentTrack objectForKey:@"ISRC"] forKey:XLD_METADATA_ISRC];
 				}
+				/* Disc Number */
+				if([dic objectForKey:@"DiscNumber"]) {
+					[[trk metadata] setObject:[dic objectForKey:@"DiscNumber"] forKey:XLD_METADATA_DISC];
+				}
+				if([dic objectForKey:@"TotalDiscs"]) {
+					[[trk metadata] setObject:[dic objectForKey:@"TotalDiscs"] forKey:XLD_METADATA_TOTALDISCS];
+				}
 			}
 			asin = [[dic objectForKey:@"ASIN"] retain];
 			mcn = [dic objectForKey:@"Barcode"];
