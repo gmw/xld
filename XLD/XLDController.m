@@ -34,6 +34,7 @@
 #import "XLDCoverArtSearcher.h"
 #import "XLDShadowedImageView.h"
 #import "XLDPluginManager.h"
+#import "XLDLogChecker.h"
 
 static NSString*    GeneralIdentifier = @"General";
 static NSString*    BatchIdentifier = @"Batch";
@@ -4332,6 +4333,15 @@ fail:
 	//[self setNextKeyViews];
 	[self statusChanged:nil];
 	[self updateCDDAList:nil];
+	
+	Class logChecker = (Class)objc_lookUpClass("XLDLogChecker");
+	if(logChecker) {
+		NSMenuItem *logcheckerItem = [[NSMenuItem alloc] initWithTitle:LS(@"Log Checker...") action:@selector(logChecker) keyEquivalent:@""];
+		[logcheckerItem setTarget:[[logChecker alloc] init]];
+		[[[[NSApp mainMenu] itemAtIndex:0] submenu] insertItem:logcheckerItem atIndex:6];
+		[[[[NSApp mainMenu] itemAtIndex:0] submenu] insertItem:[NSMenuItem separatorItem] atIndex:7];
+		[logcheckerItem release];
+	}
 	
 	[self performSelector:@selector(launchOK) withObject:nil afterDelay:0.5];
 	/*if(queuedFile) {

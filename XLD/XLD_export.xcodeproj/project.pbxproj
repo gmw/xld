@@ -365,6 +365,7 @@
 		BFA129C40B02338300A8CEF7 /* XLDPlayerWindow.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDPlayerWindow.h; sourceTree = "<group>"; };
 		BFA129C50B02338300A8CEF7 /* XLDPlayerWindow.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDPlayerWindow.m; sourceTree = "<group>"; };
 		BFA7C90316296F6700C5116B /* XLDOpusOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDOpusOutput.bundle; path = ../XLDOpusOutput/build/Release/XLDOpusOutput.bundle; sourceTree = "<group>"; };
+		BFA7CBF6163C10C400C5116B /* XLDLogChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDLogChecker.h; sourceTree = "<group>"; };
 		BFAC8365128BFBB8001A3797 /* cachetest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cachetest.c; sourceTree = "<group>"; };
 		BFB24D1B10BA622D00E11EBF /* XLDShortenDecoder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDShortenDecoder.bundle; path = ../XLDShortenDecoder/build/Release/XLDShortenDecoder.bundle; sourceTree = "<group>"; };
 		BFB7CEA7123A8B7200F0870D /* XLDMetadataTextParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDMetadataTextParser.m; sourceTree = "<group>"; };
@@ -562,6 +563,7 @@
 				BF3755EB0A3BFD820003FD0E /* XLDDecoder.h */,
 				BF12FEFF0A3D4A7D00822690 /* XLDOutput.h */,
 				BF91C6C50AB1481E00885032 /* XLDOutputTask.h */,
+				BFA7CBF6163C10C400C5116B /* XLDLogChecker.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
