@@ -695,7 +695,9 @@ tagExist:
 		if(fseek(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
 	
+	if(tmp <= 8) goto end;
 	void *buf = malloc(tmp-8);
+	if(!buf) goto end;
 	if(fread(buf,1,tmp-8,fp) < tmp-8) goto end;
 	
 	NSData *dat = [NSData dataWithBytesNoCopy:buf length:tmp-8];
@@ -704,7 +706,7 @@ tagExist:
 	int current = 0;
 	int atomLength;
 	int flag;
-	while(current < len) {
+	while(current+8 < len) { // at least 8 bytes for atom name and length
 		[dat getBytes:&atomLength range:NSMakeRange(current,4)];
 		[dat getBytes:atom range:NSMakeRange(current+4,4)];
 		atomLength = NSSwapBigIntToHost(atomLength);
