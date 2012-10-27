@@ -514,7 +514,10 @@ int xld_cdda_speed_set(xld_cdread_t *disc, int speed)
 	unsigned short spd;
 	if(speed <= 0) spd = disc->maxSpeed ? disc->maxSpeed * kCDSpeedMin : kCDSpeedMax;
 	else spd = speed * kCDSpeedMin;
-	return ioctl(disc->fd,DKIOCCDSETSPEED,&spd);
+	int ret = ioctl(disc->fd,DKIOCCDSETSPEED,&spd);
+	/*ioctl(disc->fd,DKIOCCDGETSPEED,&spd);
+	fprintf(stderr,"set speed to %d kb/s (%dx)\n",spd,spd/kCDSpeedMin);*/
+	return ret;
 }
 
 #define CRCPOLY  0x1021U
