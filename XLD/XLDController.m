@@ -1592,17 +1592,19 @@ end:
 	NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
 	NSArray* languages = [defs objectForKey:@"AppleLanguages"];
 	if([[languages objectAtIndex:0] isEqualToString:@"ja"]) {
-		url = @"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tmkk%40smoug%2enet&item_name=X%20Lossless%20Decoder&no_shipping=0&no_note=1&tax=0&currency_code=JPY&lc=JP&bn=PP%2dDonationsBF&charset=UTF%2d8";
+		//url = @"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tmkk%40smoug%2enet&item_name=X%20Lossless%20Decoder&no_shipping=0&no_note=1&tax=0&currency_code=JPY&lc=JP&bn=PP%2dDonationsBF&charset=UTF%2d8";
+		url = @"http://tmkk.pv.land.to/xld/index.html#donation";
 	}
-	else if([[languages objectAtIndex:0] isEqualToString:@"de"]
+	/*else if([[languages objectAtIndex:0] isEqualToString:@"de"]
 			|| [[languages objectAtIndex:0] isEqualToString:@"fr"]
 			|| [[languages objectAtIndex:0] isEqualToString:@"nl"]
 			|| [[languages objectAtIndex:0] isEqualToString:@"it"]
 			|| [[languages objectAtIndex:0] isEqualToString:@"el"]) {
 		url = @"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tmkk%40smoug%2enet&item_name=X%20Lossless%20Decoder&no_shipping=0&no_note=1&tax=0&currency_code=EUR&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8";
-	}
+	}*/
 	else {
-		url = @"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tmkk%40smoug%2enet&item_name=X%20Lossless%20Decoder&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8";
+		//url = @"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tmkk%40smoug%2enet&item_name=X%20Lossless%20Decoder&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8";
+		url = @"http://tmkk.pv.land.to/xld/index_e.html#donation";
 	}
 	[ws openURL:[NSURL URLWithString:url]];
 }
