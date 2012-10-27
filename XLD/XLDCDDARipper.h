@@ -51,6 +51,7 @@ typedef struct
 	int startLSN;
 	XLDSecureRipperEngine *secureRipper;
 	XLDRipperMode ripperMode;
+	int maxSpeed;
 }
 
 + (BOOL)canHandleFile:(char *)path;
@@ -79,4 +80,5 @@ typedef struct
 - (void)setRipperMode:(XLDRipperMode)mode;
 - (NSString *)driveStr;
 - (void)analyzeTrackGain;
+- (void)setMaxSpeed:(int)speed;
 @end

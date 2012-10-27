@@ -311,6 +311,7 @@ typedef struct {
 		[(XLDCDDARipper *)decoder setRipperMode:ripperMode];
 		[(XLDCDDARipper *)decoder setRetryCount:retryCount];
 		[(XLDCDDARipper *)decoder setOffsetCorrectionValue:offsetCorrectionValue];
+		[(XLDCDDARipper *)decoder setMaxSpeed:maxRippingSpeed];
 		if(testMode) [(XLDCDDARipper *)decoder setTestMode];
 		if(resultObj) {
 			id obj = [[track metadata] objectForKey:XLD_METADATA_TRACK];
@@ -1329,6 +1330,11 @@ finish:
 - (cddaRipResult *)cddaRipResult
 {
 	return ripResult;
+}
+
+- (void)setMaxRippingSpeed:(int)maxSpeed
+{
+	maxRippingSpeed = maxSpeed;
 }
 
 @end

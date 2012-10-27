@@ -84,6 +84,7 @@
 	XLDRipperMode ripperMode;
 	XLDDiscLayout *discLayout;
 	cddaRipResult *ripResult;
+	int maxRippingSpeed;
 }
 
 - (id)initWithQueue:(id)q;
@@ -132,4 +133,5 @@
 - (void)taskSelected;
 - (void)taskDeselected;
 - (cddaRipResult *)cddaRipResult;
+- (void)setMaxRippingSpeed:(int)maxSpeed;
 @end

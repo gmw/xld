@@ -912,6 +912,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			[task setResultObj:resultObj];
 			[task setFirstAudioFrame:[cueParser firstAudioFrame]];
 			[task setLastAudioFrame:[cueParser lastAudioFrame]];
+			[task setMaxRippingSpeed:[[o_driveSpeedControl selectedItem] tag]];
 			if(([o_testBeforeCopy state] == NSOnState) && (([[o_testType selectedCell] tag] == 0) || ![resultObj accurateRipDB] || ![[resultObj accurateRipDB] hasValidDataForTrack:i+1])) {
 				BOOL testFlag = NO;
 				if([[o_testType selectedCell] tag] == 0) testFlag = YES;
@@ -952,6 +953,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 					[testTask setResultObj:resultObj];
 					[testTask setFirstAudioFrame:[cueParser firstAudioFrame]];
 					[testTask setLastAudioFrame:[cueParser lastAudioFrame]];
+					[testTask setMaxRippingSpeed:[[o_driveSpeedControl selectedItem] tag]];
 					[taskArray addObject:testTask];
 					[testTask release];
 				}
@@ -1859,6 +1861,7 @@ end:
 	[pref setObject:[o_AWSSecretKey stringValue] forKey:@"AWSSecretKey"];
 	[pref setInteger:[[o_AWSDomain selectedItem] tag] forKey:@"AWSDomain"];
 	[pref setInteger:[[o_htoaStyle selectedCell] tag] forKey:@"HTOAStyle"];
+	[pref setInteger:[[o_driveSpeedControl selectedItem] tag] forKey:@"DriveSpeedControl"];
 }
 
 - (void)savePrefs
@@ -2220,6 +2223,10 @@ end:
 	}
 	if(obj=[pref objectForKey:@"HTOAStyle"]) {
 		[o_htoaStyle selectCellWithTag:[obj intValue]];
+	}
+	if(obj=[pref objectForKey:@"DriveSpeedControl"]) {
+		int idx = [o_driveSpeedControl indexOfItemWithTag:[obj intValue]];
+		if(idx >= 0) [o_driveSpeedControl selectItemAtIndex:idx];
 	}
 }
 

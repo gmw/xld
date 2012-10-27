@@ -334,6 +334,7 @@ int xld_cdda_open(xld_cdread_t *disc, char *device)
 void xld_cdda_close(xld_cdread_t *disc)
 {
 	if(!disc->opened) return;
+	xld_cdda_set_max_speed(disc, -1);
 	if(disc->device) free(disc->device);
 	if(disc->tracks) free(disc->tracks);
 	if(disc->vendor) free(disc->vendor);
@@ -511,8 +512,8 @@ int xld_cdda_track_audiop(xld_cdread_t *disc, int track)
 int xld_cdda_speed_set(xld_cdread_t *disc, int speed)
 {
 	unsigned short spd;
-	if(speed <= 0) spd = kCDSpeedMax;
-	else spd = speed;
+	if(speed <= 0) spd = disc->maxSpeed ? disc->maxSpeed * kCDSpeedMin : kCDSpeedMax;
+	else spd = speed * kCDSpeedMin;
 	return ioctl(disc->fd,DKIOCCDSETSPEED,&spd);
 }
 
@@ -792,4 +793,10 @@ int xld_cdda_measure_cache(xld_cdread_t *disc)
 	
 	free(buf);
 	return cache;
+}
+
+int xld_cdda_set_max_speed(xld_cdread_t *disc, int speed)
+{
+	disc->maxSpeed = speed;
+	return xld_cdda_speed_set(disc,speed);
 }

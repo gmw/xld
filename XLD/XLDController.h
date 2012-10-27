@@ -125,6 +125,7 @@
 	IBOutlet id o_htoaStyle;
 	IBOutlet id o_resourceURLPane;
 	IBOutlet id o_resourceURL;
+	IBOutlet id o_driveSpeedControl;
 	id multipleOutputFormatMatrix;
 	//id decoder;
 	id decoderCenter;

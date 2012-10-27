@@ -130,6 +130,7 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 	//NSLog(@"engine is: %@",useOldEngine ? @"old" : @"new");
 	
 	if(xld_cdda_open(&cdread, path) == -1) return NO;
+	if(maxSpeed) xld_cdda_set_max_speed(&cdread, maxSpeed);
 	
 	totalFrames = 588*(xld_cdda_disc_lastsector(&cdread) + 1);
 	
@@ -709,6 +710,11 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 			}
 		}
 	}
+}
+
+- (void)setMaxSpeed:(int)speed
+{
+	maxSpeed = speed;
 }
 
 @end

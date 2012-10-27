@@ -42,6 +42,7 @@ typedef struct
 	xld_track_t *tracks;
 	char mcn[14];
 	int nonBCD;
+	int maxSpeed;
 } xld_cdread_t;
 
 #define CDIO_CD_FRAMESIZE_RAW 2352
@@ -81,5 +82,6 @@ void xld_cdda_read_mcn(xld_cdread_t *disc);
 void xld_cdda_read_isrc(xld_cdread_t *disc, int track);
 int xld_cdda_sector_getsession(xld_cdread_t *disc, int sector);
 int xld_cdda_measure_cache(xld_cdread_t *disc);
+int xld_cdda_set_max_speed(xld_cdread_t *disc, int speed);
 
 #endif
