@@ -265,6 +265,8 @@ int cmdline_main(int argc, char *argv[])
 	id encoder = nil;
 	BOOL acceptStdoutWriting = YES;
 	NSDictionary *profileDic;
+	char infile[512];
+	int error = 0;
 	
 	int		ch;
 	extern char	*optarg;
@@ -571,6 +573,7 @@ int cmdline_main(int argc, char *argv[])
 		char *tmp = malloc(512);
 		outdir = realpath("./", tmp);
 	}
+	realpath(argv[optind], infile);
 	
 	id decoder;
 	
@@ -592,7 +595,7 @@ int cmdline_main(int argc, char *argv[])
 		else decoder = [[XLDRawDecoder alloc] initWithFormat:outputFormat endian: rawEndian];
 	}
 	else {
-		decoder = [decoderCenter preferredDecoderForFile:[NSString stringWithUTF8String:argv[optind]]];
+		decoder = [decoderCenter preferredDecoderForFile:[NSString stringWithUTF8String:infile]];
 		if(!decoder) {
 			fprintf(stderr,"error: cannot handle file\n");
 			return -1;
@@ -604,7 +607,7 @@ int cmdline_main(int argc, char *argv[])
 		return -1;
 	}
 	
-	if(![(id <XLDDecoder>)decoder openFile:argv[optind]]) {
+	if(![(id <XLDDecoder>)decoder openFile:infile]) {
 		fprintf(stderr,"error: cannot open file\n");
 		[decoder closeFile];
 		return -1;
@@ -705,12 +708,13 @@ int cmdline_main(int argc, char *argv[])
 		else [decoder seekToFrame:[trk index]];
 		if([(id <XLDDecoder>)decoder error]) {
 			fprintf(stderr,"error: cannot seek\n");
+			error = -1;
 			continue;
 		}
 		NSString *outputPathStr;
 		if(useCueSheet || useDdpms || !outfile) {
 			if(!useCueSheet && !useDdpms)
-				outputPathStr = [[[[NSString stringWithUTF8String:argv[optind]] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extStr];
+				outputPathStr = [[[[NSString stringWithUTF8String:infile] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extStr];
 			else if([[trk metadata] objectForKey:XLD_METADATA_TITLE] && [[trk metadata] objectForKey:XLD_METADATA_ARTIST])
 				outputPathStr = [NSString stringWithFormat:@"%02d %@ - %@.%@",track+1,[[trk metadata] objectForKey:XLD_METADATA_ARTIST],[[trk metadata] objectForKey:XLD_METADATA_TITLE],extStr];
 			else if([[trk metadata] objectForKey:XLD_METADATA_TITLE])
@@ -720,6 +724,12 @@ int cmdline_main(int argc, char *argv[])
 			else
 				outputPathStr = [NSString stringWithFormat:@"%02d Track %02d.%@",track+1,track+1,extStr];
 			outfile = [[[NSString stringWithUTF8String:outdir] stringByAppendingPathComponent:outputPathStr] UTF8String];
+		}
+		
+		if(!strcmp(infile,outfile)) {
+			fprintf(stderr,"error: input and output path are the same\n");
+			error = -1;
+			continue;
 		}
 		
 		int framesToCopy = [trk frames];
@@ -748,11 +758,13 @@ int cmdline_main(int argc, char *argv[])
 			[outputTask setEnableAddTag:YES];
 			if(![outputTask setOutputFormat:outputFormat]) {
 				fprintf(stderr,"error: incompatible format (unsupported bitdepth or something)\n");
+				error = -1;
 				break;
 			}
 			if(![outputTask openFileForOutput:[NSString stringWithUTF8String:outfile] withTrackData:trk]) {
 				fprintf(stderr,"error: cannot write file %s\n",outfile);
 				[(id)outputTask release];
+				error = -1;
 				continue;
 			}
 		}
@@ -770,6 +782,7 @@ int cmdline_main(int argc, char *argv[])
 			if(!writeToStdout) {
 				if(![outputTask writeBuffer:tmpbuf frames:offset - [trk index]]) {
 					fprintf(stderr,"error: cannot output sample\n");
+					error = -1;
 					break;
 				}
 			}
@@ -785,6 +798,7 @@ int cmdline_main(int argc, char *argv[])
 			xldoffset_t ret = [decoder decodeToBuffer:(int *)buffer frames:samplesperloop];
 			if([(id <XLDDecoder>)decoder error]) {
 				fprintf(stderr,"error: cannot decode\n");
+				error = -1;
 				break;
 			}
 			//NSLog(@"%d,%d",ret,samplesperloop);
@@ -793,6 +807,7 @@ int cmdline_main(int argc, char *argv[])
 				if(!writeToStdout) {
 					if(![outputTask writeBuffer:(int *)buffer frames:ret]) {
 						fprintf(stderr,"error: cannot output sample\n");
+						error = -1;
 						break;
 					}
 				}
@@ -832,5 +847,5 @@ int cmdline_main(int argc, char *argv[])
 	free(buffer);
 	[trackList release];
 	[pool release];
-	return 0;
+	return error;
 }
