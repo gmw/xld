@@ -3806,7 +3806,8 @@ end:
 
 - (void)accurateRipCheckDidFinish:(id)result
 {
-	if([result logStr]) [self showLogStr:[result logStr]];
+	NSString *log = [result logStr];
+	if(log) [self showLogStr:log];
 	[result release];
 }
 

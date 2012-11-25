@@ -837,8 +837,14 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	[newProps setObject:DRBurnStrategyCDSAO forKey:DRBurnStrategyKey];
 	NSString *mcn = [[[[parser trackList] objectAtIndex:0] metadata] objectForKey:XLD_METADATA_CATALOG];
 	if(mcn) {
-		if([mcn length] == 13) [newProps setObject:[NSData dataWithBytes:[mcn UTF8String] length:13] forKey:DRMediaCatalogNumberKey];
-		else if([mcn length] == 12) [newProps setObject:[NSData dataWithBytes:[[@"0" stringByAppendingString:mcn] UTF8String] length:13] forKey:DRMediaCatalogNumberKey];
+		NSMutableCharacterSet *cSet = [[NSMutableCharacterSet alloc] init];
+		[cSet addCharactersInRange:NSMakeRange('0', 10)];
+		NSRange range = [mcn rangeOfCharacterFromSet:cSet];
+		if(range.location == 0 && range.length == [mcn length]) {
+			if([mcn length] == 13) [newProps setObject:[NSData dataWithBytes:[mcn UTF8String] length:13] forKey:DRMediaCatalogNumberKey];
+			else if([mcn length] == 12) [newProps setObject:[NSData dataWithBytes:[[@"0" stringByAppendingString:mcn] UTF8String] length:13] forKey:DRMediaCatalogNumberKey];
+		}
+		[cSet release];
 	}
 	DRBurn *burn = [DRBurn burnForDevice:[[bsp burnObject] device]];
 	[burn setProperties:newProps];

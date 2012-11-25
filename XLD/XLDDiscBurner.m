@@ -41,9 +41,16 @@
 		}
 		else
 			[dic setObject:[NSNumber numberWithInt:[(XLDTrack *)[trackList objectAtIndex:i] gap]/588] forKey:DRPreGapLengthKey];
-		NSString *isrc = [[[trackList objectAtIndex:i] metadata] objectForKey:XLD_METADATA_ISRC];
-		if(isrc && [isrc length] == 12)
-			[dic setObject:[NSData dataWithBytes:[isrc UTF8String] length:12] forKey:DRTrackISRCKey];
+		NSString *isrc = [[[[trackList objectAtIndex:i] metadata] objectForKey:XLD_METADATA_ISRC] uppercaseString];
+		if(isrc && [isrc length] == 12) {
+			NSMutableCharacterSet *cSet = [[NSMutableCharacterSet alloc] init];
+			[cSet addCharactersInRange:NSMakeRange('A', 26)];
+			[cSet addCharactersInRange:NSMakeRange('0', 10)];
+			NSRange range = [isrc rangeOfCharacterFromSet:cSet];
+			if(range.location == 0 && range.length == 12)
+				[dic setObject:[NSData dataWithBytes:[isrc UTF8String] length:12] forKey:DRTrackISRCKey];
+			[cSet release];
+		}
 		
 		// See DRTrackCore.h or MMC document for details
 		// See Table 350 in mmc3r10g.pdf
