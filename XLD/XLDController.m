@@ -1594,7 +1594,7 @@ end:
 	NSArray* languages = [defs objectForKey:@"AppleLanguages"];
 	if([[languages objectAtIndex:0] isEqualToString:@"ja"]) {
 		//url = @"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tmkk%40smoug%2enet&item_name=X%20Lossless%20Decoder&no_shipping=0&no_note=1&tax=0&currency_code=JPY&lc=JP&bn=PP%2dDonationsBF&charset=UTF%2d8";
-		url = @"http://tmkk.pv.land.to/xld/donation.html.ja";
+		url = @"http://tmkk.undo.jp/xld/donation.html.ja";
 	}
 	/*else if([[languages objectAtIndex:0] isEqualToString:@"de"]
 			|| [[languages objectAtIndex:0] isEqualToString:@"fr"]
@@ -1605,7 +1605,7 @@ end:
 	}*/
 	else {
 		//url = @"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tmkk%40smoug%2enet&item_name=X%20Lossless%20Decoder&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8";
-		url = @"http://tmkk.pv.land.to/xld/donation.html.en";
+		url = @"http://tmkk.undo.jp/xld/donation.html.en";
 	}
 	[ws openURL:[NSURL URLWithString:url]];
 }
