@@ -599,6 +599,8 @@ int cmdline_main(int argc, char *argv[])
 			}
 			acceptStdoutWriting = NO;
 		}
+		if([[profileDic objectForKey:@"SelectOutput"] intValue])
+			outdir = (char *)[[[profileDic objectForKey:@"OutputDir"] stringByExpandingTildeInPath] UTF8String];
 	}
 	
 	if(writeToStdout && !acceptStdoutWriting) {
