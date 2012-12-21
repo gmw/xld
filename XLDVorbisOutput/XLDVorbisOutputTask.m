@@ -288,7 +288,7 @@ static char *base64enc(const unsigned  char *input, int length)
 					buffer_converted[j][i] = (buffer[k++] >> 16)/32768.0f;
 					break;
 				case 3:
-					buffer_converted[j][i] = (buffer[k++] >> 8)/16777216.0f;
+					buffer_converted[j][i] = (buffer[k++] >> 8)/8388608.0f;
 					break;
 				case 4:
 					if(format.isFloat) buffer_converted[j][i] = *((float *)buffer+(k++));
