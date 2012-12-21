@@ -81,4 +81,5 @@ typedef struct
 - (NSString *)driveStr;
 - (void)analyzeTrackGain;
 - (void)setMaxSpeed:(int)speed;
+- (NSString *)mediaType;
 @end

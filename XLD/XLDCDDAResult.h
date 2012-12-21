@@ -73,6 +73,7 @@ typedef struct {
 	BOOL includeHTOA;
 	unsigned int gapStatus;
 	XLDRipperMode ripperMode;
+	NSString *mediaType;
 @public
 	xldoffset_t *indexArr;
 	xldoffset_t *actualLengthArr; /* used for detecting the track end for single image ripping */

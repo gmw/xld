@@ -39,6 +39,7 @@ enum
 	NSString *errorMsg;
 	NSString *representedFilename;
 	NSStringEncoding preferredEncoding;
+	NSString *mediaType;
 }
 
 - (id)initWithDelegate:(id)del;
@@ -83,4 +84,6 @@ enum
 - (NSString *)errorMsg;
 - (NSString *)representedFilename;
 - (void)setPreferredEncoding:(NSStringEncoding)enc;
+- (void)setMediaType:(NSString *)str;
+- (NSString *)mediaType;
 @end

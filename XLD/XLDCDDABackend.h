@@ -43,6 +43,7 @@ typedef struct
 	char mcn[14];
 	int nonBCD;
 	int maxSpeed;
+	char mediaType[64];
 } xld_cdread_t;
 
 #define CDIO_CD_FRAMESIZE_RAW 2352

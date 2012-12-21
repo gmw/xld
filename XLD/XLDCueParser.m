@@ -253,6 +253,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	if(accurateRipData) [accurateRipData release];
 	if(errorMsg) [errorMsg release];
 	if(representedFilename) [representedFilename release];
+	if(mediaType) [mediaType release];
 	[super dealloc];
 }
 
@@ -274,6 +275,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	if(accurateRipData) [accurateRipData release];
 	if(errorMsg) [errorMsg release];
 	if(representedFilename) [representedFilename release];
+	if(mediaType) [mediaType release];
 	fileToDecode = nil;
 	title = nil;
 	cover = nil;
@@ -286,6 +288,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	errorMsg = nil;
 	representedFilename = nil;
 	preferredEncoding = 0;
+	mediaType = nil;
 }
 
 - (BOOL)isCompilationForTracks:(NSArray *)tracks
@@ -2144,6 +2147,17 @@ last:
 - (void)setPreferredEncoding:(NSStringEncoding)enc
 {
 	preferredEncoding = enc;
+}
+
+- (void)setMediaType:(NSString *)str
+{
+	if(mediaType) [mediaType release];
+	mediaType = [str retain];
+}
+
+- (NSString *)mediaType
+{
+	return mediaType;
 }
 
 @end

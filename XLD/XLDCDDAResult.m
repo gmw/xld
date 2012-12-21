@@ -186,6 +186,7 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 	[logDirectoryArray release];
 	[cueDirectoryArray release];
 	free(rg);
+	if(mediaType) [mediaType release];
 	[super dealloc];
 }
 
@@ -369,7 +370,8 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 	[out appendString:[NSString stringWithFormat:@"X Lossless Decoder version %@ (%@)\n\n",[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"],[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleVersion"]]];
 	[out appendString:[NSString stringWithFormat:@"XLD extraction logfile from %@\n\n",[date localizedDateDescription]]];
 	[out appendString:[NSString stringWithFormat:@"%@ / %@\n\n",artist ? artist : @"",title]];
-	[out appendString:[NSString stringWithFormat:@"Used drive : %@\n\n",driveStr]];
+	[out appendString:[NSString stringWithFormat:@"Used drive : %@\n",driveStr]];
+	[out appendString:[NSString stringWithFormat:@"Media type : %@\n\n",mediaType]];
 	if(ripperMode & kRipperModeParanoia) {
 		[out appendString:@"Ripper mode             : CDParanoia III 10.2\n"];
 		[out appendString:@"Disable audio cache     : OK for the drive with a cache less than 2750KiB\n"];
@@ -1011,6 +1013,12 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 - (void)setRipperMode:(XLDRipperMode)mode
 {
 	ripperMode = mode;
+}
+
+- (void)setMediaType:(NSString *)str
+{
+	if(mediaType) [mediaType release];
+	mediaType = [str retain];
 }
 
 @end

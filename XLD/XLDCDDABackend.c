@@ -215,7 +215,7 @@ static int read_toc(xld_cdread_t *disc)
 	return 0;
 }
 
-static int is_recordable_media(xld_cdread_t *disc)
+static void read_media_type(xld_cdread_t *disc)
 {
 	dk_cd_read_toc_t cdTOC;
 	CDATIP* atipData = (CDATIP *)calloc(1,sizeof(CDATIP));
@@ -229,19 +229,22 @@ static int is_recordable_media(xld_cdread_t *disc)
 	cdTOC.buffer = atipData;
 	
 	if(ioctl(disc->fd, DKIOCCDREADTOC, &cdTOC) != -1) {
+#if 0
 		fprintf(stderr,"ATIP:\n");
 		fprintf(stderr," dataLength: %d\n", atipData->dataLength);
 		fprintf(stderr," discType: 0x%02x\n", atipData->discType);
 		fprintf(stderr," discSubtype: 0x%02x\n", atipData->discSubType);
 		fprintf(stderr," ATIP Lead-in: %02d:%02d:%02d\n", atipData->startTimeOfLeadIn.minute,atipData->startTimeOfLeadIn.second,atipData->startTimeOfLeadIn.frame);
-		free(atipData);
-		return 1;
+#endif
+		if(atipData->discType == 0) strcpy(disc->mediaType,"CD-Recordable");
+		else if(atipData->discType == 1) strcpy(disc->mediaType,"CD-ReWritable");
+		else strcpy(disc->mediaType,"CD-R/RW");
 	}
 	else {
-		fprintf(stderr,"Not a CD-R/RW media.\n");
+		strcpy(disc->mediaType,"Pressed CD");
 	}
 	free(atipData);
-	return 0;
+	return;
 }
 
 static void read_hw_info(xld_cdread_t *disc)
@@ -326,7 +329,7 @@ int xld_cdda_open(xld_cdread_t *disc, char *device)
 	read_hw_info(disc);
 	xld_cdda_speed_set(disc,-1);
 	//read_disc_info(disc);
-	//is_recordable_media(disc);
+	read_media_type(disc);
 	//print_info(disc);
 	return 0;
 }

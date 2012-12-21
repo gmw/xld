@@ -777,6 +777,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		resultObj = [[XLDCDDAResult alloc] initWithTrackNumber:[[cueParser trackList] count]];
 		[resultObj setDeviceStr:[cueParser fileToDecode]];
 		[resultObj setDriveStr:[cueParser driveStr]];
+		[resultObj setMediaType:[cueParser mediaType]];
 		[resultObj setRipperMode:ripperMode
 				 offsetCorrention:[o_offsetCorrectionValue intValue]
 					   retryCount:[o_maxRetryCount intValue]
@@ -3672,6 +3673,7 @@ end:
 	if(title) [cueParser setTitle:title];
 	else [cueParser setTitle:volumeName];
 	[cueParser setDriveStr:[decoder driveStr]];
+	[cueParser setMediaType:[decoder mediaType]];
 	[decoder closeFile];
 	[decoder release];
 	

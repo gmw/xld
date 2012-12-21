@@ -717,4 +717,9 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 	maxSpeed = speed;
 }
 
+- (NSString *)mediaType
+{
+	return [NSString stringWithUTF8String:cdread.mediaType];
+}
+
 @end
