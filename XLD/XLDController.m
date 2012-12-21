@@ -4331,6 +4331,7 @@ fail:
 	[o_addProfileMenu setTarget:profileManager];
 	[o_manageProfileMenu setAction:@selector(showProfileManager:)];
 	[o_manageProfileMenu setTarget:profileManager];
+	[o_openCDDA setAutoenablesItems:YES];
 	//[self setNextKeyViews];
 	[self statusChanged:nil];
 	[self updateCDDAList:nil];
@@ -4562,6 +4563,8 @@ willBeInsertedIntoToolbar:(BOOL)willBeInserted
         return [[discView window] isVisible] && (cueParser != nil);
 	else if([menuItem action] == @selector(getMetadataFromURL:))
         return [[discView window] isVisible] && (cueParser != nil);
+	else if([menuItem action] == @selector(readCDDA:))
+        return (driveIsBusy == NO);
     return YES;
 }
 
