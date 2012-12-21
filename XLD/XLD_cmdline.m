@@ -17,7 +17,7 @@
 #import "XLDPluginManager.h"
 #import "XLDDefaultOutputTask.h"
 #import "XLDProfileManager.h"
-#import <dlfcn.h>
+#import "XLDLogChecker.h"
 
 /*
 static OSStatus (*_LSSetApplicationInformationItem)(int, CFTypeRef asn, CFStringRef key, CFStringRef value, CFDictionaryRef *info) = NULL;
@@ -240,6 +240,49 @@ static void usage(void)
 	fprintf(stderr,"\t--ddpms: DDPMS file (assumes that the associated file is Raw PCM)\n");
 	fprintf(stderr,"\t--stdout: write output to stdout (-o option is ignored)\n");
 	fprintf(stderr,"\t--profile <name>: Choose a profile saved as <name> in GUI\n");
+	fprintf(stderr,"\t--logchecker <path>: Check sanity of a logfile in <path>\n");
+}
+
+static int checkLogfile(char *file)
+{
+	Class logChecker = (Class)objc_lookUpClass("XLDLogChecker");
+	if(logChecker) {
+		NSData *dat = [NSData dataWithContentsOfFile:[NSString stringWithUTF8String:file]];
+		if(dat) {
+			XLDLogChecker *checker = [[logChecker alloc] init];
+			XLDLogCheckerResult result = [checker validateData:dat];
+			switch (result) {
+				case XLDLogCheckerOK:
+					fprintf(stderr,"OK\n");
+					break;
+				case XLDLogCheckerSignatureNotFound:
+					fprintf(stderr,"Not signed\n");
+					break;
+				case XLDLogCheckerNotLogFile:
+					fprintf(stderr,"Not a logfile\n");
+					break;
+				case XLDLogCheckerUnknownVersion:
+					fprintf(stderr,"Malformed\n");
+					break;
+				case XLDLogCheckerInvalidHash:
+					fprintf(stderr,"Malformed\n");
+					break;
+				case XLDLogCheckerMalformed:
+					fprintf(stderr,"Malformed\n");
+					break;
+				default:
+					fprintf(stderr,"Unknown\n");
+					break;
+			}
+			[checker release];
+			if(result != XLDLogCheckerOK) return -1;
+			else return 0;
+		}
+		else fprintf(stderr,"error: cannot open file\n");
+		return -1;
+	}
+	fprintf(stderr,"error: logchecker plugin not loaded\n");
+	return -1;
 }
 
 int cmdline_main(int argc, char *argv[])
@@ -267,6 +310,7 @@ int cmdline_main(int argc, char *argv[])
 	NSDictionary *profileDic;
 	char infile[512];
 	int error = 0;
+	BOOL logcheckerMode = NO;
 	
 	int		ch;
 	extern char	*optarg;
@@ -285,6 +329,7 @@ int cmdline_main(int argc, char *argv[])
 		{"stdout", 0, NULL, 0},
 		{"profile", 1, NULL, 0},
 		{"cmdline", 0, NULL, 0},
+		{"logchecker", 0, NULL, 0},
 		{0, 0, 0, 0}
 	};
 	
@@ -328,6 +373,9 @@ int cmdline_main(int argc, char *argv[])
 				}
 				else if(!strncmp(options[option_index].name, "profile", 7)) {
 					profileDic = [XLDProfileManager profileForName:[NSString stringWithUTF8String:optarg]];
+				}
+				else if(!strncmp(options[option_index].name, "logchecker", 10)) {
+					logcheckerMode = YES;
 				}
 				else if(!strncmp(options[option_index].name, "cmdline", 7)) {
 					//skip
@@ -451,6 +499,8 @@ int cmdline_main(int argc, char *argv[])
 		usage();
 		return -1; 
 	}
+	
+	if(logcheckerMode) return checkLogfile(argv[optind]);
 	
 	if(profileDic) {
 		NSString *outFormatStr = [profileDic objectForKey:@"OutputFormatName"];
