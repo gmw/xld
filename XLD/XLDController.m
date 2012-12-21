@@ -4338,6 +4338,8 @@ fail:
 	[self statusChanged:nil];
 	[self updateCDDAList:nil];
 	
+	[[[[[NSApp mainMenu] itemAtIndex:3] submenu] itemAtIndex:0] setKeyEquivalent:@"M"];
+	
 	Class logChecker = (Class)objc_lookUpClass("XLDLogChecker");
 	if(logChecker) {
 		NSMenuItem *logcheckerItem = [[NSMenuItem alloc] initWithTitle:LS(@"Log Checker...") action:@selector(logChecker) keyEquivalent:@""];
