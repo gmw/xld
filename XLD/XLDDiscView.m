@@ -160,6 +160,16 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 		[[o_artistText cell] setLineBreakMode:NSLineBreakByTruncatingTail];
 	}
 	
+	NSButton *hiddenButton = [[NSButton alloc] init];
+	[hiddenButton setTarget:delegate];
+	[hiddenButton setAction:@selector(beginDecode:)];
+	[hiddenButton setFrame:NSMakeRect(-10, -10, 5, 5)];
+	[hiddenButton setAutoresizingMask:NSViewMaxXMargin|NSViewMaxYMargin];
+	[hiddenButton setKeyEquivalent:@"d"];
+	[hiddenButton setKeyEquivalentModifierMask:NSCommandKeyMask];
+	[[o_window contentView] addSubview:hiddenButton];
+	[hiddenButton release];
+	
 	[o_window display];
 	//[o_window makeKeyAndOrderFront:self];
 	proposedRow = -1;
