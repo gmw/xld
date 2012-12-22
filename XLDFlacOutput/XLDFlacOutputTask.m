@@ -328,94 +328,21 @@ typedef int64_t xldoffset_t;
 			FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
 		}
 	}
-	
-	if(picture) {
-		metadata[1] = picture;
-		metadata[2] = tag;
-	}
-	else {
-		metadata[1] = tag;
-	}
-	
-	metadataDic = [[(XLDTrack *)track metadata] retain];
+	metadata[1] = tag;
 	
 	FLAC__StreamMetadata padding;
 	padding.is_last = false; /* the encoder will set this for us */
 	padding.type = FLAC__METADATA_TYPE_PADDING;
 	padding.length = [[configurations objectForKey:@"Padding"] intValue]*1024;
-	metadata[picture?3:2] = &padding;
+	metadata[2] = &padding;
+	
+	if(picture) {
+		metadata[3] = picture;
+	}
+	
+	metadataDic = [[(XLDTrack *)track metadata] retain];
 	
 	FLAC__stream_encoder_set_metadata(encoder,metadata,picture ? 4 : 3);
-	
-	/*
-	 switch([delegate compressionLevel]) {
-		case 0:
-			FLAC__stream_encoder_set_blocksize(encoder, 1152);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 0);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 2);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 2);
-			break;
-		case 1:
-			FLAC__stream_encoder_set_blocksize(encoder, 1152);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 0);
-			FLAC__stream_encoder_set_do_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_loose_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 2);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 2);
-			break;
-		case 2:
-			FLAC__stream_encoder_set_blocksize(encoder, 1152);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 0);
-			FLAC__stream_encoder_set_do_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 0);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 3);
-			break;
-		case 3:
-			FLAC__stream_encoder_set_blocksize(encoder, 4608);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 6);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 3);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 3);
-			break;
-		case 4:
-			FLAC__stream_encoder_set_blocksize(encoder, 4608);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 8);
-			FLAC__stream_encoder_set_do_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_loose_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 3);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 3);
-			break;
-		case 5:
-			FLAC__stream_encoder_set_blocksize(encoder, 4608);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 8);
-			FLAC__stream_encoder_set_do_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 3);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 3);
-			break;
-		case 6:
-			FLAC__stream_encoder_set_blocksize(encoder, 4608);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 8);
-			FLAC__stream_encoder_set_do_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 0);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 4);
-			break;
-		case 7:
-			FLAC__stream_encoder_set_blocksize(encoder, 4608);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 8);
-			FLAC__stream_encoder_set_do_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 0);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 6);
-			FLAC__stream_encoder_set_do_exhaustive_model_search(encoder, true);
-			break;
-		case 8:
-			FLAC__stream_encoder_set_blocksize(encoder, 4608);
-			FLAC__stream_encoder_set_max_lpc_order(encoder, 12);
-			FLAC__stream_encoder_set_do_mid_side_stereo(encoder, true);
-			FLAC__stream_encoder_set_min_residual_partition_order(encoder, 0);
-			FLAC__stream_encoder_set_max_residual_partition_order(encoder, 6);
-			FLAC__stream_encoder_set_do_exhaustive_model_search(encoder, true);
-			break;
-	}
-	*/
 	
 	int level = [[configurations objectForKey:@"CompressionLevel"] intValue];
 	if(level >= 0) {
