@@ -12,10 +12,10 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="2"/>
+			<integer value="3"/>
 			<integer value="4"/>
 			<integer value="1"/>
-			<integer value="3"/>
-			<integer value="16"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -65,7 +65,7 @@
 					</object>
 					<object class="NSMenuItem" id="716344450">
 						<reference key="NSMenu" ref="576251711"/>
-						<string key="NSTitle">Clear Image</string>
+						<string key="NSTitle">Elimina immagine</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="446688384"/>
@@ -82,7 +82,7 @@
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{640, 400}</string>
 				<object class="NSView" key="NSWindowView" id="757256753">
 					<reference key="NSNextResponder"/>
@@ -197,7 +197,7 @@
 																	<string key="NSColorName">controlBackgroundColor</string>
 																	<object class="NSColor" key="NSColor" id="212959841">
 																		<int key="NSColorSpace">3</int>
-																		<bytes key="NSWhite">MC42NjY2NjY2ODY1AA</bytes>
+																		<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
 																	</object>
 																</object>
 																<object class="NSColor" key="NSTextColor" id="65509989">
@@ -682,7 +682,7 @@
 							<object class="NSTextFieldCell" key="NSCell" id="8869173">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">138544128</int>
-								<string key="NSContents">0:0:0 Total</string>
+								<string key="NSContents">0:0:0 Totale</string>
 								<reference key="NSSupport" ref="310672607"/>
 								<reference key="NSControlView" ref="908475025"/>
 								<reference key="NSBackgroundColor" ref="367930588"/>
@@ -695,7 +695,7 @@
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1058}}</string>
 				<string key="NSMinSize">{640, 422}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSFrameAutosaveName">XLDDiscViewWindowPosition</string>
 			</object>
 			<object class="NSMenu" id="112098486">

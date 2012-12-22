@@ -12,11 +12,11 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="37"/>
+			<integer value="329"/>
 			<integer value="206"/>
-			<integer value="263"/>
-			<integer value="328"/>
-			<integer value="153"/>
+			<integer value="7"/>
+			<integer value="36"/>
+			<integer value="152"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -76,7 +76,7 @@
 									<string key="NSColorName">controlColor</string>
 									<object class="NSColor" key="NSColor" id="397720867">
 										<int key="NSColorSpace">3</int>
-										<bytes key="NSWhite">MC42NjY2NjY2ODY1AA</bytes>
+										<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
 									</object>
 								</object>
 								<object class="NSColor" key="NSTextColor" id="326400965">
@@ -360,9 +360,9 @@
 													</object>
 												</object>
 											</object>
-											<string>.</string>
-											<integer value="1000"/>
 											<string>,</string>
+											<integer value="1000"/>
+											<string>.</string>
 											<object class="NSDecimalNumberPlaceholder" id="560931281">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -398,8 +398,8 @@
 										<bytes key="NS.mantissa">AAAAAAAAAAAAAAAAAAAAAA</bytes>
 									</object>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -442,9 +442,9 @@
 												<string key="NSString">0</string>
 												<reference key="NSAttributes" ref="834616384"/>
 											</object>
-											<string>.</string>
-											<integer value="1000"/>
 											<string>,</string>
+											<integer value="1000"/>
+											<string>.</string>
 											<object class="NSDecimalNumberPlaceholder" id="233543913">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -473,8 +473,8 @@
 									<reference key="NS.min" ref="233543913"/>
 									<reference key="NS.max" ref="994953427"/>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -914,9 +914,9 @@
 												<string key="NSString">0</string>
 												<reference key="NSAttributes" ref="834616384"/>
 											</object>
-											<string>.</string>
-											<integer value="1000"/>
 											<string>,</string>
+											<integer value="1000"/>
+											<string>.</string>
 											<object class="NSDecimalNumberPlaceholder" id="712105675">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -945,8 +945,8 @@
 									<reference key="NS.min" ref="712105675"/>
 									<reference key="NS.max" ref="994953427"/>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -991,9 +991,9 @@
 												<string key="NSString">0</string>
 												<reference key="NSAttributes" ref="834616384"/>
 											</object>
-											<string>.</string>
-											<integer value="1000"/>
 											<string>,</string>
+											<integer value="1000"/>
+											<string>.</string>
 											<object class="NSDecimalNumberPlaceholder" id="138724406">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -1022,8 +1022,8 @@
 									<reference key="NS.min" ref="138724406"/>
 									<reference key="NS.max" ref="994953427"/>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -1830,9 +1830,9 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 												<string key="NSString">0</string>
 												<reference key="NSAttributes" ref="834616384"/>
 											</object>
-											<string>.</string>
-											<integer value="1000"/>
 											<string>,</string>
+											<integer value="1000"/>
+											<string>.</string>
 											<object class="NSDecimalNumberPlaceholder" id="559042072">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -1861,8 +1861,8 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 									<reference key="NS.min" ref="559042072"/>
 									<reference key="NS.max" ref="994953427"/>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -1907,9 +1907,9 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 												<string key="NSString">0</string>
 												<reference key="NSAttributes" ref="834616384"/>
 											</object>
-											<string>.</string>
-											<integer value="1000"/>
 											<string>,</string>
+											<integer value="1000"/>
+											<string>.</string>
 											<object class="NSDecimalNumberPlaceholder" id="181067293">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -1938,8 +1938,8 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 									<reference key="NS.min" ref="181067293"/>
 									<reference key="NS.max" ref="994953427"/>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -2215,9 +2215,9 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 												<string key="NSString">0</string>
 												<reference key="NSAttributes" ref="834616384"/>
 											</object>
-											<string>.</string>
-											<integer value="1000"/>
 											<string>,</string>
+											<integer value="1000"/>
+											<string>.</string>
 											<object class="NSDecimalNumberPlaceholder" id="687841521">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -2246,8 +2246,8 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 									<reference key="NS.min" ref="687841521"/>
 									<reference key="NS.max" ref="994953427"/>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -2292,9 +2292,9 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 												<string key="NSString">0</string>
 												<reference key="NSAttributes" ref="834616384"/>
 											</object>
-											<string>.</string>
-											<integer value="1000"/>
 											<string>,</string>
+											<integer value="1000"/>
+											<string>.</string>
 											<object class="NSDecimalNumberPlaceholder" id="662815583">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -2323,8 +2323,8 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 									<reference key="NS.min" ref="662815583"/>
 									<reference key="NS.max" ref="994953427"/>
 									<nil key="NS.rounding"/>
-									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.decimal">,</string>
+									<string key="NS.thousand">.</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -2457,7 +2457,7 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 				<string key="NSWindowTitle">Importa tag da testo</string>
 				<string key="NSWindowClass">NSPanel</string>
 				<nil key="NSViewClass"/>
-				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{600, 350}</string>
 				<object class="NSView" key="NSWindowView" id="786754939">
 					<reference key="NSNextResponder"/>
@@ -2992,7 +2992,7 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 							<object class="NSTextFieldCell" key="NSCell" id="1014330255">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">71304192</int>
-								<string key="NSContents">Match with</string>
+								<string key="NSContents">Allinea per</string>
 								<reference key="NSSupport" ref="204531582"/>
 								<reference key="NSControlView" ref="303347551"/>
 								<reference key="NSBackgroundColor" ref="1006865852"/>
@@ -3021,7 +3021,7 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1058}}</string>
 				<string key="NSMinSize">{600, 372}</string>
-				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSFrameAutosaveName">MetadataEditor4</string>
 			</object>
 			<object class="NSUserDefaultsController" id="819303304">
@@ -6159,7 +6159,7 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{231, 823}, {255, 63}}</string>
+					<string>{{231, 823}, {253, 63}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
