@@ -1265,6 +1265,8 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	FILE *fp = fopen([path UTF8String], "r+b");
 	if(!fp) return;
 	
+	fcntl(fileno(fp), F_NOCACHE, 1);
+	
 	int bufferSize = 1024*1024;
 	char *tmpbuf = (char *)malloc(bufferSize);
 	char *tmpbuf2 = (char *)malloc(bufferSize);
@@ -1432,12 +1434,15 @@ end:
 	if(!chapterMdat) return;
 	
 	FILE *fp = fopen([path UTF8String], "r+b");
+	if(!fp) return;
 	int i;
 	int tmp;
 	char atom[4];
 	int *stco = NULL;
 	struct stat stbuf;
 	stat([path UTF8String], &stbuf);
+	
+	fcntl(fileno(fp), F_NOCACHE, 1);
 	
 	/* write mdat at the end of file */
 	if(fseeko(fp,0,SEEK_END) != 0) goto end;
@@ -1545,6 +1550,8 @@ end:
 		FILE *fp = fopen([path UTF8String], "r+b");
 		if(!fp) return;
 		//NSLog(@"DEBUG: fopen success");
+		
+		fcntl(fileno(fp), F_NOCACHE, 1);
 		
 		int bufferSize = 1024*1024;
 		char *tmpbuf = (char *)malloc(bufferSize);
