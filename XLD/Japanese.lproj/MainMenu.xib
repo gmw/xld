@@ -12,19 +12,19 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="616"/>
 			<integer value="347"/>
-			<integer value="593"/>
-			<integer value="519"/>
-			<integer value="301"/>
-			<integer value="400"/>
-			<integer value="1079"/>
 			<integer value="546"/>
+			<integer value="1079"/>
+			<integer value="593"/>
+			<integer value="322"/>
+			<integer value="616"/>
+			<integer value="301"/>
 			<integer value="605"/>
 			<integer value="269"/>
-			<integer value="1116"/>
 			<integer value="364"/>
-			<integer value="322"/>
+			<integer value="519"/>
+			<integer value="1116"/>
+			<integer value="400"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -869,6 +869,14 @@
 								<object class="NSMenuItem" id="390714162">
 									<reference key="NSMenu" ref="1005011262"/>
 									<string key="NSTitle">MusicBrainz DiscID を既存のリリースと関連付ける...</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="14560692"/>
+									<reference key="NSMixedImage" ref="668376943"/>
+								</object>
+								<object class="NSMenuItem" id="408640948">
+									<reference key="NSMenu" ref="1005011262"/>
+									<string key="NSTitle">MusicBrainz のリリースページを開く...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="14560692"/>
@@ -9079,6 +9087,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<int key="connectionID">1143</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">gotoMBReleasePage:</string>
+						<reference key="source" ref="544422332"/>
+						<reference key="destination" ref="408640948"/>
+					</object>
+					<int key="connectionID">1149</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -9681,6 +9697,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="1066431802"/>
 							<reference ref="179428036"/>
 							<reference ref="95330109"/>
+							<reference ref="408640948"/>
 						</object>
 						<reference key="parent" ref="189366481"/>
 					</object>
@@ -13191,6 +13208,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="499558812"/>
 						<reference key="parent" ref="936187784"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1148</int>
+						<reference key="object" ref="408640948"/>
+						<reference key="parent" ref="1005011262"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -13364,6 +13386,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>1145.IBPluginDependency</string>
 					<string>1146.IBPluginDependency</string>
 					<string>1147.IBPluginDependency</string>
+					<string>1148.IBPluginDependency</string>
 					<string>124.IBPluginDependency</string>
 					<string>124.ImportedFromIB2</string>
 					<string>125.IBEditorWindowLastContentRect</string>
@@ -14407,6 +14430,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>{{445, 871}, {164, 23}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14649,7 +14673,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{302, 602}, {409, 133}}</string>
+					<string>{{302, 582}, {409, 153}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15295,7 +15319,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1147</int>
+			<int key="maxID">1149</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -15354,6 +15378,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>editMetadata:</string>
 							<string>formatChanged:</string>
 							<string>getMetadataFromURL:</string>
+							<string>gotoMBReleasePage:</string>
 							<string>hideOption:</string>
 							<string>inputTagsFromText:</string>
 							<string>openFile:</string>
@@ -15404,6 +15429,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
+							<string>id</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="actionInfosByName">
@@ -15423,6 +15449,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>editMetadata:</string>
 							<string>formatChanged:</string>
 							<string>getMetadataFromURL:</string>
+							<string>gotoMBReleasePage:</string>
 							<string>hideOption:</string>
 							<string>inputTagsFromText:</string>
 							<string>openFile:</string>
@@ -15493,6 +15520,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">getMetadataFromURL:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">gotoMBReleasePage:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

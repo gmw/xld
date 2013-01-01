@@ -12,15 +12,15 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1077"/>
-			<integer value="355"/>
-			<integer value="404"/>
+			<integer value="1044"/>
 			<integer value="278"/>
+			<integer value="404"/>
 			<integer value="317"/>
 			<integer value="534"/>
+			<integer value="1077"/>
 			<integer value="339"/>
 			<integer value="551"/>
-			<integer value="1044"/>
+			<integer value="355"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -865,6 +865,14 @@
 								<object class="NSMenuItem" id="318817828">
 									<reference key="NSMenu" ref="1053415463"/>
 									<string key="NSTitle">Verbinde die MusicBrainz DiscID mit dieser Veröffentlichung...</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="529919104"/>
+									<reference key="NSMixedImage" ref="777616951"/>
+								</object>
+								<object class="NSMenuItem" id="1036637076">
+									<reference key="NSMenu" ref="1053415463"/>
+									<string key="NSTitle">Open MusicBrainz Release Page...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="529919104"/>
@@ -9094,6 +9102,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<int key="connectionID">1118</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">gotoMBReleasePage:</string>
+						<reference key="source" ref="760823006"/>
+						<reference key="destination" ref="1036637076"/>
+					</object>
+					<int key="connectionID">1120</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -9696,6 +9712,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="318817828"/>
 							<reference ref="115166377"/>
 							<reference ref="500003524"/>
+							<reference ref="1036637076"/>
 						</object>
 						<reference key="parent" ref="480830078"/>
 					</object>
@@ -13230,6 +13247,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="601482138"/>
 						<reference key="parent" ref="162007113"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1119</int>
+						<reference key="object" ref="1036637076"/>
+						<reference key="parent" ref="1053415463"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -13370,6 +13392,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>1115.IBPluginDependency</string>
 					<string>1116.IBPluginDependency</string>
 					<string>1117.IBPluginDependency</string>
+					<string>1119.IBPluginDependency</string>
 					<string>112.IBPluginDependency</string>
 					<string>112.ImportedFromIB2</string>
 					<string>124.IBPluginDependency</string>
@@ -14403,6 +14426,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
@@ -14492,9 +14516,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{664, 612}, {273, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{765, 213}, {450, 577}}</string>
+					<string>{{705, 213}, {450, 577}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{765, 213}, {450, 577}}</string>
+					<string>{{705, 213}, {450, 577}}</string>
 					<boolean value="YES"/>
 					<boolean value="YES"/>
 					<string>{213, 107}</string>
@@ -14649,7 +14673,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{412, 603}, {489, 133}}</string>
+					<string>{{412, 583}, {489, 153}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15342,7 +15366,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1118</int>
+			<int key="maxID">1120</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -15386,6 +15410,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>editMetadata:</string>
 							<string>formatChanged:</string>
 							<string>getMetadataFromURL:</string>
+							<string>gotoMBReleasePage:</string>
 							<string>hideOption:</string>
 							<string>inputTagsFromText:</string>
 							<string>openFile:</string>
@@ -15436,6 +15461,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
+							<string>id</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="actionInfosByName">
@@ -15455,6 +15481,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>editMetadata:</string>
 							<string>formatChanged:</string>
 							<string>getMetadataFromURL:</string>
+							<string>gotoMBReleasePage:</string>
 							<string>hideOption:</string>
 							<string>inputTagsFromText:</string>
 							<string>openFile:</string>
@@ -15525,6 +15552,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">getMetadataFromURL:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">gotoMBReleasePage:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

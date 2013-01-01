@@ -49,6 +49,7 @@ typedef enum
 	NSString *asin;
 	NSURL *coverURL;
 	BOOL ambiguous;
+	BOOL freeDBDisabled;
 }
 
 - (id)initWithDelegate:(id)del;
@@ -65,5 +66,6 @@ typedef enum
 - (NSString *)asin;
 - (NSURL *)coverURL;
 - (BOOL)associateMBDiscID;
+- (void)disableFreeDB;
 
 @end

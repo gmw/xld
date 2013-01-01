@@ -1666,6 +1666,48 @@ end:
 	[cddb release];
 }
 
+- (IBAction)gotoMBReleasePage:(id)sender
+{
+	id cueParser = [discView cueParser];
+	if(!cueParser) return;
+	XLDCDDBUtil *cddb = [[XLDCDDBUtil alloc] initWithDelegate:self];
+	[cddb setTracks:[cueParser trackList] totalFrame:[cueParser totalFrames]];
+	[cddb disableFreeDB];
+	int ret = [cddb query];
+	//NSLog(@"%d",ret);
+	if(ret == 0) {
+		NSBeginInformationalAlertSheet(LS(@"CDDB connection"), @"OK", nil, nil, [discView window], nil, nil, nil, NULL, LS(@"CDDB not found"));
+		[cddb release];
+	}
+	else if(ret == -1) {
+		NSBeginCriticalAlertSheet(LS(@"CDDB connection"), @"OK", nil, nil, [discView window], nil, nil, nil, NULL, LS(@"CDDB connection failure"));
+		[cddb release];
+	}
+	else if(ret == 1) {
+		NSString *releaseID = [[[cddb queryResult] objectAtIndex:0] objectAtIndex:2];
+		NSWorkspace* ws = [NSWorkspace sharedWorkspace];
+		[ws openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://musicbrainz.org/release/%@",releaseID]]];
+		[cddb release];
+	}
+	else {
+		int i;
+		NSArray *result = [cddb queryResult];
+		[o_queryResultList removeAllItems];
+		for(i=0;i<ret;i++) {
+			if([[result objectAtIndex:i] count] == 5)
+				[o_queryResultList addItemWithTitle:[NSString stringWithFormat:@"%d: %@ - %@ (%@)",i+1,[[result objectAtIndex:i] objectAtIndex:3],[[result objectAtIndex:i] objectAtIndex:4],[[result objectAtIndex:i] objectAtIndex:0]]];
+			else
+				[o_queryResultList addItemWithTitle:[NSString stringWithFormat:@"%d: %@ (%@)",i+1,[[result objectAtIndex:i] objectAtIndex:3],[[result objectAtIndex:i] objectAtIndex:0]]];
+		}
+		util = cddb;
+		[NSApp beginSheet:o_queryResultPane
+		   modalForWindow:[discView window]
+			modalDelegate:self
+		   didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:)
+			  contextInfo:@"GotoMBReleasePage"];
+	}
+}
+
 - (IBAction)reportBug:(id)sender
 {
 	NSWorkspace* ws = [NSWorkspace sharedWorkspace];
@@ -4222,6 +4264,18 @@ end:
 fail:
 		NSBeginCriticalAlertSheet(LS(@"CDDB connection"), @"OK", nil, nil, [discView window], nil, nil, nil, NULL, LS(@"The entered string is not a valid MusicBrainz or Discogs release URL."));
 	}
+	else if([(NSString *)contextInfo isEqualTo:@"GotoMBReleasePage"]) {
+		if(returnCode != 0) {
+			[util release];
+			util = nil;
+			return;
+		}
+		NSString *releaseID = [[[util queryResult] objectAtIndex:[o_queryResultList indexOfSelectedItem]] objectAtIndex:2];
+		NSWorkspace* ws = [NSWorkspace sharedWorkspace];
+		[ws openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://musicbrainz.org/release/%@",releaseID]]];
+		[util release];
+		util = nil;
+	}
 }
 
 - (void)setNextKeyViews
@@ -4569,6 +4623,8 @@ willBeInsertedIntoToolbar:(BOOL)willBeInserted
         return [[discView window] isVisible] && (cueParser != nil);
 	else if([menuItem action] == @selector(readCDDA:))
         return (driveIsBusy == NO);
+	else if([menuItem action] == @selector(gotoMBReleasePage:))
+        return [[discView window] isVisible] && (cueParser != nil);
     return YES;
 }
 

@@ -169,7 +169,8 @@ static char *base64enc(const unsigned  char *input, int length)
 - (int)query
 {
 	int i;
-	int matches = cddb_query(conn, disc);
+	int matches = 0;
+	if(!freeDBDisabled) matches = cddb_query(conn, disc);
 	int matchesMB = -1;
 	XLDMusicBrainzReleaseList *releases = [[XLDMusicBrainzReleaseList alloc] initWithDiscID:[NSString stringWithUTF8String:discid]];
 	NSArray *releaseList = nil;
@@ -589,6 +590,11 @@ end:
 		return YES;
 	}
 	else return NO;
+}
+
+- (void)disableFreeDB
+{
+	freeDBDisabled = YES;
 }
 
 @end

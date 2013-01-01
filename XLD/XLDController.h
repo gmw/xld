@@ -184,6 +184,7 @@
 - (IBAction)associateMBDiscID:(id)sender;
 - (IBAction)reportBug:(id)sender;
 - (IBAction)getMetadataFromURL:(id)sender;
+- (IBAction)gotoMBReleasePage:(id)sender;
 //- (void)finishedDecoding;
 //- (void)updateProgress:(double)val restTracks:(int)n;
 //- (BOOL)ignoreGap;
