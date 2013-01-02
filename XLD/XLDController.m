@@ -809,12 +809,10 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			[o_detectPregapMessage setStringValue:LS(@"Connecting to AccurateRip")];
 			[o_detectPregapMessage display];
 			//sleep(1);
-			NSData *dbData = [cueParser accurateRipData];
+			XLDAccurateRipDB *dbData = [cueParser accurateRipData];
 			if(dbData) {
 				//NSLog(@"db found");
-				id db = [[XLDAccurateRipDB alloc] initWithData:dbData];
-				[resultObj setAccurateRipDB:db];
-				[db release];
+				[resultObj setAccurateRipDB:dbData];
 			}
 		}
 		[o_detectPregapProgress stopAnimation:self];
@@ -1450,7 +1448,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 {
 	id checker;
 	id cueParser = [discView cueParser];
-	NSData *dbData = [cueParser accurateRipData];
+	XLDAccurateRipDB *dbData = [cueParser accurateRipData];
 	if([sender tag] != 2) {
 		if(!dbData) {
 			NSBeginInformationalAlertSheet(@"AccurateRip", @"OK", nil, nil, [discView window], nil, nil, nil, NULL, LS(@"AccurateRip hash not found"));
@@ -1460,9 +1458,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	checker = [[XLDAccurateRipChecker alloc] initWithTracks:[cueParser trackList] totalFrames:[cueParser totalFrames]];
 	[checker setDelegate:self];
 	if([sender tag] != 2) {
-		id db = [[XLDAccurateRipDB alloc] initWithData:dbData];
-		[checker setAccurateRipDB:db];
-		[db release];
+		[checker setAccurateRipDB:dbData];
 	}
 	
 	id decoder;

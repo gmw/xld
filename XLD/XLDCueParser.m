@@ -2058,7 +2058,7 @@ last:
 	return driveStr;
 }
 
-- (NSData *)accurateRipData
+- (XLDAccurateRipDB *)accurateRipData
 {
 	if(ARQueried) return accurateRipData;
 	
@@ -2090,7 +2090,15 @@ last:
 	discId2 += totalFrames/588 * (totalAudioTrack+1);
 	cddbDiscId = ((cddbDiscId % 255) << 24) | ((totalFrames/588/75 - [(XLDTrack *)[trackList objectAtIndex:0] index]/588/75) << 8) | totalTrack;
 	//NSLog([NSString stringWithFormat:@"http://www.accuraterip.com/accuraterip/%01x/%01x/%01x/dBAR-%03d-%08x-%08x-%08x.bin",discId1 & 0xF, discId1>>4 & 0xF, discId1>>8 & 0xF, totalAudioTrack, discId1, discId2, cddbDiscId]);
-	accurateRipData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.accuraterip.com/accuraterip/%01x/%01x/%01x/dBAR-%03d-%08x-%08x-%08x.bin",discId1 & 0xF, discId1>>4 & 0xF, discId1>>8 & 0xF, totalAudioTrack, discId1, discId2, cddbDiscId]]];
+	NSData *data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.accuraterip.com/accuraterip/%01x/%01x/%01x/dBAR-%03d-%08x-%08x-%08x.bin",discId1 & 0xF, discId1>>4 & 0xF, discId1>>8 & 0xF, totalAudioTrack, discId1, discId2, cddbDiscId]]];
+	if(data) {
+		accurateRipData = [[XLDAccurateRipDB alloc] initWithData:data];
+		if(![accurateRipData hasValidDataForDisc]) {
+			[accurateRipData release];
+			accurateRipData = nil;
+		}
+	}
+	[data release];
 	ARQueried = YES;
 	return accurateRipData;
 }

@@ -97,6 +97,15 @@
 	else return YES;
 }
 
+- (BOOL)hasValidDataForDisc
+{
+	int i;
+	for(i=[database count]-1;i>=0;i--) {
+		if([[[database objectAtIndex:i] objectForKey:@"MaxConfidence"] intValue]) return YES;
+	}
+	return NO;
+}
+
 - (int)isAccurateCRC:(unsigned int)crc forTrack:(int)track
 {
 	if(track > [database count]) return -1;

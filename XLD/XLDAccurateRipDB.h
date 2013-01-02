@@ -20,6 +20,7 @@
 - (int)isAccurateCRC:(unsigned int)crc forTrack:(int)track;
 - (int)isAccurateOffsetCRC:(unsigned int)crc forTrack:(int)track;
 - (BOOL)hasValidDataForTrack:(int)track;
+- (BOOL)hasValidDataForDisc;
 - (int)totalSubmissionsForTrack:(int)track;
 - (NSString *)discID;
 @end

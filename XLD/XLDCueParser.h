@@ -9,6 +9,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "XLDDiscLayout.h"
+#import "XLDAccurateRipDB.h"
 
 enum 
 {
@@ -34,7 +35,7 @@ enum
 	NSString *driveStr;
 	XLDDiscLayout *discLayout;
 	BOOL ARQueried;
-	NSData *accurateRipData;
+	XLDAccurateRipDB *accurateRipData;
 	BOOL writable;
 	NSString *errorMsg;
 	NSString *representedFilename;
@@ -69,7 +70,7 @@ enum
 - (void)setTitle:(NSString *)str;
 - (void)setDriveStr:(NSString *)str;
 - (NSString *)driveStr;
-- (NSData *)accurateRipData;
+- (XLDAccurateRipDB *)accurateRipData;
 - (xldoffset_t)firstAudioFrame;
 - (xldoffset_t)lastAudioFrame;
 - (BOOL)isCompilation;
