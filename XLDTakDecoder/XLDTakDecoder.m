@@ -94,6 +94,8 @@
 	BOOL fallback = NO;
 	NSDictionary *environmentDict = [[NSProcessInfo processInfo] environment];
 	NSString *shell = [environmentDict objectForKey:@"SHELL"];
+	if(!shell) return NO;
+	if(![[NSFileManager defaultManager] isExecutableFileAtPath:shell]) return NO;
 	NSTask *task = [[NSTask alloc] init];
 	[task setStandardOutput:[NSPipe pipe]];
 	[task setStandardInput:[NSFileHandle fileHandleWithNullDevice]];
