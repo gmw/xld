@@ -22,9 +22,9 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSPrincipalClass</key>
-	<string>XLDOpusOutput</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© tmkk, 2012</string>
+	<key>NSPrincipalClass</key>
+	<string>XLDOpusOutput</string>
 </dict>
 </plist>

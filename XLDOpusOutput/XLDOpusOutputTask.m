@@ -19,6 +19,9 @@ typedef int64_t xldoffset_t;
 #import <xmmintrin.h>
 #endif
 
+#define IMIN(a,b) ((a) < (b) ? (a) : (b))   /**< Minimum int value.   */
+#define IMAX(a,b) ((a) > (b) ? (a) : (b))   /**< Maximum int value.   */
+
 static const int max_ogg_delay=48000;
 
 static const float s32tof32scaler[4]  __attribute__((aligned(16))) = {4.656612873e-10f,4.656612873e-10f,4.656612873e-10f,4.656612873e-10f};
@@ -303,7 +306,10 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 	}
 	
 	int bitrate = [[configurations objectForKey:@"Bitrate"] intValue];
-	bitrate=bitrate>0?bitrate:64000*header.nb_streams+32000*header.nb_coupled;
+	if(bitrate<=0){
+		bitrate=((64000*header.nb_streams+32000*header.nb_coupled)*
+				(IMIN(48,IMAX(8,((format.samplerate<44100?format.samplerate:48000)+1000)/1000))+16)+32)>>6;
+	}
 	if(bitrate > 256000 * format.channels) bitrate = 256000 * format.channels;
 	ret = opus_multistream_encoder_ctl(st, OPUS_SET_BITRATE(bitrate));
 	if(ret != OPUS_OK) {
