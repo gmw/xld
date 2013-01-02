@@ -1919,6 +1919,9 @@ end:
 	if(obj=[pref objectForKey:@"Pregap"]) {
 		[discView setExtractionMode:[obj intValue]];
 	}
+	else {
+		[discView setExtractionMode:3]; // default to "Include pre-gap except for HTOA"
+	}
 	if(obj=[pref objectForKey:@"OutputDir"]) {
 		[o_outputDir setStringValue:obj];
 	}
