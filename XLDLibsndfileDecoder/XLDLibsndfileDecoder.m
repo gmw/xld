@@ -175,6 +175,39 @@ end:
 	fclose(fp);
 }
 
+- (void)readID3TagFromWAV:(char *)path
+{
+	FILE *fp = fopen(path,"rb");
+	if(!fp) return;
+	char chunk[5];
+	unsigned int length;
+	if(fread(chunk,1,4,fp) != 4) goto end;
+	if(memcmp(chunk,"RIFF",4)) goto end;
+	if(fseeko(fp,4,SEEK_CUR)) goto end;
+	if(fread(chunk,1,4,fp) != 4) goto end;
+	if(memcmp(chunk,"WAVE",4)) goto end;
+	while(1) {
+		if(fread(chunk,1,4,fp) != 4) goto end;
+		if(fread(&length,4,1,fp) != 1) goto end;
+		length = NSSwapLittleIntToHost(length);
+		chunk[4] = 0;
+		if(!strncasecmp(chunk,"ID3 ",4)) break;
+		if(length&1) length++;
+		if(fseeko(fp,length,SEEK_CUR)) goto end;
+	}
+	unsigned char *buf = malloc(length);
+	if(fread(buf,1,length,fp) != length) {
+		free(buf);
+		goto end;
+	}
+	NSData *dat = [NSData dataWithBytesNoCopy:buf length:length];
+	if(metadataDic) [metadataDic release];
+	metadataDic = [[NSMutableDictionary alloc] init];
+	parseID3(dat,metadataDic);
+end:
+	fclose(fp);
+}
+
 - (BOOL)openFile:(char *)path
 {
 	memset(&sfinfo,0,sizeof(SF_INFO));
@@ -227,6 +260,9 @@ end:
 	if(!(((sfinfo.format)&SF_FORMAT_TYPEMASK)^SF_FORMAT_AIFF)) {
 		[self findMarkChunkForAIFF:path];
 		[self readID3TagFromAIFF:path];
+	}
+	else if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) {
+		[self readID3TagFromWAV:path];
 	}
 	
 	if(srcPath) [srcPath release];
