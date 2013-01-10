@@ -229,10 +229,12 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	[o_window setTitle:[cueParser title]];
 	if([cueParser representedFilename]) {
 		if(![[NSFileManager defaultManager] fileExistsAtPath:[cueParser representedFilename]]) {
-			[o_window performSelector:@selector(setRepresentedFilename:) withObject:[cueParser representedFilename] afterDelay:1.0];
+			[o_window setRepresentedFilename:@""];
+			[o_window performSelector:@selector(setRepresentedFilename:) withObject:[cueParser representedFilename] afterDelay:2.0];
 		}
 		else [o_window setRepresentedFilename:[cueParser representedFilename]];
 	}
+	else [o_window setRepresentedFilename:@""];
 	[o_accurateRipStatus setStringValue:[cueParser accurateRipData] ? LS(@"YES") : LS(@"NO")];
 	[o_totalTime setStringValue:[NSString stringWithFormat:LS(@"%@ Total"), framesToMSFStr([cueParser totalFrames], [cueParser samplerate])]];
 	if([cueParser accurateRipData] && [cueParser fileToDecode] && ![[cueParser fileToDecode] hasPrefix:@"/dev/disk"])
