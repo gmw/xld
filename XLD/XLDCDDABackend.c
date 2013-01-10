@@ -228,10 +228,10 @@ static void read_media_type(xld_cdread_t *disc)
 	cdTOC.bufferLength = sizeof(CDATIP);
 	cdTOC.buffer = atipData;
 	
-	if(ioctl(disc->fd, DKIOCCDREADTOC, &cdTOC) != -1) {
+	if(ioctl(disc->fd, DKIOCCDREADTOC, &cdTOC) != -1 && atipData->dataLength && atipData->reserved6) {
 #if 0
 		fprintf(stderr,"ATIP:\n");
-		fprintf(stderr," dataLength: %d\n", atipData->dataLength);
+		fprintf(stderr," dataLength: %x\n", atipData->dataLength);
 		fprintf(stderr," discType: 0x%02x\n", atipData->discType);
 		fprintf(stderr," discSubtype: 0x%02x\n", atipData->discSubType);
 		fprintf(stderr," ATIP Lead-in: %02d:%02d:%02d\n", atipData->startTimeOfLeadIn.minute,atipData->startTimeOfLeadIn.second,atipData->startTimeOfLeadIn.frame);
