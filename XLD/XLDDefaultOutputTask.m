@@ -10,14 +10,6 @@
 #import "XLDDefaultOutput.h"
 #import "XLDTrack.h"
 
-#ifdef _BIG_ENDIAN
-#define SWAP32(n) (n)
-#define SWAP16(n) (n)
-#else
-#define SWAP32(n) (((n>>24)&0xff) | ((n>>8)&0xff00) | ((n<<8)&0xff0000) | ((n<<24)&0xff000000))
-#define SWAP16(n) (((n>>8)&0xff) | ((n<<8)&0xff00))
-#endif
-
 static void appendTextTag(NSMutableData *tagData, char *field, NSString *tagStr, int encoding)
 {
 	unsigned int tmp;
@@ -134,7 +126,7 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 	path = [str retain];
 	
 	[tagData setLength:0];
-	if(addTag && ((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_AIFF)) {
+	if(addTag && ((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_AIFF || (sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV)) {
 		int tmp;
 		short tmp2;
 		char tmp3;
@@ -143,7 +135,9 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 		
 		/* ID3  atom */
 		tmp = 0;
-		memcpy(atomID,"ID3 ",4);
+		if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_AIFF)
+			memcpy(atomID,"ID3 ",4);
+		else memcpy(atomID,"id3 ",4);
 		[tagData appendBytes:atomID length:4];
 		[tagData appendBytes:&tmp length:4]; // chunk size (unknown atm)
 		
@@ -319,7 +313,7 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 			NSData *dat = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_TRACKID] dataUsingEncoding:NSISOLatin1StringEncoding];
 			NSData *dat2 = [@"http://musicbrainz.org" dataUsingEncoding:NSISOLatin1StringEncoding];
 			tmp = [dat length]+[dat2 length]+1;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			tmp2 = 0;
 			tmp3 = 0;
 			[tagData appendBytes:"UFID" length:4]; //ID
@@ -388,7 +382,7 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 			if(mime) {
 				added = YES;
 				tmp = [imgData length] + strlen(mime) + 4;
-				tmp = SWAP32(tmp);
+				tmp = OSSwapHostToBigInt32(tmp);
 				tmp2 = 0;
 				tmp3 = 0;
 				memcpy(atomID,"APIC",4);
@@ -408,7 +402,9 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 		if(added) {
 			/* update length of ID3  atom */
 			tmp = [tagData length] - 8;
-			tmp = SWAP32(tmp);
+			if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_AIFF)
+				tmp = OSSwapHostToBigInt32(tmp);
+			else tmp = OSSwapHostToLittleInt32(tmp);
 			[tagData replaceBytesInRange:NSMakeRange(4,4) withBytes:&tmp];
 			
 			/* update length of ID3 header */
@@ -426,6 +422,26 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 			if([tagData length] & 1) [tagData increaseLengthBy:1];
 		}
 		else [tagData setLength:0];
+	}
+	if(addTag && (sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) {
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TITLE]) {
+			sf_set_string(sf_w,SF_STR_TITLE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TITLE] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTIST]) {
+			sf_set_string(sf_w,SF_STR_ARTIST,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTIST] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE]) {
+			sf_set_string(sf_w,SF_STR_DATE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE] UTF8String]);
+		}
+		else if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR]) {
+			sf_set_string(sf_w,SF_STR_DATE,[[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR] stringValue] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_GENRE]) {
+			sf_set_string(sf_w,SF_STR_GENRE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_GENRE] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMMENT]) {
+			sf_set_string(sf_w,SF_STR_COMMENT,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMMENT] UTF8String]);
+		}
 	}
 	
 	return YES;
@@ -469,22 +485,42 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 	int tmp;
 	char atom[4];
 	
-	while(1) { //skip until FORM;
-		if(fread(atom,1,4,fp) < 4) goto end;
-		if(fread(&tmp,4,1,fp) < 1) goto end;
-		tmp = SWAP32(tmp);
-		if(!memcmp(atom,"FORM",4)) break;
+	if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_AIFF) {
+		while(1) { //skip until FORM;
+			if(fread(atom,1,4,fp) < 4) goto end;
+			if(fread(&tmp,4,1,fp) < 1) goto end;
+			tmp = OSSwapBigToHostInt32(tmp);
+			if(!memcmp(atom,"FORM",4)) break;
+			if(fseeko(fp,tmp,SEEK_CUR) != 0) goto end;
+		}
+		if(fseeko(fp,-4,SEEK_CUR) != 0) goto end;
+		tmp = tmp + [tagData length];
+		tmp = OSSwapHostToBigInt32(tmp);
+		if(fwrite(&tmp,4,1,fp) < 1) goto end;
+		
+		tmp = OSSwapBigToHostInt32(tmp);
+		tmp = tmp - [tagData length];
 		if(fseeko(fp,tmp,SEEK_CUR) != 0) goto end;
+		if(fwrite([tagData bytes],1,[tagData length],fp) < [tagData length]) goto end;
 	}
-	if(fseeko(fp,-4,SEEK_CUR) != 0) goto end;
-	tmp = tmp + [tagData length];
-	tmp = SWAP32(tmp);
-	if(fwrite(&tmp,4,1,fp) < 1) goto end;
-	
-	tmp = SWAP32(tmp);
-	tmp = tmp - [tagData length];
-	if(fseeko(fp,tmp,SEEK_CUR) != 0) goto end;
-	if(fwrite([tagData bytes],1,[tagData length],fp) < [tagData length]) goto end;
+	else {
+		while(1) { //skip until RIFF;
+			if(fread(atom,1,4,fp) < 4) goto end;
+			if(fread(&tmp,4,1,fp) < 1) goto end;
+			tmp = OSSwapLittleToHostInt32(tmp);
+			if(!memcmp(atom,"RIFF",4)) break;
+			if(fseeko(fp,tmp,SEEK_CUR) != 0) goto end;
+		}
+		if(fseeko(fp,-4,SEEK_CUR) != 0) goto end;
+		tmp = tmp + [tagData length];
+		tmp = OSSwapHostToLittleInt32(tmp);
+		if(fwrite(&tmp,4,1,fp) < 1) goto end;
+		
+		tmp = OSSwapLittleToHostInt32(tmp);
+		tmp = tmp - [tagData length];
+		if(fseeko(fp,tmp,SEEK_CUR) != 0) goto end;
+		if(fwrite([tagData bytes],1,[tagData length],fp) < [tagData length]) goto end;
+	}
 	
 end:
 		
