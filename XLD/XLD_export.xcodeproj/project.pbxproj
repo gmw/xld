@@ -48,6 +48,7 @@
 		BF476E4313FD14DD00E66093 /* SaveAs.png in Resources */ = {isa = PBXBuildFile; fileRef = BF476E4213FD14DD00E66093 /* SaveAs.png */; };
 		BF51575B0D7D937C001C0905 /* XLDHEAACOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BF51575A0D7D937C001C0905 /* XLDHEAACOutput.bundle */; };
 		BF5593DD0EC9EEAA00562F2C /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5593DC0EC9EEAA00562F2C /* CoreAudio.framework */; };
+		BF567DB416A0257D0024A3C8 /* XLDWavOutput.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF567DB216A0257D0024A3C8 /* XLDWavOutput.xib */; };
 		BF69CA6C139025E1008332B5 /* XLDCDDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = BF69CA6B139025E1008332B5 /* XLDCDDBUtil.m */; };
 		BF69CA771390264E008332B5 /* XLDMusicBrainzReleaseList.m in Sources */ = {isa = PBXBuildFile; fileRef = BF69CA761390264E008332B5 /* XLDMusicBrainzReleaseList.m */; };
 		BF69CA851390268B008332B5 /* XLDMusicBrainzRelease.m in Sources */ = {isa = PBXBuildFile; fileRef = BF69CA841390268B008332B5 /* XLDMusicBrainzRelease.m */; };
@@ -297,6 +298,16 @@
 		BF564F5F1325597500838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/DiscView.xib; sourceTree = "<group>"; };
 		BF564F621325599000838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BF564F6713255BDF00838FC4 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = Spanish; path = Spanish.lproj/Credits.rtfd; sourceTree = "<group>"; };
+		BF567DB316A0257D0024A3C8 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DB516A025890024A3C8 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DB616A025920024A3C8 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DB716A0259A0024A3C8 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DB816A025A20024A3C8 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DB916A025AC0024A3C8 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DBA16A025B50024A3C8 /* Russian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Russian; path = Russian.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DBB16A025BE0024A3C8 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DBC16A025C50024A3C8 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_CN; path = zh_CN.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
+		BF567DBF16A025D70024A3C8 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/XLDWavOutput.xib; sourceTree = "<group>"; };
 		BF69CA6B139025E1008332B5 /* XLDCDDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDCDDBUtil.m; sourceTree = "<group>"; };
 		BF69CA74139025F6008332B5 /* XLDCDDBUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDCDDBUtil.h; sourceTree = "<group>"; };
 		BF69CA751390264E008332B5 /* XLDMusicBrainzReleaseList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDMusicBrainzReleaseList.h; sourceTree = "<group>"; };
@@ -672,6 +683,7 @@
 				BF23B6A612338EF400AF5305 /* MetadataEditor.xib */,
 				BF23B6B712338F8D00AF5305 /* ARChecker.xib */,
 				BF23B6BA12338FC400AF5305 /* XLDDefaultOutput.xib */,
+				BF567DB216A0257D0024A3C8 /* XLDWavOutput.xib */,
 				BFB9E02E12829DCD009445A3 /* CustomFormatManager.xib */,
 				BF8F4465131AA478004D1C78 /* ProfileManager.xib */,
 				BF3D6BCC1323814F002CA462 /* DiscView.xib */,
@@ -835,6 +847,7 @@
 				BF8AA6C1139B6CFB0041328A /* ExportStopPressed.png in Resources */,
 				BF8AA6C2139B6CFB0041328A /* ExportStop.png in Resources */,
 				BF476E4313FD14DD00E66093 /* SaveAs.png in Resources */,
+				BF567DB416A0257D0024A3C8 /* XLDWavOutput.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1012,6 +1025,23 @@
 				BFD3CC801359C7B000D0E817 /* zh_TW */,
 			);
 			name = DiscView.xib;
+			sourceTree = "<group>";
+		};
+		BF567DB216A0257D0024A3C8 /* XLDWavOutput.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF567DB316A0257D0024A3C8 /* English */,
+				BF567DB516A025890024A3C8 /* Japanese */,
+				BF567DB616A025920024A3C8 /* French */,
+				BF567DB716A0259A0024A3C8 /* German */,
+				BF567DB816A025A20024A3C8 /* Dutch */,
+				BF567DB916A025AC0024A3C8 /* Italian */,
+				BF567DBA16A025B50024A3C8 /* Russian */,
+				BF567DBB16A025BE0024A3C8 /* Spanish */,
+				BF567DBC16A025C50024A3C8 /* zh_CN */,
+				BF567DBF16A025D70024A3C8 /* zh_TW */,
+			);
+			name = XLDWavOutput.xib;
 			sourceTree = "<group>";
 		};
 		BF8F4465131AA478004D1C78 /* ProfileManager.xib */ = {
