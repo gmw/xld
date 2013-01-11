@@ -126,7 +126,17 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 	path = [str retain];
 	
 	[tagData setLength:0];
-	if(addTag && ((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_AIFF || (sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV)) {
+	BOOL addId3Tag = NO;
+	BOOL addWavInfoTag = NO;
+	if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_AIFF) addId3Tag = YES;
+	else if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) {
+		if([configurations objectForKey:@"WavTagFormat"]) {
+			int tagFormat = [[configurations objectForKey:@"WavTagFormat"] intValue];
+			if(tagFormat >= 1) addId3Tag = YES;
+			if(tagFormat == 0 || tagFormat == 2) addWavInfoTag = YES;
+		}
+	}
+	if(addTag && addId3Tag) {
 		int tmp;
 		short tmp2;
 		char tmp3;
@@ -423,24 +433,31 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 		}
 		else [tagData setLength:0];
 	}
-	if(addTag && (sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) {
+	if(addTag && addWavInfoTag) {
+		NSStringEncoding encoding = NSUTF8StringEncoding;
+		if([configurations objectForKey:@"WavTagEncoding"]) {
+			int tagEncoding = [[configurations objectForKey:@"WavTagEncoding"] intValue];
+			if(tagEncoding == 0) encoding = NSUTF8StringEncoding;
+			else if(tagEncoding == 1) encoding = NSISOLatin1StringEncoding;
+			else if(tagEncoding == 2) encoding = [NSString defaultCStringEncoding];
+		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TITLE]) {
-			sf_set_string(sf_w,SF_STR_TITLE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TITLE] UTF8String]);
+			sf_set_string(sf_w,SF_STR_TITLE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TITLE] cStringUsingEncoding:encoding]);
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTIST]) {
-			sf_set_string(sf_w,SF_STR_ARTIST,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTIST] UTF8String]);
+			sf_set_string(sf_w,SF_STR_ARTIST,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTIST] cStringUsingEncoding:encoding]);
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE]) {
-			sf_set_string(sf_w,SF_STR_DATE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE] UTF8String]);
+			sf_set_string(sf_w,SF_STR_DATE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE] cStringUsingEncoding:encoding]);
 		}
 		else if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR]) {
-			sf_set_string(sf_w,SF_STR_DATE,[[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR] stringValue] UTF8String]);
+			sf_set_string(sf_w,SF_STR_DATE,[[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR] stringValue] cStringUsingEncoding:encoding]);
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_GENRE]) {
-			sf_set_string(sf_w,SF_STR_GENRE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_GENRE] UTF8String]);
+			sf_set_string(sf_w,SF_STR_GENRE,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_GENRE] cStringUsingEncoding:encoding]);
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMMENT]) {
-			sf_set_string(sf_w,SF_STR_COMMENT,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMMENT] UTF8String]);
+			sf_set_string(sf_w,SF_STR_COMMENT,[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COMMENT] cStringUsingEncoding:encoding]);
 		}
 	}
 	
