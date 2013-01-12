@@ -687,3 +687,13 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	return dic;
 }
 @end
+
+@implementation NSFileManager (XLDFileMove)
+- (void)moveFileAtPath:(NSString *)src toPath:(NSString *)dst
+{
+	if([self respondsToSelector:@selector(moveItemAtPath:toPath:error:)]) {
+		[self moveItemAtPath:src toPath:dst error:nil];
+	}
+	else [self movePath:src toPath:dst handler:nil];
+}
+@end

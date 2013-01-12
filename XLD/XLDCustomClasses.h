@@ -131,3 +131,13 @@
 @interface XLDBundle : NSBundle {
 }
 @end
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
+@interface NSFileManager (XLDNSFileManager1050OverMethod)
+- (BOOL)moveItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath error:(NSError **)error;
+@end
+#endif
+
+@interface NSFileManager (XLDFileMove)
+- (void)moveFileAtPath:(NSString *)src toPath:(NSString *)dst;
+@end

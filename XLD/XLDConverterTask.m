@@ -960,7 +960,7 @@ typedef struct {
 			}
 			if(moveAfterFinish) {
 				[fm createDirectoryWithIntermediateDirectoryInPath:[dstPathStr stringByDeletingLastPathComponent]];
-				[fm movePath:tmpPathStr toPath:dstPathStr handler:nil];
+				[fm moveFileAtPath:tmpPathStr toPath:dstPathStr];
 			}
 			if(cuePathStr) {
 				[[XLDTrackListUtil cueDataForTracks:trackListForCuesheet withFileName:[dstPathStr lastPathComponent] appendBOM:appendBOM samplerate:[decoder samplerate]] writeToFile:cuePathStr atomically:YES];
@@ -982,7 +982,7 @@ typedef struct {
 				}
 				if(moveAfterFinish) {
 					[fm createDirectoryWithIntermediateDirectoryInPath:[[outputPathStrArray objectAtIndex:i] stringByDeletingLastPathComponent]];
-					[fm movePath:[tmpPathStrArray objectAtIndex:i] toPath:[outputPathStrArray objectAtIndex:i] handler:nil];
+					[fm moveFileAtPath:[tmpPathStrArray objectAtIndex:i] toPath:[outputPathStrArray objectAtIndex:i]];
 				}
 				if(cuePathStrArray) {
 					[[XLDTrackListUtil cueDataForTracks:trackListForCuesheet withFileName:[[outputPathStrArray objectAtIndex:i] lastPathComponent] appendBOM:appendBOM samplerate:[decoder samplerate]] writeToFile:[cuePathStrArray objectAtIndex:i] atomically:YES];
