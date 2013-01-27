@@ -47,7 +47,7 @@
 						<object class="NSTextFieldCell" key="NSCell" id="940517470">
 							<int key="NSCellFlags">68288064</int>
 							<int key="NSCellFlags2">272892928</int>
-							<string key="NSContents">(For INFO list chunk)</string>
+							<string key="NSContents">(For INFO chunk)</string>
 							<object class="NSFont" key="NSSupport">
 								<string key="NSName">LucidaGrande</string>
 								<double key="NSSize">9</double>
