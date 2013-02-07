@@ -728,7 +728,8 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			[op _setIncludeNewFolderButton:YES];
 		
 		int ret = [op runModal];
-		if((ret != NSOKButton) || ![[NSFileManager defaultManager] isWritableFileAtPath:[op filename]]) 
+		if(ret != NSOKButton) return;
+		if(![[NSFileManager defaultManager] isWritableFileAtPath:[op filename]]) 
 		{
 			NSRunCriticalAlertPanel(LS(@"error"), LS(@"no write permission"), @"OK", nil, nil);
 			return;
