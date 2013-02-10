@@ -208,6 +208,88 @@ end:
 	fclose(fp);
 }
 
+- (void)readRegionsFromSd2f:(char *)path
+{
+	FSRef fsRef;
+	OSErr err;
+	if(!FSPathMakeRef((UInt8*)path, &fsRef, NULL)) {
+		ResFileRefNum resourceRef;
+		HFSUniStr255 resourceForkName;
+		UniCharCount forkNameLength;
+		UniChar *forkName;
+		err = FSGetResourceForkName(&resourceForkName);
+		if(err) goto last;
+		forkNameLength = resourceForkName.length;
+		forkName = resourceForkName.unicode;
+		err = FSOpenResourceFile(&fsRef, forkNameLength, forkName, (SInt8)fsRdPerm, &resourceRef);
+		if(err) goto last;
+		
+		UseResFile(resourceRef);
+		Handle rsrc = Get1IndResource('ddRL',1);
+		if(rsrc) {
+			trackArr = [[NSMutableArray alloc] init];
+			HLock(rsrc);
+			unsigned char *ptr = (unsigned char *)*rsrc;
+			int resSize = GetHandleSize(rsrc);
+			int pos = 6+OSSwapBigToHostInt32(*(int*)(ptr+2));
+			int regionSize = OSSwapBigToHostInt32(*(int*)(ptr+6));
+			while(pos < resSize) {
+				XLDTrack *track = [[objc_getClass("XLDTrack") alloc] init];
+				unsigned int idx = OSSwapBigToHostInt32(*(int*)(ptr+pos+4));
+				unsigned int length = OSSwapBigToHostInt32(*(int*)(ptr+pos+8)) - idx;
+				[track setIndex:idx];
+				[track setFrames:length];
+				[trackArr addObject:track];
+				[track release];
+				pos += regionSize;
+			}
+			if(![trackArr count]) {
+				[trackArr release];
+				trackArr = nil;
+			}
+			HUnlock(rsrc);
+			ReleaseResource(rsrc);
+		}
+		if(!trackArr) {
+			CloseResFile(resourceRef);
+			goto last;
+		}
+		
+		rsrc = Get1Resource('Uni#',1);
+		if(rsrc) {
+			HLock(rsrc);
+			int i=0;
+			unsigned char *ptr = (unsigned char *)*rsrc;
+			int resSize = GetHandleSize(rsrc);
+			short strLength = OSSwapBigToHostInt16(*(short*)(ptr+2));
+			int pos = strLength*2+4;
+			NSString *album = nil;
+			if(strLength) {
+				album = [[NSString alloc] initWithBytes:ptr+4 length:strLength*2 encoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF16BE)];
+			}
+			while(pos < resSize && i < [trackArr count]) {
+				strLength = OSSwapBigToHostInt16(*(short*)(ptr+pos));
+				if(strLength) {
+					NSString *title = [[NSString alloc] initWithBytes:ptr+pos+2 length:strLength*2 encoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF16BE)];
+					XLDTrack *track = [trackArr objectAtIndex:i++];
+					if(title) {
+						[[track metadata] setObject:title forKey:XLD_METADATA_TITLE];
+						[title release];
+					}
+					if(album) [[track metadata] setObject:album forKey:XLD_METADATA_ALBUM];
+					pos += 2 + strLength*2;
+				}
+			}
+			if(album) [album release];
+			HUnlock(rsrc);
+			ReleaseResource(rsrc);
+		}
+		CloseResFile(resourceRef);
+	}
+last:
+	return;
+}
+
 - (BOOL)openFile:(char *)path
 {
 	memset(&sfinfo,0,sizeof(SF_INFO));
@@ -263,6 +345,9 @@ end:
 	}
 	else if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) {
 		[self readID3TagFromWAV:path];
+	}
+	else if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_SD2) {
+		[self readRegionsFromSd2f:path];
 	}
 	
 	if(srcPath) [srcPath release];
