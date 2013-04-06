@@ -53,17 +53,28 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 - (NSMenu *)menuForEvent:(NSEvent *)event
 {
 	NSMenu *menu = [super menuForEvent:event];
-	NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for All Files") action:@selector(applyForAll:) keyEquivalent:@""];
-	[item setTarget:actionTarget];
-	[item setTag:[[self delegate] tag]];
-	[menu insertItem:item atIndex:0];
-	[item release];
-	item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for the Same Album") action:@selector(applyForAlbum:) keyEquivalent:@""];
-	[item setTarget:actionTarget];
-	[item setTag:[[self delegate] tag]];
-	[menu insertItem:item atIndex:1];
-	[menu insertItem:[NSMenuItem separatorItem] atIndex:2];
-	[item release];
+	int tag = [[self delegate] tag];
+	if(tag >= 100) {
+		NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for All Tracks") action:@selector(applyForAll:) keyEquivalent:@""];
+		[item setTarget:actionTarget];
+		[item setTag:tag];
+		[menu insertItem:item atIndex:0];
+		[item release];
+		[menu insertItem:[NSMenuItem separatorItem] atIndex:1];
+	}
+	else {
+		NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for All Files") action:@selector(applyForAll:) keyEquivalent:@""];
+		[item setTarget:actionTarget];
+		[item setTag:tag];
+		[menu insertItem:item atIndex:0];
+		[item release];
+		item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for the Same Album") action:@selector(applyForAlbum:) keyEquivalent:@""];
+		[item setTarget:actionTarget];
+		[item setTag:tag];
+		[menu insertItem:item atIndex:1];
+		[menu insertItem:[NSMenuItem separatorItem] atIndex:2];
+		[item release];
+	}
 	
 	return menu;
 }

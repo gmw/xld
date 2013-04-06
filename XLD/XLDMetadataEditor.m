@@ -77,6 +77,17 @@ static const char* ID3v1GenreList[] = {
 	[o_picture setTag:11];
 	[o_singleComment setTag:12];
 	[o_singleCompilation setTag:13];
+	[o_title setTag:100];
+	[o_artist setTag:101];
+	[o_album setTag:102];
+	[o_albumArtist setTag:103];
+	[o_genre setTag:104];
+	[o_composer setTag:105];
+	[o_year setTag:106];
+	[o_disc setTag:109];
+	[o_totalDisc setTag:110];
+	[o_comment setTag:112];
+	[o_compilation setTag:113];
 	
 	NSMenu *menu = [[NSMenu alloc] init];
 	NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for All Files") action:@selector(applyForAll:) keyEquivalent:@""];
@@ -91,6 +102,17 @@ static const char* ID3v1GenreList[] = {
 	[item release];
 	[o_singleCompilation setMenu:menu];
 	[menu release];
+	
+	menu = [[NSMenu alloc] init];
+	item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for All Tracks") action:@selector(applyForAll:) keyEquivalent:@""];
+	[item setTarget:self];
+	[item setTag:[o_compilation tag]];
+	[menu insertItem:item atIndex:0];
+	[item release];
+	[o_compilation setMenu:menu];
+	[menu release];
+	
+	[o_trackEditor setDelegate:self];
 	
 	[o_textParserText setFont:[NSFont systemFontOfSize:12]];
 	[o_textParserMatching setAutoenablesItems:NO];
@@ -239,6 +261,106 @@ static const char* ID3v1GenreList[] = {
 	}
 	else {
 		[[track metadata] setObject:[NSNumber numberWithBool:YES] forKey:XLD_METADATA_COMPILATION];
+	}
+}
+
+- (void)setMetadataForAllTracksWithTag:(int)tag
+{
+	int i;
+	id obj=nil,key=nil;
+	BOOL remove = NO;
+	if(tag==100) {
+		key = XLD_METADATA_TITLE;
+		obj = [o_title stringValue];
+		if([[o_title stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==101) {
+		key = XLD_METADATA_ARTIST;
+		obj = [o_singleArtist stringValue];
+		if([[o_singleArtist stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==102) {
+		key = XLD_METADATA_ALBUM;
+		obj = [o_album stringValue];
+		if([[o_album stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==103) {
+		key = XLD_METADATA_ALBUMARTIST;
+		obj = [o_albumArtist stringValue];
+		if([[o_albumArtist stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==104) {
+		key = XLD_METADATA_GENRE;
+		obj = [o_genre stringValue];
+		if([[o_genre stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==105) {
+		key = XLD_METADATA_COMPOSER;
+		obj = [o_composer stringValue];
+		if([[o_composer stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==106) {
+		key = XLD_METADATA_DATE;
+		obj = [o_year stringValue];
+		if([[o_year stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==109) {
+		key = XLD_METADATA_DISC;
+		obj = [NSNumber numberWithInt:[o_disc intValue]];
+		if([[o_disc stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==110) {
+		key = XLD_METADATA_TOTALDISCS;
+		obj = [NSNumber numberWithInt:[o_totalDisc intValue]];
+		if([[o_totalDisc stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==112) {
+		key = XLD_METADATA_COMMENT;
+		obj = [o_comment stringValue];
+		if([[o_comment stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==113) {
+		key = XLD_METADATA_COMPILATION;
+		obj = [NSNumber numberWithBool:YES];
+		if([o_compilation state] == NSOffState) {
+			remove = YES;
+		}
+	}
+	
+	for(i=0;i<[currentTracks count];i++) {
+		XLDTrack *currentTrack = [currentTracks objectAtIndex:i];
+		if(remove) {
+			[[currentTrack metadata] removeObjectForKey:key];
+			if([key isEqualToString:XLD_METADATA_DATE]) [[currentTrack metadata] removeObjectForKey:XLD_METADATA_YEAR];
+		}
+		else {
+			if(obj && key) [[currentTrack metadata] setObject:obj forKey:key];
+			if([key isEqualToString:XLD_METADATA_DATE]) {
+				int year = [o_singleYear intValue];
+				if(year >= 1000 && year < 3000)
+					[[currentTrack metadata] setObject:[NSNumber numberWithInt:year] forKey:XLD_METADATA_YEAR];
+			}
+		}
 	}
 }
 
@@ -1079,7 +1201,8 @@ static const char* ID3v1GenreList[] = {
 
 - (IBAction)applyForAll:(id)sender
 {
-	[self setSingleMetadataForAllTracksWithTag:[sender tag] album:NO];
+	if([sender tag] >= 100) [self setMetadataForAllTracksWithTag:[sender tag]];
+	else [self setSingleMetadataForAllTracksWithTag:[sender tag] album:NO];
 }
 
 - (IBAction)applyForAlbum:(id)sender
