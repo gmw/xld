@@ -126,6 +126,8 @@
 	IBOutlet id o_resourceURLPane;
 	IBOutlet id o_resourceURL;
 	IBOutlet id o_driveSpeedControl;
+	IBOutlet id o_renamer;
+	IBOutlet id o_priority;
 	id multipleOutputFormatMatrix;
 	//id decoder;
 	id decoderCenter;
@@ -153,6 +155,7 @@
 	id profileManager;
 	id discView;
 	id coverArtSearcher;
+	int currentNice;
 }
 - (IBAction)beginDecode:(id)sender;
 - (IBAction)setOutputDir:(id)sender;
@@ -185,6 +188,7 @@
 - (IBAction)reportBug:(id)sender;
 - (IBAction)getMetadataFromURL:(id)sender;
 - (IBAction)gotoMBReleasePage:(id)sender;
+- (IBAction)renice:(id)sender;
 //- (void)finishedDecoding;
 //- (void)updateProgress:(double)val restTracks:(int)n;
 //- (BOOL)ignoreGap;

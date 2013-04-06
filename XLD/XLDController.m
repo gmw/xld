@@ -35,6 +35,7 @@
 #import "XLDShadowedImageView.h"
 #import "XLDPluginManager.h"
 #import "XLDLogChecker.h"
+#import "XLDRenamer.h"
 
 static NSString*    GeneralIdentifier = @"General";
 static NSString*    BatchIdentifier = @"Batch";
@@ -42,6 +43,7 @@ static NSString*    CDDBIdentifier = @"CDDB";
 static NSString*    MetadataIdentifier = @"Metadata";
 static NSString*    CDRipIdentifier = @"CD Rip";
 static NSString*    BurnIdentifier = @"Burn";
+static NSString*    FilenameIdentifier = @"Filename";
 
 static void DADoneCallback(DADiskRef DiskRef, DADissenterRef DissenterRef, void *context) 
 {
@@ -430,9 +432,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		//NSLog(@"%@",outputSubDir);
 	}
 	
-	[str replaceOccurrencesOfString:@"/" withString:LS(@"slash") options:0 range:NSMakeRange(0, [str length])];
-	[str replaceOccurrencesOfString:@":" withString:LS(@"colon") options:0 range:NSMakeRange(0, [str length])];
-	[str replaceOccurrencesOfString:@"\0" withString:@"" options:0 range:NSMakeRange(0, [str length])];
+	[o_renamer replaceInvalidCharactersInMutableString:str];
 	[str replaceOccurrencesOfString:@"[[[XLD_DIRECTORY_SEPARATOR]]]" withString:@"/" options:0 range:NSMakeRange(0, [str length])];
 	
 	return str;
@@ -794,8 +794,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		[resultObj setProcessOfExistingFiles:[[o_existingFile selectedCell] tag]];
 		{
 			NSMutableString *str = [NSMutableString stringWithString:[cueParser title]];
-			[str replaceOccurrencesOfString:@"/" withString:LS(@"slash") options:0 range:NSMakeRange(0, [str length])];
-			[str replaceOccurrencesOfString:@":" withString:LS(@"colon") options:0 range:NSMakeRange(0, [str length])];
+			[o_renamer replaceInvalidCharactersInMutableString:str];
 			if([str length] > 240) {
 				str = [NSMutableString stringWithString:[str substringToIndex:239]];
 			}
@@ -840,8 +839,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		NSString *filename;
 		if([discView extractionMode] == 2 && [[o_filenameFormatRadio selectedCell] tag] == 0) {
 			NSMutableString *str = [NSMutableString stringWithString:[cueParser title]];
-			[str replaceOccurrencesOfString:@"/" withString:LS(@"slash") options:0 range:NSMakeRange(0, [str length])];
-			[str replaceOccurrencesOfString:@":" withString:LS(@"colon") options:0 range:NSMakeRange(0, [str length])];
+			[o_renamer replaceInvalidCharactersInMutableString:str];
 			filename = str;
 		}
 		else filename = [self preferredFilenameForTrack:trk createSubDir:YES singleImageMode:singleImageMode albumArtist:[cueParser artist]];
@@ -1390,8 +1388,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		NSMutableData *data;
 		[sv setAccessoryView:o_cuesheetTypeView];
 		NSMutableString *str = [NSMutableString stringWithString:[cueParser title]];
-		[str replaceOccurrencesOfString:@"/" withString:LS(@"slash") options:0 range:NSMakeRange(0, [str length])];
-		[str replaceOccurrencesOfString:@":" withString:LS(@"colon") options:0 range:NSMakeRange(0, [str length])];
+		[o_renamer replaceInvalidCharactersInMutableString:str];
 		NSString *filename = str;
 		if([[[filename pathExtension] lowercaseString] isEqualToString:@"cue"])
 			filename = [filename stringByDeletingPathExtension];
@@ -1432,8 +1429,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	else {
 		[sv setAllowedFileTypes:[NSArray arrayWithObject:@"log"]];
 		NSMutableString *str = [NSMutableString stringWithString:[cueParser title]];
-		[str replaceOccurrencesOfString:@"/" withString:LS(@"slash") options:0 range:NSMakeRange(0, [str length])];
-		[str replaceOccurrencesOfString:@":" withString:LS(@"colon") options:0 range:NSMakeRange(0, [str length])];
+		[o_renamer replaceInvalidCharactersInMutableString:str];
 		NSString *filename = str;
 		if([[[filename pathExtension] lowercaseString] isEqualToString:@"cue"])
 			filename = [filename stringByDeletingPathExtension];
@@ -1720,6 +1716,16 @@ end:
 		  contextInfo:@"GetMetadataFromURL"];
 }
 
+- (IBAction)renice:(id)sender
+{
+	if(currentNice <= [[o_priority selectedItem] tag]) {
+		setpriority(PRIO_PROCESS,getpid(),[[o_priority selectedItem] tag]);
+		currentNice = [[o_priority selectedItem] tag];
+	}
+	else if(sender)
+		NSRunAlertPanel(LS(@"Making priority higher than the current value"), LS(@"Please restart XLD to take effect."), @"OK", nil, nil);
+}
+
 #pragma mark Normal Methods
 
 - (id)init
@@ -1905,6 +1911,7 @@ end:
 	[pref setInteger:[[o_AWSDomain selectedItem] tag] forKey:@"AWSDomain"];
 	[pref setInteger:[[o_htoaStyle selectedCell] tag] forKey:@"HTOAStyle"];
 	[pref setInteger:[[o_driveSpeedControl selectedItem] tag] forKey:@"DriveSpeedControl"];
+	[pref setInteger:[[o_priority selectedItem] tag] forKey:@"Priority"];
 }
 
 - (void)savePrefs
@@ -2273,6 +2280,11 @@ end:
 	if(obj=[pref objectForKey:@"DriveSpeedControl"]) {
 		int idx = [o_driveSpeedControl indexOfItemWithTag:[obj intValue]];
 		if(idx >= 0) [o_driveSpeedControl selectItemAtIndex:idx];
+	}
+	if(obj=[pref objectForKey:@"Priority"]) {
+		int idx = [o_priority indexOfItemWithTag:[obj intValue]];
+		if(idx >= 0) [o_priority selectItemAtIndex:idx];
+		[self renice:nil];
 	}
 }
 
@@ -4280,9 +4292,6 @@ fail:
 
 - (void)setNextKeyViews
 {
-	// General
-	[o_filenameFormat setNextKeyView:o_libraryName];
-	[o_libraryName setNextKeyView:o_filenameFormat];
 	// Batch
 	[o_subdirectoryDepth setNextKeyView:o_extensionFilter];
 	[o_extensionFilter setNextKeyView:o_subdirectoryDepth];
@@ -4311,6 +4320,46 @@ fail:
 - (void)awakeFromNib
 {
     
+}
+
+-(float)toolbarHeightForWindow:(NSWindow *)window
+{
+    NSToolbar *toolbar;
+    float toolbarHeight = 0.0;
+    NSRect windowFrame;
+    
+    toolbar = [window toolbar];
+    
+    if(toolbar && [toolbar isVisible])
+    {
+        windowFrame = [NSWindow contentRectForFrameRect:[window frame]
+											  styleMask:[window styleMask]];
+        toolbarHeight = NSHeight(windowFrame)
+		- NSHeight([[window contentView] frame]);
+    }
+    
+    return toolbarHeight;
+}
+
+-(void)resizePrefPane
+{
+	NSArray *subviews = [[[o_preferencesTab selectedTabViewItem] view] subviews];
+	NSEnumerator *enumerator = [subviews objectEnumerator];
+	NSRect windowRect = NSZeroRect;
+	NSView *subview = nil;
+	while((subview = [enumerator nextObject]))
+	{
+		windowRect = NSUnionRect(windowRect, [subview frame]);
+	}
+	windowRect.origin.y = [[o_preferencesTab window] frame].origin.y;
+	windowRect.size.height += [self toolbarHeightForWindow:[o_preferencesTab window]]; //toolbar height
+	windowRect.size.height += 22; //title bar height
+	windowRect.size.height += 32; //border
+	
+	NSRect r = NSMakeRect([[o_preferencesTab window] frame].origin.x, [[o_preferencesTab window] frame].origin.y - 
+						  (windowRect.size.height - [[o_preferencesTab window] frame].size.height), [[o_preferencesTab window] frame].size.width, windowRect.size.height);
+	[[o_preferencesTab window] setFrame:r display:YES animate:YES];
+	//[[o_preferencesTab window] makeFirstResponder:[[o_preferencesTab selectedTabViewItem] view]];
 }
 
 - (void)applicationDidFinishLaunching: (NSNotification *)notification
@@ -4369,6 +4418,7 @@ fail:
     [toolbar setDelegate:self];
     [o_prefPane setToolbar:toolbar];
 	[toolbar setSelectedItemIdentifier:GeneralIdentifier];
+	[self resizePrefPane];
 	
 	toolbar = [[[NSToolbar alloc] initWithIdentifier:@"LogToolbar"] autorelease];
     [toolbar setDelegate:self];
@@ -4381,6 +4431,7 @@ fail:
 	[customFormatManager loadPrefs];
 	[profileManager loadPrefs];
 	[discView loadPrefs];
+	[o_renamer loadPrefs];
 	[self updateFormatDescriptionMenu];
 	
 	[o_addProfileMenu setAction:@selector(addProfile:)];
@@ -4424,6 +4475,7 @@ fail:
 	for(i=0;i<[outputArr count];i++) {
 		[[outputArr objectAtIndex:i] savePrefs];
 	}
+	[o_renamer savePrefs];
 	[discView savePrefs];
 	[profileManager savePrefs];
 	[customFormatManager savePrefs];
@@ -4456,6 +4508,7 @@ fail:
 {
 	if([[toolbar identifier] isEqualToString:@"PrefToolbar"]) {
 		return [NSArray arrayWithObjects:GeneralIdentifier, 
+				FilenameIdentifier,
 				BatchIdentifier, 
 				CDDBIdentifier, 
 				MetadataIdentifier, 
@@ -4495,6 +4548,12 @@ willBeInsertedIntoToolbar:(BOOL)willBeInserted
 		if ([itemId isEqualToString:GeneralIdentifier]) {
 			[toolbarItem setLabel:LS(@"General")];
 			[toolbarItem setImage:[NSImage imageNamed:@"general"]];
+			
+			return toolbarItem;
+		}
+		else if ([itemId isEqualToString:FilenameIdentifier]) {
+			[toolbarItem setLabel:LS(@"File Naming")];
+			[toolbarItem setImage:[NSImage imageNamed:@"filename"]];
 			
 			return toolbarItem;
 		}
@@ -4542,47 +4601,6 @@ willBeInsertedIntoToolbar:(BOOL)willBeInserted
 	
     return nil;
 }
-
--(float)toolbarHeightForWindow:(NSWindow *)window
-{
-    NSToolbar *toolbar;
-    float toolbarHeight = 0.0;
-    NSRect windowFrame;
-    
-    toolbar = [window toolbar];
-    
-    if(toolbar && [toolbar isVisible])
-    {
-        windowFrame = [NSWindow contentRectForFrameRect:[window frame]
-											  styleMask:[window styleMask]];
-        toolbarHeight = NSHeight(windowFrame)
-		- NSHeight([[window contentView] frame]);
-    }
-    
-    return toolbarHeight;
-}
-
--(void)resizePrefPane
-{
-	NSArray *subviews = [[[o_preferencesTab selectedTabViewItem] view] subviews];
-	NSEnumerator *enumerator = [subviews objectEnumerator];
-	NSRect windowRect = NSZeroRect;
-	NSView *subview = nil;
-	while((subview = [enumerator nextObject]))
-	{
-		windowRect = NSUnionRect(windowRect, [subview frame]);
-	}
-	windowRect.origin.y = [[o_preferencesTab window] frame].origin.y;
-	windowRect.size.height += [self toolbarHeightForWindow:[o_preferencesTab window]]; //toolbar height
-	windowRect.size.height += 22; //title bar height
-	windowRect.size.height += 32; //border
-	
-	NSRect r = NSMakeRect([[o_preferencesTab window] frame].origin.x, [[o_preferencesTab window] frame].origin.y - 
-						  (windowRect.size.height - [[o_preferencesTab window] frame].size.height), [[o_preferencesTab window] frame].size.width, windowRect.size.height);
-	[[o_preferencesTab window] setFrame:r display:YES animate:YES];
-	//[[o_preferencesTab window] makeFirstResponder:[[o_preferencesTab selectedTabViewItem] view]];
-}
-
 
 - (void)showTab:(id)sender
 {
