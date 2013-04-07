@@ -27,6 +27,10 @@
 	[super init];
 	[NSBundle loadNibNamed:@"XLDOpusOutput" owner:self];
 	[o_credit setStringValue:[NSString stringWithFormat:@"%@%s",[o_credit stringValue],opus_get_version_string()]];
+	[o_frameSize setAutoenablesItems:NO];
+#ifdef OPUS_SET_EXPERT_FRAME_DURATION
+	[[o_frameSize itemAtIndex:[o_frameSize indexOfItemWithTag:0]] setEnabled:YES];
+#endif
 	srand(time(NULL));
 	return self;
 }
@@ -47,8 +51,8 @@
 {
 	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
 	[pref setInteger:[o_bitrate intValue] forKey:@"XLDOpusOutput_Bitrate"];
-	[pref setInteger:[o_frameSize indexOfSelectedItem] forKey:@"XLDOpusOutput_FrameSize"];
-	[pref setInteger:[o_encoderMode indexOfSelectedItem] forKey:@"XLDOpusOutput_EncoderMode"];
+	[pref setInteger:[[o_frameSize selectedItem] tag] forKey:@"XLDOpusOutput_FrameSize2"];
+	[pref setInteger:[[o_encoderMode selectedItem] tag] forKey:@"XLDOpusOutput_EncoderMode2"];
 	[pref synchronize];
 }
 
@@ -73,8 +77,8 @@
 	NSMutableDictionary *cfg = [[NSMutableDictionary alloc] init];
 	/* for GUI */
 	[cfg setObject:[NSNumber numberWithInt:[o_bitrate intValue]] forKey:@"XLDOpusOutput_Bitrate"];
-	[cfg setObject:[NSNumber numberWithInt:[o_frameSize indexOfSelectedItem]] forKey:@"XLDOpusOutput_FrameSize"];
-	[cfg setObject:[NSNumber numberWithInt:[o_encoderMode indexOfSelectedItem]] forKey:@"XLDOpusOutput_EncoderMode"];
+	[cfg setObject:[NSNumber numberWithInt:[[o_frameSize selectedItem] tag]] forKey:@"XLDOpusOutput_FrameSize2"];
+	[cfg setObject:[NSNumber numberWithInt:[[o_encoderMode selectedItem] tag]] forKey:@"XLDOpusOutput_EncoderMode2"];
 	/* for task */
 	[cfg setObject:[NSNumber numberWithInt:[self bitrate]] forKey:@"Bitrate"];
 	[cfg setObject:[NSNumber numberWithInt:[[o_frameSize selectedItem] tag]] forKey:@"FrameSize"];
@@ -97,10 +101,18 @@
 	if(obj=[cfg objectForKey:@"XLDOpusOutput_Bitrate"]) {
 		[o_bitrate setIntValue:[obj intValue]];
 	}
-	if(obj=[cfg objectForKey:@"XLDOpusOutput_FrameSize"]) {
+	if(obj=[cfg objectForKey:@"XLDOpusOutput_FrameSize2"]) {
+		int idx = [o_frameSize indexOfItemWithTag:[obj intValue]];
+		if(idx >= 0) [o_frameSize selectItemAtIndex:idx];
+	}
+	else if(obj=[cfg objectForKey:@"XLDOpusOutput_FrameSize"]) {
 		if([obj intValue] < [o_frameSize numberOfItems]) [o_frameSize selectItemAtIndex:[obj intValue]];
 	}
-	if(obj=[cfg objectForKey:@"XLDOpusOutput_EncoderMode"]) {
+	if(obj=[cfg objectForKey:@"XLDOpusOutput_EncoderMode2"]) {
+		int idx = [o_encoderMode indexOfItemWithTag:[obj intValue]];
+		if(idx >= 0) [o_encoderMode selectItemAtIndex:idx];
+	}
+	else if(obj=[cfg objectForKey:@"XLDOpusOutput_EncoderMode"]) {
 		if([obj intValue] < [o_encoderMode numberOfItems]) [o_encoderMode selectItemAtIndex:[obj intValue]];
 	}
 }

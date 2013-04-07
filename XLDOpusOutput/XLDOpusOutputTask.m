@@ -266,7 +266,15 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 	else coding_rate=8000;
 	
 	frame_size = [[configurations objectForKey:@"FrameSize"] intValue];
+#ifdef OPUS_SET_EXPERT_FRAME_DURATION
+	if(!frame_size) {
+		/* variable frame size */
+		useVariableFramesize = YES;
+		frame_size = 2*48000; /* set lookahead size to maximum */
+	}
+#else
 	if(!frame_size) frame_size = 960;
+#endif
 	frame_size = frame_size/(48000/coding_rate);
 	
 	/* setup header */
@@ -352,6 +360,16 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 	if(ret != OPUS_OK) {
 		goto fail;
 	}
+	
+#ifdef OPUS_SET_EXPERT_FRAME_DURATION
+	if(useVariableFramesize) {
+		i=OPUS_FRAMESIZE_VARIABLE;
+		ret = opus_multistream_encoder_ctl(st, OPUS_SET_EXPERT_FRAME_DURATION(i));
+		if(ret != OPUS_OK){
+			fprintf(stderr,"Warning OPUS_SET_EXPERT_FRAME_DURATION returned: %s\n",opus_strerror(ret));
+		}
+	}
+#endif
 	
 	/* setup resampler */
 	if(coding_rate != format.samplerate) {
@@ -678,7 +696,7 @@ fail:
 #endif
 		}
 		if(usedSamples >= 2048) {
-			usedSamples -= 1024;
+			usedSamples -= 1024; /* always preserve 1024 samples, which may be required for LPC in the finalization process */
 			spx_uint32_t outSamples=usedSamples*ratio;
 			speex_resampler_process_interleaved_float(resampler,resamplerBuffer,&usedSamples,input+bufferedSamples*format.channels,&outSamples);
 			bufferedResamplerSamples = counts+bufferedResamplerSamples-usedSamples;
@@ -688,6 +706,7 @@ fail:
 			bufferedSamples += outSamples;
 		}
 		else {
+			/* wait until at least 2048 samples are filled */
 			bufferedResamplerSamples += counts;
 			return YES;
 		}
@@ -714,15 +733,17 @@ fail:
 		pid++;
 		
 		nb_samples = frame_size;
-		bufferedSamples -= nb_samples;
 		op.e_o_s=0;
-		
 		cur_frame_size=frame_size;
 		
 		int nbBytes = opus_multistream_encode_float(st, input+pos, cur_frame_size, packet, max_frame_bytes);
 		if(nbBytes < 0) return NO;
 		
-		pos += nb_samples*format.channels;
+#ifdef OPUS_SET_EXPERT_FRAME_DURATION
+		if(useVariableFramesize) cur_frame_size = opus_packet_get_nb_samples(packet,nbBytes,coding_rate);
+#endif
+		pos += cur_frame_size*format.channels;
+		bufferedSamples -= cur_frame_size;
 		
 		enc_granulepos+=cur_frame_size*48000/coding_rate;
 		size_segments=(nbBytes+255)/255;
@@ -746,7 +767,7 @@ fail:
 		ogg_stream_packetin(&os, &op);
 		last_segments+=size_segments;
 		
-		while((op.e_o_s||(enc_granulepos+(frame_size*48000/coding_rate)-last_granulepos>max_ogg_delay)||
+		while((op.e_o_s||(enc_granulepos+(cur_frame_size*48000/coding_rate)-last_granulepos>max_ogg_delay)||
 			   (last_segments>=255))?
 			  ogg_stream_flush_fill(&os, &og,255*255):
 			  ogg_stream_pageout_fill(&os, &og,255*255)){
@@ -810,7 +831,6 @@ fail:
 		if(nb_samples<0){
 			if(frame_size > bufferedSamples) nb_samples = bufferedSamples;
 			else nb_samples = frame_size;
-			bufferedSamples -= nb_samples;
 			if(nb_samples<frame_size) op.e_o_s=1;
 			else op.e_o_s=0;
 		}
@@ -818,13 +838,30 @@ fail:
 		
 		cur_frame_size=frame_size;
 		
-		if(nb_samples<cur_frame_size)
+		if(nb_samples<cur_frame_size) {
+#ifdef OPUS_SET_EXPERT_FRAME_DURATION
+			if(useVariableFramesize) {
+				/*if(nb_samples < 120/(48000/coding_rate)) cur_frame_size = 120/(48000/coding_rate);
+				else if(nb_samples < 240/(48000/coding_rate)) cur_frame_size = 240/(48000/coding_rate);
+				else if(nb_samples < 480/(48000/coding_rate)) cur_frame_size = 480/(48000/coding_rate);*/
+				if(nb_samples < 960/(48000/coding_rate)) cur_frame_size = 960/(48000/coding_rate);
+				else if(nb_samples < 1920/(48000/coding_rate)) cur_frame_size = 1920/(48000/coding_rate);
+				else if(nb_samples < 2880/(48000/coding_rate)) cur_frame_size = 2880/(48000/coding_rate);
+				else cur_frame_size = nb_samples;
+			}
+#endif
 			for(i=nb_samples*format.channels;i<cur_frame_size*format.channels;i++) input[pos+i]=0;
+		}
 		
 		int nbBytes = opus_multistream_encode_float(st, input+pos, cur_frame_size, packet, max_frame_bytes);
 		if(nbBytes < 0) break;
 		
-		pos += nb_samples*format.channels;
+#ifdef OPUS_SET_EXPERT_FRAME_DURATION
+		if(useVariableFramesize) cur_frame_size = opus_packet_get_nb_samples(packet,nbBytes,coding_rate);
+#endif
+		pos += cur_frame_size*format.channels;
+		bufferedSamples -= cur_frame_size;
+		if(op.e_o_s&&bufferedSamples>0){op.e_o_s=0;eos=1;}
 		
 		enc_granulepos+=cur_frame_size*48000/coding_rate;
 		size_segments=(nbBytes+255)/255;
@@ -840,10 +877,9 @@ fail:
 			}
 		}
 		
-		if((!op.e_o_s)&&max_ogg_delay>5760){
+		if(!op.e_o_s&&!eos&&max_ogg_delay>5760){
 			if(frame_size > bufferedSamples) nb_samples = bufferedSamples;
 			else nb_samples = frame_size;
-			bufferedSamples -= nb_samples;
 			if(nb_samples<frame_size)eos=1;
 			if(nb_samples==0)op.e_o_s=1;
 		} else nb_samples=-1;
@@ -859,7 +895,7 @@ fail:
 		ogg_stream_packetin(&os, &op);
 		last_segments+=size_segments;
 		
-		while((op.e_o_s||(enc_granulepos+(frame_size*48000/coding_rate)-last_granulepos>max_ogg_delay)||
+		while((op.e_o_s||(enc_granulepos+(cur_frame_size*48000/coding_rate)-last_granulepos>max_ogg_delay)||
 			   (last_segments>=255))?
 			  ogg_stream_flush_fill(&os, &og,255*255):
 			  ogg_stream_pageout_fill(&os, &og,255*255)){

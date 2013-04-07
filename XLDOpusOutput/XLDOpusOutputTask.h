@@ -95,6 +95,7 @@ typedef struct {
 	SpeexResamplerState *resampler;
 	float *resamplerBuffer;
 	int bufferedResamplerSamples;
+	BOOL useVariableFramesize;
 }
 
 - (BOOL)setOutputFormat:(XLDFormat)fmt;

@@ -46,7 +46,7 @@
 					<object class="NSTextField" id="217455785">
 						<reference key="NSNextResponder" ref="743830135"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{58, 3}, {210, 14}}</string>
+						<string key="NSFrame">{{17, 3}, {292, 14}}</string>
 						<reference key="NSSuperview" ref="743830135"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="411044535">
@@ -180,6 +180,30 @@
 										<reference key="NSMixedImage" ref="118631781"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<int key="NSTag">2880</int>
+										<reference key="NSTarget" ref="860998310"/>
+									</object>
+									<object class="NSMenuItem" id="700167163">
+										<reference key="NSMenu" ref="943796448"/>
+										<bool key="NSIsDisabled">YES</bool>
+										<bool key="NSIsSeparator">YES</bool>
+										<string key="NSTitle"/>
+										<string key="NSKeyEquiv"/>
+										<int key="NSMnemonicLoc">2147483647</int>
+										<reference key="NSOnImage" ref="43834416"/>
+										<reference key="NSMixedImage" ref="118631781"/>
+										<string key="NSAction">_popUpItemAction:</string>
+										<int key="NSTag">-1</int>
+										<reference key="NSTarget" ref="860998310"/>
+									</object>
+									<object class="NSMenuItem" id="148480370">
+										<reference key="NSMenu" ref="943796448"/>
+										<bool key="NSIsDisabled">YES</bool>
+										<string key="NSTitle">可変 (実験的)</string>
+										<string key="NSKeyEquiv"/>
+										<int key="NSMnemonicLoc">2147483647</int>
+										<reference key="NSOnImage" ref="43834416"/>
+										<reference key="NSMixedImage" ref="118631781"/>
+										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="860998310"/>
 									</object>
 								</object>
@@ -683,6 +707,8 @@
 							<reference ref="6858181"/>
 							<reference ref="419640213"/>
 							<reference ref="132228717"/>
+							<reference ref="700167163"/>
+							<reference ref="148480370"/>
 						</object>
 						<reference key="parent" ref="860998310"/>
 					</object>
@@ -730,6 +756,16 @@
 						<reference key="object" ref="411044535"/>
 						<reference key="parent" ref="217455785"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">39</int>
+						<reference key="object" ref="700167163"/>
+						<reference key="parent" ref="943796448"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">40</int>
+						<reference key="object" ref="148480370"/>
+						<reference key="parent" ref="943796448"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -766,8 +802,10 @@
 					<string>29.IBViewBoundsToFrameTransform</string>
 					<string>3.IBPluginDependency</string>
 					<string>30.IBPluginDependency</string>
+					<string>39.IBPluginDependency</string>
 					<string>4.IBPluginDependency</string>
 					<string>4.IBViewBoundsToFrameTransform</string>
+					<string>40.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>6.IBPluginDependency</string>
 					<string>6.IBViewBoundsToFrameTransform</string>
@@ -804,7 +842,7 @@
 						<bytes key="NSTransformStruct">P4AAAL+AAABDIAAAwxAAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{946, 631}, {214, 123}}</string>
+					<string>{{745, 609}, {184, 153}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -819,9 +857,11 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABCrgAAwygAAA</bytes>
 					</object>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
@@ -851,7 +891,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">38</int>
+			<int key="maxID">40</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
