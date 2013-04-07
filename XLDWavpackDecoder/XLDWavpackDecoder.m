@@ -182,7 +182,7 @@ int WavpackGetTagItemIndexed (WavpackContext *wpc, int index, char *item, int si
 			}
 			free(buf);
 		}
-		else if(!strcasecmp(tagIdx,"disc")) {
+		else if(!strcasecmp(tagIdx,"disc") || !strcasecmp(tagIdx,"discnumber")) {
 			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
 			char *buf = (char *)malloc(size+10);
 			WavpackGetTagItem(wc, tagIdx, buf, size+10);
