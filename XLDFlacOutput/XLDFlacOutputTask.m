@@ -32,6 +32,7 @@ typedef int64_t xldoffset_t;
 {
 	[self init];
 	configurations = [cfg retain];
+	if([configurations objectForKey:@"WriteRGTags"]) writeRGTags = [[configurations objectForKey:@"WriteRGTags"] boolValue];
 	return self;
 }
 
@@ -274,25 +275,27 @@ typedef int64_t xldoffset_t;
 			entry.length = strlen((char *)entry.entry);
 			FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
 		}
-		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN]) {
-			entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_TRACK_GAIN=%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] floatValue]] UTF8String];
-			entry.length = strlen((char *)entry.entry);
-			FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
-		}
-		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK]) {
-			entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_TRACK_PEAK=%.8f",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK] floatValue]] UTF8String];
-			entry.length = strlen((char *)entry.entry);
-			FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
-		}
-		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN]) {
-			entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_ALBUM_GAIN=%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN] floatValue]] UTF8String];
-			entry.length = strlen((char *)entry.entry);
-			FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
-		}
-		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK]) {
-			entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_ALBUM_PEAK=%.8f",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK] floatValue]] UTF8String];
-			entry.length = strlen((char *)entry.entry);
-			FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
+		if(writeRGTags) {
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN]) {
+				entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_TRACK_GAIN=%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] floatValue]] UTF8String];
+				entry.length = strlen((char *)entry.entry);
+				FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
+			}
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK]) {
+				entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_TRACK_PEAK=%.8f",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK] floatValue]] UTF8String];
+				entry.length = strlen((char *)entry.entry);
+				FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
+			}
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN]) {
+				entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_ALBUM_GAIN=%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN] floatValue]] UTF8String];
+				entry.length = strlen((char *)entry.entry);
+				FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
+			}
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK]) {
+				entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_ALBUM_PEAK=%.8f",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK] floatValue]] UTF8String];
+				entry.length = strlen((char *)entry.entry);
+				FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
+			}
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER]) {
 			NSData *imgData = [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER];
@@ -404,7 +407,7 @@ typedef int64_t xldoffset_t;
 	FLAC__stream_encoder_finish(encoder);
 	
 	/* update metadata */
-	if(addTag && ([metadataDic objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] || [metadataDic objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK])) {
+	if(addTag && writeRGTags && ([metadataDic objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] || [metadataDic objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_PEAK])) {
 		FLAC__Metadata_SimpleIterator *mi = FLAC__metadata_simple_iterator_new();
 		if(mi) {
 			if(encoder) FLAC__stream_encoder_delete(encoder);

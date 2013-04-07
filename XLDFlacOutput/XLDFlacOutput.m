@@ -47,6 +47,7 @@
 	[pref setInteger:[o_setOggS intValue] forKey:@"XLDFlacOutput_SetOggS"];
 	[pref setInteger:[o_useCustomApodization state] forKey:@"XLDFlacOutput_UseCustomApodization"];
 	[pref setObject:[o_apodization stringValue] forKey:@"XLDFlacOutput_Apodization"];
+	[pref setInteger:[o_writeRGTags state] forKey:@"XLDFlacOutput_WriteRGTags"];
 	[pref synchronize];
 }
 
@@ -92,6 +93,11 @@
 	return ([o_setOggS state] == NSOnState);
 }
 
+- (BOOL)writeRGTags
+{
+	return ([o_writeRGTags state] == NSOnState);
+}
+
 - (NSMutableDictionary *)configurations
 {
 	NSMutableDictionary *cfg = [[NSMutableDictionary alloc] init];
@@ -103,6 +109,7 @@
 	[cfg setObject:[NSNumber numberWithInt:[o_setOggS intValue]] forKey:@"XLDFlacOutput_SetOggS"];
 	[cfg setObject:[NSNumber numberWithInt:[o_useCustomApodization state]] forKey:@"XLDFlacOutput_UseCustomApodization"];
 	[cfg setObject:[o_apodization stringValue] forKey:@"XLDFlacOutput_Apodization"];
+	[cfg setObject:[NSNumber numberWithInt:[o_writeRGTags state]] forKey:@"XLDFlacOutput_WriteRGTags"];
 	/* for task */
 	[cfg setObject:[NSNumber numberWithInt:[self compressionLevel]] forKey:@"CompressionLevel"];
 	[cfg setObject:[NSNumber numberWithBool:[self oggFlac]] forKey:@"OggFlac"];
@@ -110,6 +117,7 @@
 	[cfg setObject:[NSNumber numberWithBool:[self allowEmbeddedCuesheet]] forKey:@"AllowEmbeddedCuesheet"];
 	[cfg setObject:[NSNumber numberWithBool:[self setOggS]] forKey:@"SetOggS"];
 	if([o_useCustomApodization state] == NSOnState) [cfg setObject:[o_apodization stringValue] forKey:@"Apodization"];
+	[cfg setObject:[NSNumber numberWithBool:[self writeRGTags]] forKey:@"WriteRGTags"];
 	/* desc */
 	if([self oggFlac]) {
 		if([self compressionLevel] >= 0) [cfg setObject:[NSString stringWithFormat:@"level %d, ogg wrapped",[self compressionLevel]] forKey:@"ShortDesc"];
@@ -145,6 +153,9 @@
 	}
 	if(obj=[cfg objectForKey:@"XLDFlacOutput_Apodization"]) {
 		[o_apodization setStringValue:obj];
+	}
+	if(obj=[cfg objectForKey:@"XLDFlacOutput_WriteRGTags"]) {
+		[o_writeRGTags setIntValue:[obj intValue]];
 	}
 	[self statusChanged:nil];
 }

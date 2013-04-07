@@ -74,6 +74,7 @@
 	NSString *path;
 	NSDictionary *configurations;
 	NSMutableDictionary *metadataDic;
+	BOOL writeRGTags;
 }
 
 - (BOOL)setOutputFormat:(XLDFormat)fmt;

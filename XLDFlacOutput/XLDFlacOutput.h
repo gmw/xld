@@ -18,6 +18,7 @@
 	IBOutlet id o_setOggS;
 	IBOutlet id o_useCustomApodization;
 	IBOutlet id o_apodization;
+	IBOutlet id o_writeRGTags;
 }
 
 + (NSString *)pluginName;
