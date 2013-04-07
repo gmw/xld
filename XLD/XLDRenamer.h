@@ -14,12 +14,16 @@
 	IBOutlet id o_deleteButton;
 	NSMutableArray *renameList;
 	NSMutableDictionary *renameMap;
+	NSMutableString *helper1;
+	NSMutableString *helper2;
 }
 
 - (IBAction)addToList:(id)sender;
 - (IBAction)deleteFromList:(id)sender;
 - (void)loadPrefs;
 - (void)savePrefs;
+- (NSDictionary *)configurations;
+- (void)loadConfigurations:(id)pref;
 - (void)replaceInvalidCharactersInMutableString:(NSMutableString *)str;
 
 @end

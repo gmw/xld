@@ -11,6 +11,21 @@
 
 @implementation XLDRenamer
 
+- (void)updateHelperStrings
+{
+	int i;
+	if(helper1) [helper1 release];
+	if(helper2) [helper2 release];
+	helper1 = [[NSMutableString alloc] initWithString:@"[[[XLD_FORMAT_INDICATOR]]]"];
+	helper2 = [[NSMutableString alloc] initWithString:@"[[[XLD_DIRECTORY_SEPARATOR]]]"];
+	for(i=0;i<[renameList count];i++) {
+		NSString *character = [renameList objectAtIndex:i];
+		NSString *replaceWith = [renameMap objectForKey:character];
+		[helper1 replaceOccurrencesOfString:character withString:replaceWith options:0 range:NSMakeRange(0, [helper1 length])];
+		[helper2 replaceOccurrencesOfString:character withString:replaceWith options:0 range:NSMakeRange(0, [helper2 length])];
+	}
+}
+
 - (id)init
 {
 	self = [super init];
@@ -21,7 +36,7 @@
 	[renameList addObject:@":"];
 	[renameMap setObject:LS(@"slash") forKey:@"/"];
 	[renameMap setObject:LS(@"colon") forKey:@":"];
-	
+	[self updateHelperStrings];
 	return self;
 }
 
@@ -33,15 +48,29 @@
 	[pref synchronize];
 }
 
-- (void)loadPrefs
+- (NSDictionary *)configurations
 {
-	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+	id dupList = [renameList copy];
+	id dupMap = [renameMap copy];
+	NSDictionary *cfg = [NSDictionary dictionaryWithObjectsAndKeys:dupList,@"CharacterReplacementList",dupMap,@"CharacterReplacementMap",nil];
+	[dupList release];
+	[dupMap release];
+	return cfg;
+}
+
+- (void)loadConfigurations:(id)pref
+{
 	id obj;
 	if(obj=[pref objectForKey:@"CharacterReplacementList"]) {
 		int i;
 		NSDictionary *map = [pref objectForKey:@"CharacterReplacementMap"];
 		if(!map) return;
-		
+		[renameList removeAllObjects];
+		[renameMap removeAllObjects];
+		[renameList addObject:@"/"];
+		[renameList addObject:@":"];
+		[renameMap setObject:LS(@"slash") forKey:@"/"];
+		[renameMap setObject:LS(@"colon") forKey:@":"];
 		for(i=0;i<[obj count];i++) {
 			NSString *character = [obj objectAtIndex:i];
 			NSString *replaceWith = [map objectForKey:character];
@@ -52,7 +81,14 @@
 			}
 		}
 		[o_renameList reloadData];
+		[self updateHelperStrings];
 	}
+}
+
+- (void)loadPrefs
+{
+	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+	[self loadConfigurations:pref];
 }
 
 - (int)numberOfRowsInTableView:(NSTableView *)tableView
@@ -93,6 +129,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
    forTableColumn:(NSTableColumn *)tableColumn 
 			  row:(int)row;
 {
+	if(row >= [renameList count]) return;
 	if([[tableColumn identifier] isEqualToString:@"Character"]) {
 		int i;
 		if([object isEqualToString:@""]) goto end;
@@ -119,6 +156,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 		[renameMap setObject:object forKey:key];
 	}
 	[self savePrefs];
+	[self updateHelperStrings];
 end:
 	if(floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
 		[self performSelector:@selector(forceEndEditing:) withObject:o_renameList afterDelay: 0];
@@ -150,6 +188,7 @@ end:
 	[renameList addObject:name];
 	[o_renameList reloadData];
 	[self savePrefs];
+	[self updateHelperStrings];
 	[o_renameList selectRowIndexes:[NSIndexSet indexSetWithIndex:[renameList count]-1] byExtendingSelection:NO];
 	[o_renameList editColumn:0 row:[renameList count]-1 withEvent:nil select:YES];
 	[[o_renameList window] makeKeyAndOrderFront:self];
@@ -163,6 +202,7 @@ end:
 	[renameMap removeObjectForKey:oldKey];
 	[o_renameList reloadData];
 	[self savePrefs];
+	[self updateHelperStrings];
 }
 
 - (void)replaceInvalidCharactersInMutableString:(NSMutableString *)str
@@ -170,8 +210,11 @@ end:
 	int i;
 	for(i=0;i<[renameList count];i++) {
 		NSString *character = [renameList objectAtIndex:i];
-		[str replaceOccurrencesOfString:character withString:[renameMap objectForKey:character] options:0 range:NSMakeRange(0, [str length])];
+		NSString *replaceWith = [renameMap objectForKey:character];
+		[str replaceOccurrencesOfString:character withString:replaceWith options:0 range:NSMakeRange(0, [str length])];
 	}
+	[str replaceOccurrencesOfString:helper1 withString:@"[[[XLD_FORMAT_INDICATOR]]]" options:0 range:NSMakeRange(0, [str length])];
+	[str replaceOccurrencesOfString:helper2 withString:@"[[[XLD_DIRECTORY_SEPARATOR]]]" options:0 range:NSMakeRange(0, [str length])];
 	[str replaceOccurrencesOfString:@"\0" withString:@"" options:0 range:NSMakeRange(0, [str length])];
 }
 

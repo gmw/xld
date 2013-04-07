@@ -4042,6 +4042,7 @@ end:
 	else {
 		[dic addEntriesFromDictionary:(NSDictionary *)[[outputArr objectAtIndex:[o_formatList indexOfSelectedItem]] configurations]];
 	}
+	[dic addEntriesFromDictionary:[(XLDRenamer *)o_renamer configurations]];
 	return dic;
 }
 
@@ -4055,6 +4056,7 @@ end:
 	[self loadPrefsFromDictionary:dic];
 	[self statusChanged:nil];
 	[self updateFormatDescriptionMenu];
+	[o_renamer loadConfigurations:dic];
 }
 
 - (id)discView
