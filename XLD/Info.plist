@@ -146,11 +146,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>20130127</string>
+	<string>20130407</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>142.3</string>
+	<string>143.0</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© tmkk, 2006-2013</string>
 	<key>NSMainNibFile</key>
