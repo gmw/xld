@@ -319,7 +319,8 @@ last:
 		for(j=0;j<[tracks count];j++) {
 			id tr = [tracks objectAtIndex:j];
 			NSMutableDictionary *track = [NSMutableDictionary dictionary];
-			objs = [tr nodesForXPath:@"./recording/title" error:nil];
+			objs = [tr nodesForXPath:@"./title" error:nil];
+			if(![objs count]) objs = [tr nodesForXPath:@"./recording/title" error:nil];
 			if([objs count]) [track setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Title"];
 			objs = [tr nodesForXPath:@"./recording/@id" error:nil];
 			if([objs count]) {
