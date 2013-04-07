@@ -225,7 +225,7 @@ end:
 		if(err) goto last;
 		
 		UseResFile(resourceRef);
-		Handle rsrc = Get1IndResource('ddRL',1);
+		Handle rsrc = Get1Resource('ddRL',1000);
 		if(rsrc) {
 			trackArr = [[NSMutableArray alloc] init];
 			HLock(rsrc);
