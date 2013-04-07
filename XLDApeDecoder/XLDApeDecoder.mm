@@ -219,6 +219,25 @@ int getApeTag(CAPETag *tag, wchar_t *field, char *buf, int *length)
 		free(buf);
 	}
 	len = 1;
+	getApeTag(tag, L"discnumber", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"discnumber", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			int disc = [str intValue];
+			if(disc > 0) [metadataDic setObject:[NSNumber numberWithInt:disc] forKey:XLD_METADATA_DISC];
+			if([str rangeOfString:@"/"].location != NSNotFound) {
+				disc = [[str substringFromIndex:[str rangeOfString:@"/"].location+1] intValue];
+				if(disc > 0) [metadataDic setObject:[NSNumber numberWithInt:disc] forKey:XLD_METADATA_TOTALDISCS];
+			}
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
 	getApeTag(tag, L"composer", buf_tmp, &len);
 	if(len) {
 		char *buf = (char *)malloc(len+10);
