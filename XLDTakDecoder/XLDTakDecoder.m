@@ -262,7 +262,7 @@
 		[environmentDict setObject:[NSString stringWithFormat:@"%@:%@",[environmentDict objectForKey:@"DYLD_FALLBACK_LIBRARY_PATH"],libPaths] forKey:@"DYLD_FALLBACK_LIBRARY_PATH"];
 	}
 	else [environmentDict setObject:[NSString stringWithFormat:@"/usr/local/lib:/lib:/usr/lib:%@",libPaths] forKey:@"DYLD_FALLBACK_LIBRARY_PATH"];
-	NSLog(@"%@",[environmentDict objectForKey:@"DYLD_FALLBACK_LIBRARY_PATH"]);
+	//NSLog(@"%@",[environmentDict objectForKey:@"DYLD_FALLBACK_LIBRARY_PATH"]);
 	[environmentDict setObject:@"-all" forKey:@"WINEDEBUG"];
 	[task setEnvironment:environmentDict];
 	NSMutableArray *args = [NSMutableArray arrayWithObjects:@"tak_decoder.exe.so",[NSString stringWithUTF8String:path],nil];
