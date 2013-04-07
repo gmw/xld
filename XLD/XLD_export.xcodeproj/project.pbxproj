@@ -92,6 +92,10 @@
 		BFA129850B02289100A8CEF7 /* pause_active.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA129810B02289100A8CEF7 /* pause_active.png */; };
 		BFA129860B02289100A8CEF7 /* play_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA129820B02289100A8CEF7 /* play_blue.png */; };
 		BFA129C70B02338300A8CEF7 /* XLDPlayerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = BFA129C50B02338300A8CEF7 /* XLDPlayerWindow.m */; };
+		BFA1E9B617111DAE00A4607C /* filename.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA1E9B317111DAE00A4607C /* filename.png */; };
+		BFA1E9B717111DAE00A4607C /* del.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA1E9B417111DAE00A4607C /* del.png */; };
+		BFA1E9B817111DAE00A4607C /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = BFA1E9B517111DAE00A4607C /* add.png */; };
+		BFA1E9BB17111DC000A4607C /* XLDRenamer.m in Sources */ = {isa = PBXBuildFile; fileRef = BFA1E9B917111DC000A4607C /* XLDRenamer.m */; };
 		BFA7C90416296F6700C5116B /* XLDOpusOutput.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFA7C90316296F6700C5116B /* XLDOpusOutput.bundle */; };
 		BFB24D1C10BA622D00E11EBF /* XLDShortenDecoder.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFB24D1B10BA622D00E11EBF /* XLDShortenDecoder.bundle */; };
 		BFB7CEA9123A8B7200F0870D /* XLDMetadataTextParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BFB7CEA7123A8B7200F0870D /* XLDMetadataTextParser.m */; };
@@ -375,6 +379,11 @@
 		BFA129820B02289100A8CEF7 /* play_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play_blue.png; sourceTree = "<group>"; };
 		BFA129C40B02338300A8CEF7 /* XLDPlayerWindow.h */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.h; path = XLDPlayerWindow.h; sourceTree = "<group>"; };
 		BFA129C50B02338300A8CEF7 /* XLDPlayerWindow.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; path = XLDPlayerWindow.m; sourceTree = "<group>"; };
+		BFA1E9B317111DAE00A4607C /* filename.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filename.png; sourceTree = "<group>"; };
+		BFA1E9B417111DAE00A4607C /* del.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = del.png; sourceTree = "<group>"; };
+		BFA1E9B517111DAE00A4607C /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add.png; sourceTree = "<group>"; };
+		BFA1E9B917111DC000A4607C /* XLDRenamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDRenamer.m; sourceTree = "<group>"; };
+		BFA1E9BA17111DC000A4607C /* XLDRenamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDRenamer.h; sourceTree = "<group>"; };
 		BFA7C90316296F6700C5116B /* XLDOpusOutput.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = XLDOpusOutput.bundle; path = ../XLDOpusOutput/build/Release/XLDOpusOutput.bundle; sourceTree = "<group>"; };
 		BFA7CBF6163C10C400C5116B /* XLDLogChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDLogChecker.h; sourceTree = "<group>"; };
 		BFAC8365128BFBB8001A3797 /* cachetest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cachetest.c; sourceTree = "<group>"; };
@@ -569,6 +578,8 @@
 				BFC1B05A14ADAADC003FE6DE /* XLDDiscogsRelease.m */,
 				BF476DA013FCE9B500E66093 /* XLDPluginManager.h */,
 				BF476DA113FCE9B500E66093 /* XLDPluginManager.m */,
+				BFA1E9B917111DC000A4607C /* XLDRenamer.m */,
+				BFA1E9BA17111DC000A4607C /* XLDRenamer.h */,
 				BFED73EF0F46CCAC002F6FF5 /* XLDCustomClasses.h */,
 				BFED73F00F46CCAC002F6FF5 /* XLDCustomClasses.m */,
 				BF3755EB0A3BFD820003FD0E /* XLDDecoder.h */,
@@ -674,6 +685,9 @@
 				BF8AA6BF139B6CFB0041328A /* ExportStopPressed.png */,
 				BF8AA6C0139B6CFB0041328A /* ExportStop.png */,
 				BF476E4213FD14DD00E66093 /* SaveAs.png */,
+				BFA1E9B317111DAE00A4607C /* filename.png */,
+				BFA1E9B417111DAE00A4607C /* del.png */,
+				BFA1E9B517111DAE00A4607C /* add.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				BF24F1C30E828D8E007E24DE /* offsetlist.plist */,
 				BF9FD55D0E66FDA800E8DFEE /* Credits.rtfd */,
@@ -848,6 +862,9 @@
 				BF8AA6C2139B6CFB0041328A /* ExportStop.png in Resources */,
 				BF476E4313FD14DD00E66093 /* SaveAs.png in Resources */,
 				BF567DB416A0257D0024A3C8 /* XLDWavOutput.xib in Resources */,
+				BFA1E9B617111DAE00A4607C /* filename.png in Resources */,
+				BFA1E9B717111DAE00A4607C /* del.png in Resources */,
+				BFA1E9B817111DAE00A4607C /* add.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -911,6 +928,7 @@
 				BF476DA213FCE9B500E66093 /* XLDPluginManager.m in Sources */,
 				BFDD9CFB146EBDB500C9391C /* XLD_cmdline.m in Sources */,
 				BFC1B05B14ADAADC003FE6DE /* XLDDiscogsRelease.m in Sources */,
+				BFA1E9BB17111DC000A4607C /* XLDRenamer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
