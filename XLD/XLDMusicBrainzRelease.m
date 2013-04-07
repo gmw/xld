@@ -307,7 +307,12 @@ last:
 		if(!match) continue;
 		
 		objs = [disc nodesForXPath:@"./title" error:nil];
-		if([objs count]) [release setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Title"];
+		if([objs count]) {
+			NSString *discSubtitle = [[objs objectAtIndex:0] stringValue];
+			if([release objectForKey:@"Title"])
+				[release setObject:[NSString stringWithFormat:@"%@ - %@",[release objectForKey:@"Title"],discSubtitle] forKey:@"Title"];
+			else [release setObject:discSubtitle forKey:@"Title"];
+		}
 		
 		NSArray *tracks = [disc nodesForXPath:@"./track-list/track" error:nil];
 		NSMutableDictionary *trackList = [NSMutableDictionary dictionary];
@@ -325,14 +330,20 @@ last:
 				[NSThread detachNewThreadSelector:@selector(setComposerFromRecordingID:) toTarget:self withObject:[NSArray arrayWithObjects:[[objs objectAtIndex:0] stringValue], track, nil]];
 				//[self getComposerFromRecordingID:[[objs objectAtIndex:0] stringValue]];*/
 			}
-			objs = [tr nodesForXPath:@"./recording/artist-credit/name-credit/artist/name" error:nil];
+			id artistNode;
+			objs = [tr nodesForXPath:@"./artist-credit/name-credit/artist/name" error:nil];
+			if([objs count]) artistNode = [[tr nodesForXPath:@"./artist-credit" error:nil] objectAtIndex:0];
+			else {
+				objs = [tr nodesForXPath:@"./recording/artist-credit/name-credit/artist/name" error:nil];
+				if([objs count]) artistNode = [[tr nodesForXPath:@"./recording/artist-credit" error:nil] objectAtIndex:0];
+			}
 			if([objs count] == 1) {
 				[track setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Artist"];
-				objs = [tr nodesForXPath:@"./recording/artist-credit/name-credit/artist/@id" error:nil];
+				objs = [artistNode nodesForXPath:@"./name-credit/artist/@id" error:nil];
 				if([objs count]) [track setObject:[[objs objectAtIndex:0]  stringValue] forKey:@"ArtistID"];
 			}
 			else if([objs count]) {
-				NSArray *credits = [tr nodesForXPath:@"./recording/artist-credit/name-credit" error:nil];
+				NSArray *credits = [artistNode nodesForXPath:@"./name-credit" error:nil];
 				NSMutableString *str = [NSMutableString string];
 				int k;
 				for(k=0;k<[credits count];k++) {
