@@ -126,6 +126,7 @@ static NSString *fixArtist(NSString *str)
 
 		int pos = 0;
 		if(![position isEqualToString:@""]) {
+			if([position length] > 2 && [[position substringToIndex:2] isEqualToString:@"CD"]) position = [position substringFromIndex:2];
 			NSRange range = [position rangeOfString:@"-"];
 			if(range.location != NSNotFound) {
 				NSArray *tmp = [position componentsSeparatedByString:@"-"];
@@ -151,7 +152,7 @@ static NSString *fixArtist(NSString *str)
 		if(currentTrack > pos) {
 			// disc change
 			//NSLog(@"%d,%d,%d",currentTrack,totalSeconds,sectors/75);
-			if([[trackList allKeys] count] == totalTracks && abs(sectors/75 - totalSeconds) <= totalTracks) {
+			if([[trackList allKeys] count] == totalTracks && (!totalSeconds || abs(sectors/75 - totalSeconds) <= totalTracks)) {
 				match = YES;
 				break;
 			}
