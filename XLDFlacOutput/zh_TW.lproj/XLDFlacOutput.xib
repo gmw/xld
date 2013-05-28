@@ -219,7 +219,7 @@
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
 							<string key="NSContents">壓縮等級</string>
-							<object class="NSFont" key="NSSupport">
+							<object class="NSFont" key="NSSupport" id="598875316">
 								<string key="NSName">LucidaGrande</string>
 								<double key="NSSize">11</double>
 								<int key="NSfFlags">16</int>
@@ -239,14 +239,14 @@
 					<object class="NSTextField" id="635417308">
 						<reference key="NSNextResponder" ref="669670227"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{37, 3}, {178, 14}}</string>
+						<string key="NSFrame">{{37, 0}, {178, 17}}</string>
 						<reference key="NSSuperview" ref="669670227"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="132902943">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">138412032</int>
-							<string key="NSContents">使用 FLAC 1.2.1</string>
-							<reference key="NSSupport" ref="26"/>
+							<string key="NSContents">使用 FLAC 1.3.0</string>
+							<reference key="NSSupport" ref="598875316"/>
 							<reference key="NSControlView" ref="635417308"/>
 							<reference key="NSBackgroundColor" ref="783275215"/>
 							<reference key="NSTextColor" ref="33022348"/>

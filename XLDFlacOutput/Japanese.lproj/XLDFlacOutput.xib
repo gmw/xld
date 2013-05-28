@@ -259,13 +259,13 @@
 					<object class="NSTextField" id="102386322">
 						<reference key="NSNextResponder" ref="1017762170"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{37, 3}, {178, 17}}</string>
+						<string key="NSFrame">{{37, 6}, {178, 14}}</string>
 						<reference key="NSSuperview" ref="1017762170"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="355620015">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">138412032</int>
-							<string key="NSContents">Powered by FLAC 1.2.1</string>
+							<string key="NSContents">Powered by FLAC 1.3.0</string>
 							<reference key="NSSupport" ref="26"/>
 							<reference key="NSControlView" ref="102386322"/>
 							<reference key="NSBackgroundColor" ref="692199519"/>
