@@ -287,6 +287,17 @@ extern OSStatus CGSNewConnection(const void **attributes, CGSConnection * id);
 		[view setTag:[views count]];
 		[view loadImageFromURL:url];
 		[view setBadge:[NSString stringWithFormat:@"%@x%@",[[results objectAtIndex:i] objectForKey:@"Width"],[[results objectAtIndex:i] objectForKey:@"Height"]]];
+		if([[results objectAtIndex:i] objectForKey:@"AmazonURL"]) {
+			[dic setObject:[[results objectAtIndex:i] objectForKey:@"AmazonURL"] forKey:@"AmazonURL"];
+			NSMenu *menu = [[NSMenu alloc] init];
+			NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:LS(@"Go to Amazon Webpage") action:@selector(openURL:) keyEquivalent:@""];
+			[item setTarget:self];
+			[item setTag:[views count]];
+			[menu insertItem:item atIndex:0];
+			[item release];
+			[view setMenu:menu];
+			[menu release];
+		}
 		[dic setObject:view forKey:@"Image"];
 		[view release];
 		
@@ -426,6 +437,11 @@ extern OSStatus CGSNewConnection(const void **attributes, CGSConnection * id);
 	[verticalScroller setFloatValue:0 knobProportion:[verticalScroller knobProportion]];
 	[[o_scrollView contentView] scrollToPoint:NSZeroPoint];
 	[[o_scrollView contentView] setNeedsDisplay:YES];
+}
+
+- (IBAction)openURL:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openURL:[[views objectAtIndex:[sender tag]] objectForKey:@"AmazonURL"]];
 }
 
 - (void)showWindowWithKeyword:(NSString *)keyword

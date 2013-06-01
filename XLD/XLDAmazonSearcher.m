@@ -379,6 +379,8 @@ static char *base64enc(const unsigned char *input, int length)
 	else if(state == AWSReadingASIN && [elementName isEqualToString:@"ASIN"]) {
 		if(currentDic) {
 			[currentDic setObject:currentStr forKey:@"ASIN"];
+			if(!strcmp(domain,".jp")) [currentDic setObject:[NSURL URLWithString:[NSString stringWithFormat:@"http://amazon.jp/o/ASIN/%@/tmkk-22",currentStr]] forKey:@"AmazonURL"];
+			else if(!strcmp(domain,".com")) [currentDic setObject:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.amazon.com/dp/%@/?tag=xlosdec-20",currentStr]] forKey:@"AmazonURL"];
 			[currentStr release];
 		}
 		else asin = currentStr;

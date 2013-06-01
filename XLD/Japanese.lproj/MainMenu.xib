@@ -12,19 +12,19 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="605"/>
-			<integer value="269"/>
-			<integer value="519"/>
-			<integer value="301"/>
 			<integer value="347"/>
-			<integer value="1116"/>
-			<integer value="364"/>
-			<integer value="400"/>
-			<integer value="546"/>
 			<integer value="1079"/>
-			<integer value="593"/>
+			<integer value="546"/>
+			<integer value="1116"/>
+			<integer value="400"/>
+			<integer value="269"/>
 			<integer value="322"/>
+			<integer value="605"/>
+			<integer value="364"/>
+			<integer value="593"/>
+			<integer value="519"/>
 			<integer value="616"/>
+			<integer value="301"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1404,7 +1404,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSvFlags">256</int>
 												<string key="NSFrame">{{78, 262}, {402, 19}}</string>
 												<reference key="NSSuperview" ref="3083745"/>
-												<reference key="NSNextKeyView"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="26072528">
 													<int key="NSCellFlags">-2072904127</int>
@@ -2387,7 +2386,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 														<int key="NSvFlags">-2147483392</int>
 														<string key="NSFrame">{{1, 68}, {145, 15}}</string>
 														<reference key="NSSuperview" ref="102447365"/>
-														<bool key="NSEnabled">YES</bool>
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="102447365"/>
 														<string key="NSAction">_doScroller:</string>
@@ -2412,7 +2410,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<string key="NSFrame">{{57, 20}, {280, 113}}</string>
 												<reference key="NSSuperview" ref="999543335"/>
 												<reference key="NSNextKeyView" ref="1019259324"/>
-												<int key="NSsFlags">690</int>
+												<int key="NSsFlags">562</int>
 												<reference key="NSVScroller" ref="622157616"/>
 												<reference key="NSHScroller" ref="49991999"/>
 												<reference key="NSContentView" ref="1019259324"/>
@@ -9481,14 +9479,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">initialFirstResponder</string>
-						<reference key="source" ref="866387902"/>
-						<reference key="destination" ref="304891103"/>
-					</object>
-					<int key="connectionID">1194</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">o_priority</string>
 						<reference key="source" ref="544422332"/>
 						<reference key="destination" ref="421655478"/>
@@ -9502,6 +9492,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="421655478"/>
 					</object>
 					<int key="connectionID">1204</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">initialFirstResponder</string>
+						<reference key="source" ref="866387902"/>
+						<reference key="destination" ref="387290273"/>
+					</object>
+					<int key="connectionID">1205</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -16091,7 +16089,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1204</int>
+			<int key="maxID">1205</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

@@ -12,14 +12,14 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="551"/>
+			<integer value="1044"/>
 			<integer value="339"/>
+			<integer value="355"/>
 			<integer value="278"/>
 			<integer value="317"/>
-			<integer value="534"/>
-			<integer value="1044"/>
-			<integer value="355"/>
 			<integer value="404"/>
-			<integer value="551"/>
+			<integer value="534"/>
 			<integer value="1077"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -9508,9 +9508,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">initialFirstResponder</string>
 						<reference key="source" ref="659165075"/>
-						<reference key="destination" ref="748747586"/>
+						<reference key="destination" ref="746985420"/>
 					</object>
-					<int key="connectionID">1190</int>
+					<int key="connectionID">1191</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -16108,7 +16108,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1190</int>
+			<int key="maxID">1191</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

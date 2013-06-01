@@ -278,8 +278,8 @@ static const char* ID3v1GenreList[] = {
 	}
 	else if(tag==101) {
 		key = XLD_METADATA_ARTIST;
-		obj = [o_singleArtist stringValue];
-		if([[o_singleArtist stringValue] isEqualToString:@""]) {
+		obj = [o_artist stringValue];
+		if([[o_artist stringValue] isEqualToString:@""]) {
 			remove = YES;
 		}
 	}
@@ -356,7 +356,7 @@ static const char* ID3v1GenreList[] = {
 		else {
 			if(obj && key) [[currentTrack metadata] setObject:obj forKey:key];
 			if([key isEqualToString:XLD_METADATA_DATE]) {
-				int year = [o_singleYear intValue];
+				int year = [o_year intValue];
 				if(year >= 1000 && year < 3000)
 					[[currentTrack metadata] setObject:[NSNumber numberWithInt:year] forKey:XLD_METADATA_YEAR];
 			}
