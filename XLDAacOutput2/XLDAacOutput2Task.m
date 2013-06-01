@@ -24,6 +24,8 @@ typedef int64_t xldoffset_t;
 #define SWAP16(n) (((n>>8)&0xff) | ((n<<8)&0xff00))
 #endif
 
+#define NSAppKitVersionNumber10_4 824
+
 const unsigned int srTable[16]= {96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025,  8000,  7350,     0,     0,     0,};
 
 static int getM4aFrequency(FILE *fp)
@@ -1265,7 +1267,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	FILE *fp = fopen([path UTF8String], "r+b");
 	if(!fp) return;
 	
-	fcntl(fileno(fp), F_NOCACHE, 1);
+	if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) fcntl(fileno(fp), F_NOCACHE, 1);
 	
 	int bufferSize = 1024*1024;
 	char *tmpbuf = (char *)malloc(bufferSize);
@@ -1442,7 +1444,7 @@ end:
 	struct stat stbuf;
 	stat([path UTF8String], &stbuf);
 	
-	fcntl(fileno(fp), F_NOCACHE, 1);
+	if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) fcntl(fileno(fp), F_NOCACHE, 1);
 	
 	/* write mdat at the end of file */
 	if(fseeko(fp,0,SEEK_END) != 0) goto end;
@@ -1551,7 +1553,7 @@ end:
 		if(!fp) return;
 		//NSLog(@"DEBUG: fopen success");
 		
-		fcntl(fileno(fp), F_NOCACHE, 1);
+		if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) fcntl(fileno(fp), F_NOCACHE, 1);
 		
 		int bufferSize = 1024*1024;
 		char *tmpbuf = (char *)malloc(bufferSize);
