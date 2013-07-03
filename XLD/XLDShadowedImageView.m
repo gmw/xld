@@ -139,14 +139,14 @@
 {
 	BOOL ret = NO;
 	if(!data) return ret;
-	NSImage *img = [[NSImage alloc] initWithData:data];
+	NSImage *img = [NSImage imageWithDataConsideringOrientation:data];
 	if(img && [img isValid]) {
 		if(imageData) [imageData release];
 		imageData = [data retain];
 		[self setImage:img];
 		ret = YES;
 	}
-	if(img) [img release];
+	//if(img) [img release];
 	return ret;
 }
 

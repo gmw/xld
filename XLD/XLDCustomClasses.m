@@ -708,3 +708,107 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	else [self movePath:src toPath:dst handler:nil];
 }
 @end
+
+@implementation NSImage (XLDOrientation)
+
++ (BOOL)hasOrientationTag:(NSData *)data
+{
+	CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)data, NULL);
+	if(!imageSource) return NO;
+	CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
+	CFNumberRef orientationRef = CFDictionaryGetValue(properties, kCGImagePropertyOrientation);
+	SInt32 orientation = 1;
+	if(orientationRef){
+		CFNumberGetValue(orientationRef, kCFNumberIntType, &orientation);
+		CFRelease(orientationRef);
+	}
+	CFRelease(imageSource);
+	CFRelease(properties);
+	if(orientation <= 1 || orientation > 8) return NO;
+	return YES;
+}
+
++ (NSImage *)imageWithDataConsideringOrientation:(NSData *)data
+{
+	CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)data, NULL);
+	if(!imageSource) return nil;
+	CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
+	CFNumberRef orientationRef = CFDictionaryGetValue(properties, kCGImagePropertyOrientation);
+	NSImage *srcImg;
+	NSImage *dstImg = nil;
+	if([NSImage instancesRespondToSelector:@selector(initWithDataIgnoringOrientation:)])
+		srcImg = [[NSImage alloc] initWithDataIgnoringOrientation:data];
+	else
+		srcImg = [[NSImage alloc] initWithData:data];
+
+	
+	SInt32 orientation = 1;
+	if(orientationRef){
+		CFNumberGetValue(orientationRef, kCFNumberIntType, &orientation);
+		CFRelease(orientationRef);
+	}
+	CFRelease(imageSource);
+	CFRelease(properties);
+	
+	if(orientation <= 1 || orientation > 8) return [srcImg autorelease];
+	
+	NSAffineTransform *affineTransform = [NSAffineTransform transform];
+	NSImageRep *rep = [srcImg bestRepresentationForDevice:nil];
+	NSSize dstSize;
+	
+	switch (orientation) {
+		case 2:
+			dstSize = NSMakeSize([rep pixelsWide], [rep pixelsHigh]);
+			[affineTransform scaleXBy:-1.0 yBy:1.0];
+			[affineTransform translateXBy:-dstSize.width yBy:0];
+			break;
+		case 3:
+			dstSize = NSMakeSize([rep pixelsWide], [rep pixelsHigh]);
+			[affineTransform translateXBy:dstSize.width/2 yBy:dstSize.height/2];
+			[affineTransform rotateByDegrees:180];
+			[affineTransform translateXBy:-dstSize.width/2 yBy:-dstSize.height/2];
+			break;
+		case 4:
+			dstSize = NSMakeSize([rep pixelsWide], [rep pixelsHigh]);
+			[affineTransform scaleXBy:1.0 yBy:-1.0];
+			[affineTransform translateXBy:0 yBy:-dstSize.height];
+			break;
+		case 5:
+			dstSize = NSMakeSize([rep pixelsHigh], [rep pixelsWide]);
+			[affineTransform scaleXBy:-1.0 yBy:1.0];
+			[affineTransform translateXBy:-dstSize.width/2 yBy:dstSize.height/2];
+			[affineTransform rotateByDegrees:-90];
+			[affineTransform translateXBy:-dstSize.height/2 yBy:-dstSize.width/2];
+			break;
+		case 6:
+			dstSize = NSMakeSize([rep pixelsHigh], [rep pixelsWide]);
+			[affineTransform translateXBy:dstSize.width/2 yBy:dstSize.height/2];
+			[affineTransform rotateByDegrees:-90];
+			[affineTransform translateXBy:-dstSize.height/2 yBy:-dstSize.width/2];
+			break;
+		case 7:
+			dstSize = NSMakeSize([rep pixelsHigh], [rep pixelsWide]);
+			[affineTransform scaleXBy:-1.0 yBy:1.0];
+			[affineTransform translateXBy:-dstSize.width/2 yBy:dstSize.height/2];
+			[affineTransform rotateByDegrees:90];
+			[affineTransform translateXBy:-dstSize.height/2 yBy:-dstSize.width/2];
+			break;
+		case 8:
+			dstSize = NSMakeSize([rep pixelsHigh], [rep pixelsWide]);
+			[affineTransform translateXBy:dstSize.width/2 yBy:dstSize.height/2];
+			[affineTransform rotateByDegrees:90];
+			[affineTransform translateXBy:-dstSize.height/2 yBy:-dstSize.width/2];
+			break;
+	}
+	
+	dstImg = [[NSImage alloc] initWithSize:dstSize];
+	[dstImg lockFocus];
+	[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+	[affineTransform concat];
+	[rep drawInRect: NSMakeRect(0, 0, [rep pixelsWide], [rep pixelsHigh])];
+	[dstImg unlockFocus];
+	return [dstImg autorelease];
+}
+
+
+@end

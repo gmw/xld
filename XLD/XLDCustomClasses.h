@@ -141,3 +141,14 @@
 @interface NSFileManager (XLDFileMove)
 - (void)moveFileAtPath:(NSString *)src toPath:(NSString *)dst;
 @end
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED < 1060
+@interface NSFileManager (XLDNSImage1060OverMethod)
+- (id)initWithDataIgnoringOrientation:(NSData *)data;
+@end
+#endif
+
+@interface NSImage (XLDOrientation)
++ (BOOL)hasOrientationTag:(NSData *)data;
++ (NSImage *)imageWithDataConsideringOrientation:(NSData *)data;
+@end

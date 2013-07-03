@@ -198,11 +198,11 @@ typedef struct {
 	if(scaleType == XLDNoScale) return;
 	
 	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:dat];
-	if(!rep) {
-		NSImage *img = [[NSImage alloc] initWithData:dat];
+	if(!rep || [NSImage hasOrientationTag:dat]) {
+		NSImage *img = [NSImage imageWithDataConsideringOrientation:dat];
 		if(!img) return;
 		rep = [NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]];
-		[img release];
+		//[img release];
 		if(!rep) return;
 	}
 	
