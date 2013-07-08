@@ -400,7 +400,45 @@
 	NSPasteboard *pboard = [info draggingPasteboard];
 	if([[pboard types] containsObject:NSFilenamesPboardType]) {
 		NSString *path = [[[info draggingPasteboard] propertyListForType:NSFilenamesPboardType] objectAtIndex:0];
-		dat = [[NSData alloc] initWithContentsOfFile:path];
+		NSFileManager *fm = [NSFileManager defaultManager];
+		NSDictionary *attr = [fm fileAttributesAtPath:path traverseLink:YES];
+		OSType type = [attr fileHFSTypeCode];
+		if([[[path pathExtension] lowercaseString] isEqualToString:@"pictclipping"] || type == 'clpp') {
+			FSRef fsRef;
+			OSErr err;
+			if(!FSPathMakeRef((UInt8*)[path UTF8String], &fsRef, NULL)) {
+				ResFileRefNum resourceRef;
+				HFSUniStr255 resourceForkName;
+				UniCharCount forkNameLength;
+				UniChar *forkName;
+				err = FSGetResourceForkName(&resourceForkName);
+				if(err) goto last;
+				forkNameLength = resourceForkName.length;
+				forkName = resourceForkName.unicode;
+				err = FSOpenResourceFile(&fsRef, forkNameLength, forkName, (SInt8)fsRdPerm, &resourceRef);
+				if(err) goto last;
+				
+				UseResFile(resourceRef);
+				Handle rsrc = GetIndResource('PICT',1);
+				if(rsrc) {
+					HLock(rsrc);
+					int resSize = GetHandleSize(rsrc);
+					NSData *tmpData = [[NSData alloc] initWithBytes:*rsrc length:resSize];
+					HUnlock(rsrc);
+					ReleaseResource(rsrc);
+					NSImage *tmpImg = [[NSImage alloc] initWithData:tmpData];
+					if(tmpImg) {
+						NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:[tmpImg TIFFRepresentation]];
+						dat = [[rep representationUsingType:NSPNGFileType properties:nil] retain];
+						[tmpImg release];
+					}
+					[tmpData release];
+				}
+				CloseResFile(resourceRef);
+			}
+		}
+	last:
+		if(!dat) dat = [[NSData alloc] initWithContentsOfFile:path];
 	}
 	else if([[pboard types] containsObject:NSURLPboardType]) {
 		dat = [[NSData alloc] initWithContentsOfURL:[NSURL URLFromPasteboard:pboard]];

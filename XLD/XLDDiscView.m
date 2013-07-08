@@ -452,7 +452,48 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	int ret;
 	ret = [op runModal];
 	if(ret != NSOKButton) return;
-	ret = [o_imageView setImageData:[NSData dataWithContentsOfFile:[op filename]]];
+	NSData *dat = nil;
+	NSString *path = [op filename];
+	NSFileManager *fm = [NSFileManager defaultManager];
+	NSDictionary *attr = [fm fileAttributesAtPath:path traverseLink:YES];
+	OSType type = [attr fileHFSTypeCode];
+	if([[[path pathExtension] lowercaseString] isEqualToString:@"pictclipping"] || type == 'clpp') {
+		FSRef fsRef;
+		OSErr err;
+		if(!FSPathMakeRef((UInt8*)[path UTF8String], &fsRef, NULL)) {
+			ResFileRefNum resourceRef;
+			HFSUniStr255 resourceForkName;
+			UniCharCount forkNameLength;
+			UniChar *forkName;
+			err = FSGetResourceForkName(&resourceForkName);
+			if(err) goto last;
+			forkNameLength = resourceForkName.length;
+			forkName = resourceForkName.unicode;
+			err = FSOpenResourceFile(&fsRef, forkNameLength, forkName, (SInt8)fsRdPerm, &resourceRef);
+			if(err) goto last;
+			
+			UseResFile(resourceRef);
+			Handle rsrc = GetIndResource('PICT',1);
+			if(rsrc) {
+				HLock(rsrc);
+				int resSize = GetHandleSize(rsrc);
+				NSData *tmpData = [[NSData alloc] initWithBytes:*rsrc length:resSize];
+				HUnlock(rsrc);
+				ReleaseResource(rsrc);
+				NSImage *tmpImg = [[NSImage alloc] initWithData:tmpData];
+				if(tmpImg) {
+					NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:[tmpImg TIFFRepresentation]];
+					dat = [rep representationUsingType:NSPNGFileType properties:nil];
+					[tmpImg release];
+				}
+				[tmpData release];
+			}
+			CloseResFile(resourceRef);
+		}
+	}
+last:
+	if(!dat) dat = [NSData dataWithContentsOfFile:path];
+	ret = [o_imageView setImageData:dat];
 	if(ret) { // succesfully loaded
 		id cueParser = [self cueParser];
 		if(!cueParser) return;
