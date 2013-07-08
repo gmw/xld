@@ -730,12 +730,15 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 
 + (NSImage *)imageWithDataConsideringOrientation:(NSData *)data
 {
+	if(!data) return nil;
 	CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)data, NULL);
 	if(!imageSource) return nil;
 	CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
-	CFNumberRef orientationRef = CFDictionaryGetValue(properties, kCGImagePropertyOrientation);
+	CFNumberRef orientationRef = nil;
 	NSImage *srcImg;
 	NSImage *dstImg = nil;
+	
+	if(properties) orientationRef = CFDictionaryGetValue(properties, kCGImagePropertyOrientation);
 	if([NSImage instancesRespondToSelector:@selector(initWithDataIgnoringOrientation:)])
 		srcImg = [[NSImage alloc] initWithDataIgnoringOrientation:data];
 	else
@@ -748,7 +751,7 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 		CFRelease(orientationRef);
 	}
 	CFRelease(imageSource);
-	CFRelease(properties);
+	if(properties) CFRelease(properties);
 	
 	if(orientation <= 1 || orientation > 8) return [srcImg autorelease];
 	
