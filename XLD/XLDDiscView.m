@@ -700,7 +700,11 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 		else {
 			if(rowIndex >= [[cueParser trackList] count]) return nil;
 			if([identifier isEqualToString:@"Track"]) {
-				return [NSNumber numberWithInt: rowIndex+1];
+				NSNumber *track = [[[[cueParser trackList] objectAtIndex:rowIndex] metadata] objectForKey:XLD_METADATA_TRACK];
+				NSNumber *disc = [[[[cueParser trackList] objectAtIndex:rowIndex] metadata] objectForKey:XLD_METADATA_DISC];
+				if(disc && track) return [NSString stringWithFormat:@"%d-%02d",[disc intValue],[track intValue]];
+				if(track) return track;
+				else return [NSNumber numberWithInt: rowIndex+1];
 			}
 			else if([identifier isEqualToString:@"Title"]) {
 				NSString *title = [[[[cueParser trackList] objectAtIndex:rowIndex] metadata] objectForKey:XLD_METADATA_TITLE];
