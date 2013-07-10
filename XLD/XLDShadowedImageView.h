@@ -31,6 +31,7 @@
 }
 
 - (BOOL)setImageData:(NSData *)data;
+- (BOOL)setImageFromPath:(NSString *)path;
 - (NSData *)imageData;
 - (void)clearImage;
 - (void)loadImageFromURL:(NSURL *)url;
