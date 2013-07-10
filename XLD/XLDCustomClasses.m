@@ -713,9 +713,11 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 
 + (BOOL)hasOrientationTag:(NSData *)data
 {
+	if(!data) return NO;
 	CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)data, NULL);
 	if(!imageSource) return NO;
 	CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
+	if(!properties) return NO;
 	CFNumberRef orientationRef = CFDictionaryGetValue(properties, kCGImagePropertyOrientation);
 	SInt32 orientation = 1;
 	if(orientationRef){
