@@ -1656,7 +1656,7 @@ last:
 	}
 }
 
-- (XLDErr)openFiles:(NSArray *)files offset:(xldoffset_t)offset prepended:(BOOL)prepended
+- (XLDErr)openFiles:(NSArray *)files offset:(xldoffset_t)offset prepended:(BOOL)prepended withMetadata:(NSArray *)metadata
 {
 	int i;
 	XLDErr error = XLDNoErr;
@@ -1713,7 +1713,11 @@ last:
 			[trk setIndex:[layout totalFrames]];
 		}
 		[[trk metadata] addEntriesFromDictionary:[decoder metadata]];
-		[[trk metadata] setObject:[NSNumber numberWithInt: track++] forKey:XLD_METADATA_TRACK];
+		if(metadata) {
+			[[trk metadata] addEntriesFromDictionary:[metadata objectAtIndex:i]];
+			if(!coverData) coverData = [[metadata objectAtIndex:i] objectForKey:XLD_METADATA_COVER];
+		}
+		else [[trk metadata] setObject:[NSNumber numberWithInt: track++] forKey:XLD_METADATA_TRACK];
 		[arr addObject:trk];
 		[trk release];
 		

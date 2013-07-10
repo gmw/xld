@@ -50,7 +50,7 @@ enum
 - (XLDErr)openFile:(NSString *)file withCueData:(NSString *)cueData decoder:(id)decoder;
 - (void)openFile:(NSString *)file withTrackData:(NSMutableArray *)arr decoder:(id)decoder;
 - (void)openRawFile:(NSString *)file withTrackData:(NSMutableArray *)arr decoder:(id)decoder;
-- (XLDErr)openFiles:(NSArray *)files offset:(xldoffset_t)offset prepended:(BOOL)prepended;
+- (XLDErr)openFiles:(NSArray *)files offset:(xldoffset_t)offset prepended:(BOOL)prepended withMetadata:(NSArray *)metadata;
 - (id)decoderForCueSheet:(NSString *)file isRaw:(BOOL)raw promptIfNotFound:(BOOL)prompt error:(XLDErr *)error;
 - (NSArray *)trackList;
 - (NSArray *)checkList;

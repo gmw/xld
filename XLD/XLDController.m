@@ -36,6 +36,7 @@
 #import "XLDPluginManager.h"
 #import "XLDLogChecker.h"
 #import "XLDRenamer.h"
+#import "XLDLMAXMLLoader.h"
 
 static NSString*    GeneralIdentifier = @"General";
 static NSString*    BatchIdentifier = @"Batch";
@@ -674,7 +675,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		sortedFiles = [files sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 	}
 	id cueParser = [[XLDCueParser alloc] initWithDelegate:self];
-	XLDErr err = [cueParser openFiles:sortedFiles offset:offset prepended:prepended];
+	XLDErr err = [cueParser openFiles:sortedFiles offset:offset prepended:prepended withMetadata:nil];
 	if(err == XLDNoErr)
 		[self openParsedDisc:cueParser originalFile:[sortedFiles objectAtIndex:0]];
 	else if(err == XLDReadErr) {
@@ -2831,6 +2832,22 @@ end:
 			return;
 		}
 		[ddpParser release];
+		XLDLMAXMLLoader *loader = [[XLDLMAXMLLoader alloc] init];
+		result = [loader openFile:filename];
+		if(result) {
+			XLDErr err = [cueParser openFiles:[loader fileList] offset:0 prepended:NO withMetadata:[loader metadataList]];
+			if(err == XLDNoErr)
+				[self openParsedDisc:cueParser originalFile:filename];
+			else if(err == XLDReadErr) {
+				NSString *msg = [cueParser errorMsg];
+				if(!msg) msg = @"Unknown error";
+				NSRunCriticalAlertPanel(LS(@"Error Opening LMA XML"), msg, @"OK", nil, nil);
+			}
+			[loader release];
+			[cueParser release];
+			return;
+		}
+		[loader release];
 		int ret = NSRunCriticalAlertPanel(LS(@"error"), LS(@"unsupported input file"), @"OK", LS(@"Open as Raw PCM"), nil);
 		if(ret == NSAlertAlternateReturn) {
 			//[self openRawFileWithDefaultPath:filename];
