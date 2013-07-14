@@ -3531,7 +3531,18 @@ end:
 		if(fseeko(fp,trakPos-8,SEEK_SET) != 0) goto end;
 		
 		//if(albumTitle) NSLog(albumTitle);
-		if(albumTitle && ([disc isEqualToString:[albumTitle precomposedStringWithCanonicalMapping]] || [altDisc isEqualToString:[albumTitle precomposedStringWithCanonicalMapping]]) && (totalTrack == actualTotalTrack)) {
+		NSString *composedTitle = nil;
+		NSMutableString *altTitle = nil;
+		if(albumTitle) {
+			composedTitle = [albumTitle precomposedStringWithCanonicalMapping];
+			altTitle = [NSMutableString stringWithString:composedTitle];
+			[altTitle replaceOccurrencesOfString:@":" withString:@"/" options:0 range:NSMakeRange(0, [composedTitle length])];
+		}
+		if(albumTitle &&
+		   ([disc isEqualToString:composedTitle]
+			|| [altDisc isEqualToString:composedTitle]
+			|| [disc isEqualToString:altTitle])
+		   && (totalTrack == actualTotalTrack)) {
 			int i;
 			for(i=0;i<actualTotalTrack;i++) {
 				if(albumTitle) [[[trackArr objectAtIndex:i] metadata] setObject:albumTitle forKey:XLD_METADATA_ALBUM];
