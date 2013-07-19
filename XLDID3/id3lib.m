@@ -89,7 +89,7 @@ static inline unsigned int get24bit(NSData *dat, int *pos)
 static NSString *getString(NSData *dat, int *pos, int length, int encoding)
 {
 	NSString *str = nil;
-	if(encoding == 0) {
+	if(encoding == 0 || encoding == 3) {
 		unsigned char *ptr = (unsigned char *)[dat bytes]+*pos+length-1;
 		int nulllen = 0;
 		while(1) {
@@ -97,9 +97,10 @@ static NSString *getString(NSData *dat, int *pos, int length, int encoding)
 			ptr--;
 			nulllen++;
 		}
-		str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(*pos,length-nulllen)] encoding:NSISOLatin1StringEncoding];
+		NSStringEncoding enc = (encoding == 0) ? NSISOLatin1StringEncoding : NSUTF8StringEncoding;
+		str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(*pos,length-nulllen)] encoding:enc];
 	}
-	else if(encoding == 1) {
+	else if(encoding == 1 || encoding == 2) {
 		unsigned short *ptr = (unsigned short *)((unsigned char *)[dat bytes]+*pos+length-2);
 		int nulllen = 0;
 		while(1) {
@@ -107,7 +108,8 @@ static NSString *getString(NSData *dat, int *pos, int length, int encoding)
 			ptr--;
 			nulllen+=2;
 		}
-		str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(*pos,length-nulllen)] encoding:NSUnicodeStringEncoding];
+		NSStringEncoding enc = (encoding == 1) ? NSUnicodeStringEncoding : CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF16BE);
+		str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(*pos,length-nulllen)] encoding:enc];
 	}
 	*pos += length;
 	return [str autorelease];
@@ -132,14 +134,15 @@ static NSString *getCommentDesc23(NSData *dat, int *pos, int encoding, int *read
 {
 	int length = 0;
 	NSString *str = nil;
-	if(encoding == 0) {
+	if(encoding == 0 || encoding == 3) {
 		unsigned char tmp;
 		while(1) {
 			[dat getBytes:&tmp range:NSMakeRange(*pos+length,1)];
 			length++;
 			if(!tmp) break;
 		}
-		if(length > 1) str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(*pos,length-1)] encoding:NSISOLatin1StringEncoding];
+		NSStringEncoding enc = (encoding == 0) ? NSISOLatin1StringEncoding : NSUTF8StringEncoding;
+		if(length > 1) str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(*pos,length-1)] encoding:enc];
 		else str = [[NSString alloc] init];
 	}
 	else {
@@ -149,7 +152,8 @@ static NSString *getCommentDesc23(NSData *dat, int *pos, int encoding, int *read
 			length += 2;
 			if(!tmp) break;
 		}
-		if(length > 2) str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(*pos,length-2)] encoding:NSUnicodeStringEncoding];
+		NSStringEncoding enc = (encoding == 1) ? NSUnicodeStringEncoding : CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF16BE);
+		if(length > 2) str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(*pos,length-2)] encoding:enc];
 		else str = [[NSString alloc] init];
 	}
 	if(read) *read = length;
@@ -319,6 +323,128 @@ static void skipFrame22(NSData *dat, int *pos)
 	*pos += length;
 }
 
+static int getFrameSize24(NSData *dat, int *pos)
+{
+	int size = (getByte(dat,pos)&0x7f) << 21;
+	size += (getByte(dat,pos)&0x7f) << 14;
+	size += (getByte(dat,pos)&0x7f) << 7;
+	size += getByte(dat,pos)&0x7f;
+	return size;
+}
+
+static NSString *getTextFrame24(NSData *dat, int *pos)
+{
+	NSString *str = nil;
+	int length = getFrameSize24(dat,pos);
+	int flag = getShort(dat,pos);
+	if(flag) {
+		*pos += length;
+		return nil;
+	}
+	int encoding = getByte(dat,pos);
+	length -= 1;
+	if(encoding >= 0 && encoding <= 3) {
+		str = getString(dat,pos,length,encoding);
+	}
+	else *pos += length;
+	
+	return str;
+}
+
+static NSString *getCommentFrame24(NSData *dat, int *pos, NSString **desc)
+{
+	NSString *str = nil;
+	int length = getFrameSize24(dat,pos);
+	int flag = getShort(dat,pos);
+	if(flag) {
+		*pos += length;
+		return nil;
+	}
+	int encoding = getByte(dat,pos);
+	*pos += 3;
+	length -= 4;
+	if(encoding >= 0 && encoding <= 3) {
+		int read;
+		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read);
+		if(desc) *desc = tmp;
+		length -= read;
+		str = getString(dat,pos,length,encoding);
+	}
+	else *pos += length;
+	
+	return str;
+}
+
+static NSData *getAPICFrame24(NSData *dat, int *pos, int *imgType)
+{
+	int length = getFrameSize24(dat,pos);
+	int flag = getShort(dat,pos);
+	if(flag) {
+		*pos += length;
+		return nil;
+	}
+	int encoding = getByte(dat,pos);
+	length -= 1;
+	int read;
+	getCommentDesc23(dat,pos,0,&read);
+	length -= read;
+	int type = getByte(dat,pos);
+	length -= 1;
+	if(imgType) *imgType = type;
+	getCommentDesc23(dat,pos,encoding,&read);
+	length -= read;
+	NSData *img = [dat subdataWithRange:NSMakeRange(*pos,length)];
+	*pos += length;
+	return img;
+}
+
+static NSString *getTxxxFrame24(NSData *dat, int *pos, NSString **desc)
+{
+	NSString *str = nil;
+	int length = getFrameSize24(dat,pos);
+	int flag = getShort(dat,pos);
+	if(flag) {
+		*pos += length;
+		return nil;
+	}
+	int encoding = getByte(dat,pos);
+	length -= 1;
+	if(encoding >= 0 && encoding <= 3) {
+		int read;
+		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read);
+		if(desc) *desc = tmp;
+		length -= read;
+		str = getString(dat,pos,length,encoding);
+	}
+	else *pos += length;
+	
+	return str;
+}
+
+static NSString *getUFIDFrame24(NSData *dat, int *pos, NSString **desc)
+{
+	NSString *str = nil;
+	int length = getFrameSize24(dat,pos);
+	int flag = getShort(dat,pos);
+	if(flag) {
+		*pos += length;
+		return nil;
+	}
+	int read;
+	NSString *tmp = getCommentDesc23(dat,pos,0,&read);
+	if(desc) *desc = tmp;
+	length -= read;
+	str = getString(dat,pos,length,0);
+	
+	return str;
+}
+
+static void skipFrame24(NSData *dat, int *pos)
+{
+	int length = getFrameSize24(dat,pos);
+	*pos += length + 2;
+}
+
 void parseID3(NSData *dat, NSMutableDictionary *metadata)
 {
 	@try {
@@ -334,7 +460,7 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 		size += (getByte(dat,&pos)&0x7f) << 14;
 		size += (getByte(dat,&pos)&0x7f) << 7;
 		size += getByte(dat,&pos)&0x7f;
-		if(version == 3) {
+		if(version == 3 || version == 4) {
 			if(globalFlag != 0) return;
 			
 			while(size > 0) {
@@ -343,44 +469,43 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 				if(pos+4 > [dat length]) break;
 				[dat getBytes:name range:NSMakeRange(pos,4)];
 				pos += 4;
-				length = getInt(dat,&pos);
+				length = (version == 3) ? getInt(dat,&pos) : getFrameSize24(dat,&pos);
 				flag = getShort(dat,&pos);
 				if(length <= 0 || length > [dat length]-pos) break;
 				pos -= 6;
-				
 				if(flag) {
-					skipFrame23(dat,&pos);
+					(version == 3) ? skipFrame23(dat,&pos) : skipFrame24(dat,&pos);
 				}
 				else if(!strncmp(name,"TIT2",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_TITLE];
 				}
 				else if(!strncmp(name,"TPE1",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_ARTIST];
 				}
 				else if(!strncmp(name,"TPE2",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_ALBUMARTIST];
 				}
 				else if(!strncmp(name,"TALB",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_ALBUM];
 				}
 				else if(!strncmp(name,"TCON",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_GENRE];
 				}
 				else if(!strncmp(name,"TCOM",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_COMPOSER];
 				}
 				else if(!strncmp(name,"TIT1",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_GROUP];
 				}
 				else if(!strncmp(name,"TRCK",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) {
 						[metadata setObject:[NSNumber numberWithInt:[str intValue]] forKey:XLD_METADATA_TRACK];
 						if([str rangeOfString:@"/"].location != NSNotFound) {
@@ -389,7 +514,7 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 					}
 				}
 				else if(!strncmp(name,"TPOS",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) {
 						[metadata setObject:[NSNumber numberWithInt:[str intValue]] forKey:XLD_METADATA_DISC];
 						if([str rangeOfString:@"/"].location != NSNotFound) {
@@ -398,7 +523,7 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 					}
 				}
 				else if(!strncmp(name,"TYER",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) {
 						[metadata setObject:str forKey:XLD_METADATA_DATE];
 						int year = [str intValue];
@@ -406,40 +531,40 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 					}
 				}
 				else if(!strncmp(name,"TSOT",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_TITLESORT];
 				}
 				else if(!strncmp(name,"TSOP",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_ARTISTSORT];
 				}
 				else if(!strncmp(name,"TSOA",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_ALBUMSORT];
 				}
 				else if(!strncmp(name,"TSO2",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_ALBUMARTISTSORT];
 				}
 				else if(!strncmp(name,"TSOC",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_COMPOSERSORT];
 				}
 				else if(!strncmp(name,"TBPM",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:[NSNumber numberWithInt:[str intValue]] forKey:XLD_METADATA_BPM];
 				}
 				else if(!strncmp(name,"TCMP",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str && [str intValue]) [metadata setObject:[NSNumber numberWithBool:YES] forKey:XLD_METADATA_COMPILATION];
 				}
 				else if(!strncmp(name,"TSRC",4)) {
-					NSString *str = getTextFrame23(dat,&pos);
+					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_ISRC];
 				}
 				else if(!strncmp(name,"COMM",4)) {
 					NSString *desc;
-					NSString *str = getCommentFrame23(dat,&pos,&desc);
+					NSString *str = (version == 3) ? getCommentFrame23(dat,&pos,&desc) : getCommentFrame24(dat,&pos,&desc);
 					if(str) {
 						if(desc && [desc isEqualToString:@""]) {
 							[metadata setObject:str forKey:XLD_METADATA_COMMENT];
@@ -453,19 +578,19 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 					}
 				}
 				else if(!strncmp(name,"USLT",4)) {
-					NSString *str = getCommentFrame23(dat,&pos,NULL);
+					NSString *str = (version == 3) ? getCommentFrame23(dat,&pos,NULL) : getCommentFrame24(dat,&pos,NULL);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_LYRICS];
 				}
 				else if(!strncmp(name,"UFID",4)) {
 					NSString *desc;
-					NSString *str = getUFIDFrame23(dat,&pos,&desc);
+					NSString *str = (version == 3) ? getUFIDFrame23(dat,&pos,&desc) : getUFIDFrame24(dat,&pos,&desc);
 					if(str && desc && [desc isEqualToString:@"http://musicbrainz.org"]) {
 						[metadata setObject:str forKey:XLD_METADATA_MB_TRACKID];
 					}
 				}
 				else if(!strncmp(name,"TXXX",4)) {
 					NSString *desc;
-					NSString *str = getTxxxFrame23(dat,&pos,&desc);
+					NSString *str = (version == 3) ? getTxxxFrame23(dat,&pos,&desc) : getTxxxFrame24(dat,&pos,&desc);
 					if(str) {
 						if(desc && [desc isEqualToString:@"MusicBrainz Album Id"]) {
 							[metadata setObject:str forKey:XLD_METADATA_MB_ALBUMID];
@@ -501,7 +626,7 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 				}
 				else if(!strncmp(name,"APIC",4)) {
 					int type;
-					NSData *imgData = getAPICFrame23(dat,&pos,&type);
+					NSData *imgData = (version == 3) ? getAPICFrame23(dat,&pos,&type) : getAPICFrame24(dat,&pos,&type);
 					if(imgData && (type==3 || ![metadata objectForKey:XLD_METADATA_COVER])) {
 						NSImage *img = [[NSImage alloc] initWithData:imgData];
 						if(img && [img isValid]) {
@@ -510,7 +635,7 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 						if(img) [img release];
 					}
 				}
-				else skipFrame23(dat,&pos);
+				else (version == 3) ? skipFrame23(dat,&pos) : skipFrame24(dat,&pos);
 				size -= length + 10;
 			}
 		}
