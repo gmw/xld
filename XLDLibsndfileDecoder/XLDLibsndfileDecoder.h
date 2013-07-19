@@ -19,6 +19,9 @@ typedef enum {
 #define XLD_METADATA_TOTALDISCS	@"Totaldiscs"
 #define XLD_METADATA_LYRICS		@"Lyrics"
 #define XLD_METADATA_ISRC		@"ISRC"
+#define XLD_METADATA_SMPTE_TIMECODE_START	@"SMTPE Timecode Start"
+#define XLD_METADATA_SMPTE_TIMECODE_DURATION	@"SMTPE Timecode Duration"
+#define XLD_METADATA_MEDIA_FPS	@"Media FPS"
 
 #import <sndfile.h>
 #import "XLDDecoder.h"

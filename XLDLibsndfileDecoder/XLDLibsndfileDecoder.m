@@ -21,6 +21,21 @@ int compare_marker(const marker_t *a, const marker_t *b)
     return a->offset - b->offset;
 }
 
+static NSString* samplesToTimecode(uint64_t samples, int samplerate, double fps)
+{
+	int timecodeFps = ceil(fps);
+	double samplesPerFrame = samplerate / fps;
+	int frames = (int)round(samples / samplesPerFrame);
+	int ff = frames % timecodeFps;
+	int seconds = frames / timecodeFps;
+	int ss = seconds % 60;
+	int minutes = seconds / 60;
+	int mm = minutes % 60;
+	int hh = minutes / 60;
+	
+	return [NSString stringWithFormat:@"%02d:%02d:%02d:%02d",hh,mm,ss,ff];
+}
+
 @implementation XLDLibsndfileDecoder
 		
 
@@ -290,6 +305,89 @@ last:
 	return;
 }
 
+- (void)readBWFMetadataFromWAV:(char *)path
+{
+	FILE *fp = fopen(path,"rb");
+	if(!fp) return;
+	char chunk[5];
+	unsigned int length;
+	if(fread(chunk,1,4,fp) != 4) goto end;
+	if(memcmp(chunk,"RIFF",4)) goto end;
+	if(fseeko(fp,4,SEEK_CUR)) goto end;
+	if(fread(chunk,1,4,fp) != 4) goto end;
+	if(memcmp(chunk,"WAVE",4)) goto end;
+	while(1) {
+		if(fread(chunk,1,4,fp) != 4) goto end;
+		if(fread(&length,4,1,fp) != 1) goto end;
+		length = NSSwapLittleIntToHost(length);
+		chunk[4] = 0;
+		if(!strncasecmp(chunk,"bext",4)) break;
+		if(length&1) length++;
+		if(fseeko(fp,length,SEEK_CUR)) goto end;
+	}
+	if(fseeko(fp, 338, SEEK_CUR)) goto end;
+	if(fread(&length,4,1,fp) != 1) goto end;
+	uint64_t sampleCountSinceMidnight = NSSwapLittleIntToHost(length);
+	if(fread(&length,4,1,fp) != 1) goto end;
+	sampleCountSinceMidnight |= ((uint64_t)NSSwapLittleIntToHost(length) << 32);
+	if(fseeko(fp, 12, SEEK_SET)) goto end;
+	while(1) {
+		if(fread(chunk,1,4,fp) != 4) goto end;
+		if(fread(&length,4,1,fp) != 1) goto end;
+		length = NSSwapLittleIntToHost(length);
+		chunk[4] = 0;
+		if(!strncasecmp(chunk,"iXML",4)) break;
+		if(length&1) length++;
+		if(fseeko(fp,length,SEEK_CUR)) goto end;
+	}
+	unsigned char *buf = malloc(length);
+	if(fread(buf,1,length,fp) != length) {
+		free(buf);
+		goto end;
+	}
+	NSData *dat = [NSData dataWithBytesNoCopy:buf length:length];
+	NSXMLDocument *xml = [[NSXMLDocument alloc] initWithData:dat options:NSXMLNodePreserveWhitespace error:nil];
+	if(!xml) {
+		goto end;
+	}
+	id objs = [xml nodesForXPath:@"./BWFXML/SPEED" error:nil];
+	if(![objs count]) {
+		[xml release];
+		goto end;
+	}
+	id speedMetadata = [objs objectAtIndex:0];
+	objs = [speedMetadata nodesForXPath:@"./TIMECODE_RATE" error:nil];
+	if(![objs count]) {
+		[xml release];
+		goto end;
+	}
+	const char *fpsStr = [[[objs objectAtIndex:0] stringValue] UTF8String];
+	objs = [speedMetadata nodesForXPath:@"./TIMECODE_FLAG" error:nil];
+	NSString *fpsFlag = nil;
+	if([objs count]) fpsFlag = [NSString stringWithFormat:@"-%@",[[objs objectAtIndex:0] stringValue]];
+	double fps;
+	if(strchr(fpsStr, '/')) {
+		char *ptr = strchr(fpsStr, '/');
+		unsigned int denominator = strtoul(fpsStr, NULL, 10);
+		unsigned int numerator = strtoul(ptr+1, NULL, 10);
+		fps = (float)denominator / (float)numerator;
+	}
+	else fps = strtod(fpsStr, NULL);
+	
+	//NSLog(@"%f,%d,%.3f%@,%llx",fps,(int)ceil(fps),fps,fpsFlag,totalFrames);
+	//NSLog(@"%@",samplesToTimecode(sampleCountSinceMidnight,sfinfo.samplerate,fps));
+	//NSLog(@"%@",samplesToTimecode(totalFrames,sfinfo.samplerate,fps));
+	
+	if(!metadataDic) metadataDic = [[NSMutableDictionary alloc] init];
+	[metadataDic setObject:samplesToTimecode(sampleCountSinceMidnight,sfinfo.samplerate,fps) forKey:XLD_METADATA_SMPTE_TIMECODE_START];
+	[metadataDic setObject:samplesToTimecode(totalFrames,sfinfo.samplerate,fps) forKey:XLD_METADATA_SMPTE_TIMECODE_DURATION];
+	[metadataDic setObject:[NSString stringWithFormat:@"%.3f%@",fps,fpsFlag?fpsFlag:@""] forKey:XLD_METADATA_MEDIA_FPS];
+	
+	[xml release];
+end:
+	fclose(fp);
+}
+
 - (BOOL)openFile:(char *)path
 {
 	memset(&sfinfo,0,sizeof(SF_INFO));
@@ -345,6 +443,7 @@ last:
 	}
 	else if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) {
 		[self readID3TagFromWAV:path];
+		[self readBWFMetadataFromWAV:path];
 	}
 	else if((sfinfo.format&SF_FORMAT_TYPEMASK) == SF_FORMAT_SD2) {
 		[self readRegionsFromSd2f:path];
