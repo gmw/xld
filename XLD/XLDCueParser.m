@@ -317,6 +317,24 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	return [self isCompilationForTracks:trackList];
 }
 
+- (void)setMBRelatedTagsForTrack:(XLDTrack *)track fromDictionary:(NSDictionary *)metadata
+{
+	NSString *mbAlbumID = [metadata objectForKey:XLD_METADATA_MB_ALBUMID];
+	NSString *mbAlbumArtistID = [metadata objectForKey:XLD_METADATA_MB_ALBUMARTISTID];
+	NSString *mbAlbumStatus = [metadata objectForKey:XLD_METADATA_MB_ALBUMSTATUS];
+	NSString *mbAlbumType = [metadata objectForKey:XLD_METADATA_MB_ALBUMTYPE];
+	NSString *mbDiscID = [metadata objectForKey:XLD_METADATA_MB_DISCID];
+	NSString *mbReleaseCountry = [metadata objectForKey:XLD_METADATA_MB_RELEASECOUNTRY];
+	NSString *mbReleaseGroupID = [metadata objectForKey:XLD_METADATA_MB_RELEASEGROUPID];
+	if(mbAlbumID) [[track metadata] setObject:mbAlbumID forKey:XLD_METADATA_MB_ALBUMID];
+	if(mbAlbumArtistID) [[track metadata] setObject:mbAlbumArtistID forKey:XLD_METADATA_MB_ALBUMARTISTID];
+	if(mbAlbumStatus) [[track metadata] setObject:mbAlbumStatus forKey:XLD_METADATA_MB_ALBUMSTATUS];
+	if(mbAlbumType) [[track metadata] setObject:mbAlbumType forKey:XLD_METADATA_MB_ALBUMTYPE];
+	if(mbDiscID) [[track metadata] setObject:mbDiscID forKey:XLD_METADATA_MB_DISCID];
+	if(mbReleaseCountry) [[track metadata] setObject:mbReleaseCountry forKey:XLD_METADATA_MB_RELEASECOUNTRY];
+	if(mbReleaseGroupID) [[track metadata] setObject:mbReleaseGroupID forKey:XLD_METADATA_MB_RELEASEGROUPID];
+}
+
 - (NSString *)setTrackData:(NSMutableArray *)tracks forCueFile:(NSString *)file withDecoder:(id)decoder
 {
 	FILE *fp = fopen([file UTF8String],"rb");
@@ -340,6 +358,9 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	BOOL hasPerformer = NO;
 	unsigned char bom[] = {0xEF,0xBB,0xBF};
 	unsigned char tmp[3];
+	
+	if([[decoder metadata] objectForKey:XLD_METADATA_TOTALDISCS]) totalDisc = [[[decoder metadata] objectForKey:XLD_METADATA_TOTALDISCS] intValue];
+	if([[decoder metadata] objectForKey:XLD_METADATA_DISC]) discNumber = [[[decoder metadata] objectForKey:XLD_METADATA_DISC] intValue];
 	
 	if(preferredEncoding) enc = preferredEncoding;
 	else if(!delegate || [delegate encoding] == 0xFFFFFFFF || preferredEncoding == 0xFFFFFFFF) {
@@ -572,6 +593,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			[[[tracks objectAtIndex:i] metadata] setObject:albumArtist forKey:XLD_METADATA_ARTIST];
 			[[[tracks objectAtIndex:i] metadata] removeObjectForKey:XLD_METADATA_ALBUMARTIST];
 		}
+		[self setMBRelatedTagsForTrack:[tracks objectAtIndex:i] fromDictionary:[decoder metadata]];
 	}
 	
 	if((!delegate || [delegate canSetCompilationFlag]) && [self isCompilationForTracks:tracks]) {
@@ -1335,6 +1357,7 @@ last:
 			[[[tracks objectAtIndex:i] metadata] setObject:albumArtist forKey:XLD_METADATA_ARTIST];
 			[[[tracks objectAtIndex:i] metadata] removeObjectForKey:XLD_METADATA_ALBUMARTIST];
 		}
+		[self setMBRelatedTagsForTrack:[tracks objectAtIndex:i] fromDictionary:[decoder metadata]];
 	}
 	
 	if([delegate canSetCompilationFlag] && [self isCompilationForTracks:tracks]) {
@@ -1895,6 +1918,7 @@ last:
 		if(coverData) [[[tracks objectAtIndex:i] metadata] setObject:coverData forKey:XLD_METADATA_COVER];
 		if(totalDisc) [[[tracks objectAtIndex:i] metadata] setObject:[NSNumber numberWithInt:totalDisc] forKey:XLD_METADATA_TOTALDISCS];
 		if(discNumber) [[[tracks objectAtIndex:i] metadata] setObject:[NSNumber numberWithInt:discNumber] forKey:XLD_METADATA_DISC];
+		[self setMBRelatedTagsForTrack:[tracks objectAtIndex:i] fromDictionary:[decoder metadata]];
 		if(i==[tracks count]-1) [[tracks objectAtIndex:i] setSeconds:([decoder totalFrames]-[(XLDTrack *)[tracks objectAtIndex:i] index])/[decoder samplerate]];
 		else [[tracks objectAtIndex:i] setSeconds:[[tracks objectAtIndex:i] frames]/[decoder samplerate]];
 		[[tracks objectAtIndex:i] setEnabled:NO];
