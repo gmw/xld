@@ -52,6 +52,9 @@
 #define XLD_METADATA_MB_WORKID	@"MusicBrainz_WorkID"
 #define XLD_METADATA_TOTALSAMPLES	@"TotalSamples"
 #define XLD_METADATA_TRACKLIST	@"XLDTrackList"
+#define XLD_METADATA_SMPTE_TIMECODE_START	@"SMTPE Timecode Start"
+#define XLD_METADATA_SMPTE_TIMECODE_DURATION	@"SMTPE Timecode Duration"
+#define XLD_METADATA_MEDIA_FPS	@"Media FPS"
 
 @interface XLDAacOutput2Task : NSObject <XLDOutputTask> {
 	XLDFormat format;
