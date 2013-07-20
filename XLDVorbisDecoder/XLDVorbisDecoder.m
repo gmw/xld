@@ -288,6 +288,27 @@ static unsigned char *base64dec(char *input, int length)
 					[dat release];
 				}
 			}
+			else if(!strncasecmp(comments->user_comments[i],"SMPTE_TIMECODE_START=",21)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comments->user_comments[i]+21 length:comments->comment_lengths[i]-21] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[metadataDic setObject:dat forKey:XLD_METADATA_SMPTE_TIMECODE_START];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp(comments->user_comments[i],"SMPTE_TIMECODE_DURATION=",24)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comments->user_comments[i]+24 length:comments->comment_lengths[i]-24] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[metadataDic setObject:dat forKey:XLD_METADATA_SMPTE_TIMECODE_DURATION];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp(comments->user_comments[i],"MEDIA_FPS=",10)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comments->user_comments[i]+10 length:comments->comment_lengths[i]-10] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[metadataDic setObject:dat forKey:XLD_METADATA_MEDIA_FPS];
+					[dat release];
+				}
+			}
 			else if(!strncasecmp(comments->user_comments[i],"encoder=",8)) {
 				// do nothing
 			}
