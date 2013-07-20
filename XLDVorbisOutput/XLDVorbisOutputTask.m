@@ -195,6 +195,15 @@ static char *base64enc(const unsigned  char *input, int length)
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_WORKID]) {
 			vorbis_comment_add_tag(&vc,"MUSICBRAINZ_WORKID",(char *)[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_WORKID] UTF8String]);
 		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
+			vorbis_comment_add_tag(&vc,"SMPTE_TIMECODE_START",(char *)[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
+			vorbis_comment_add_tag(&vc,"SMPTE_TIMECODE_DURATION",(char *)[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]) {
+			vorbis_comment_add_tag(&vc,"MEDIA_FPS",(char *)[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS] UTF8String]);
+		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER]) {
 			NSData *imgData = [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER];
 			NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:imgData];
