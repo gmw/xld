@@ -373,6 +373,10 @@ last:
 		fps = (float)denominator / (float)numerator;
 	}
 	else fps = strtod(fpsStr, NULL);
+	if(fps <= 0) {
+		[xml release];
+		goto end;
+	}
 	
 	//NSLog(@"%f,%d,%.3f%@,%llx",fps,(int)ceil(fps),fps,fpsFlag,totalFrames);
 	//NSLog(@"%@",samplesToTimecode(sampleCountSinceMidnight,sfinfo.samplerate,fps));
