@@ -22,6 +22,8 @@ typedef int64_t xldoffset_t;
 #define IMIN(a,b) ((a) < (b) ? (a) : (b))   /**< Minimum int value.   */
 #define IMAX(a,b) ((a) > (b) ? (a) : (b))   /**< Maximum int value.   */
 
+#define OPUS_SURROUND_API_SUPPORT 1
+
 static const int max_ogg_delay=48000;
 
 static const float s32tof32scaler[4]  __attribute__((aligned(16))) = {4.656612873e-10f,4.656612873e-10f,4.656612873e-10f,4.656612873e-10f};
@@ -245,9 +247,7 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 - (BOOL)openFileForOutput:(NSString *)str withTrackData:(id)track
 {
 	int ret;
-	unsigned char      mapping[256];
 	int i;
-	for(i=0;i<256;i++)mapping[i]=i;
 	
 	fp = fopen([str UTF8String], "wb");
 	if(!fp) {
@@ -279,9 +279,16 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 	
 	/* setup header */
 	header.channels=format.channels;
+	header.gain=0;
+	header.input_sample_rate=format.samplerate;
+#if OPUS_SURROUND_API_SUPPORT
+	header.channel_mapping=header.channels>8?255:header.channels>2;
+#else
+	unsigned char      mapping[256];
+	for(i=0;i<256;i++)mapping[i]=i;
+	int force_narrow=0;
 	header.nb_coupled=0;
 	header.nb_streams=header.channels;
-	int force_narrow=0;
 	if(header.channels <= 8){
 		static const unsigned char opusenc_streams[8][10]={
 			/*Coupled, NB_bitmap, mapping...*/
@@ -301,11 +308,14 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 	}
 	header.channel_mapping=header.channels>8?255:header.nb_streams>1;
 	if(header.channel_mapping>0)for(i=0;i<header.channels;i++)header.stream_map[i]=mapping[i];
-	header.gain=0;
-	header.input_sample_rate=format.samplerate;
+#endif
 	
 	/*Initialize OPUS encoder*/
+#if OPUS_SURROUND_API_SUPPORT
+	st = opus_multistream_surround_encoder_create(coding_rate,format.channels,header.channel_mapping,&header.nb_streams,&header.nb_coupled,header.stream_map,frame_size<480/(48000/coding_rate)?OPUS_APPLICATION_RESTRICTED_LOWDELAY:OPUS_APPLICATION_AUDIO,&ret);
+#else
 	st = opus_multistream_encoder_create(coding_rate,format.channels,header.nb_streams,header.nb_coupled,mapping,frame_size<480/(48000/coding_rate)?OPUS_APPLICATION_RESTRICTED_LOWDELAY:OPUS_APPLICATION_AUDIO,&ret);
+#endif
 	if(ret != OPUS_OK) {
 		fprintf(stderr, "opus_multistream_encoder_create failure\n");
 		if(st) opus_multistream_encoder_destroy(st);
@@ -342,6 +352,7 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 		goto fail;
 	}
 	
+#if !OPUS_SURROUND_API_SUPPORT
 	if(force_narrow!=0){
 		for(i=0;i<header.nb_streams;i++){
 			if(force_narrow&(1<<i)){
@@ -354,6 +365,7 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 			}
 		}
 	}
+#endif
 	
 	opus_int32 lookahead;
 	ret = opus_multistream_encoder_ctl(st, OPUS_GET_LOOKAHEAD(&lookahead));
@@ -492,6 +504,15 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_WORKID]) {
 			comment_add(&comments,&comments_length,"MUSICBRAINZ_WORKID=",(char *)[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_WORKID] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
+			comment_add(&comments,&comments_length,"SMPTE_TIMECODE_START=",(char *)[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
+			comment_add(&comments,&comments_length,"SMPTE_TIMECODE_DURATION=",(char *)[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]) {
+			comment_add(&comments,&comments_length,"MEDIA_FPS=",(char *)[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS] UTF8String]);
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER]) {
 			NSData *imgData = [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER];

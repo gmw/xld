@@ -56,6 +56,9 @@
 #define XLD_METADATA_TRACKLIST	@"XLDTrackList"
 #define XLD_METADATA_ISRC		@"ISRC"
 #define XLD_METADATA_CATALOG		@"Catalog"
+#define XLD_METADATA_SMPTE_TIMECODE_START	@"SMTPE Timecode Start"
+#define XLD_METADATA_SMPTE_TIMECODE_DURATION	@"SMTPE Timecode Duration"
+#define XLD_METADATA_MEDIA_FPS	@"Media FPS"
 
 typedef struct {
 	int version;
