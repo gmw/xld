@@ -234,6 +234,30 @@ void swap_utf16(unsigned short *str)
 			id3tag_set_comment_utf16(gfp,"eng",desc,(unsigned short *)buffer);
 			free(buffer);
 		}
+		else {
+			NSMutableString *tmpStr = [NSMutableString string];
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
+				[tmpStr appendFormat:@"Start TC=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]];
+			}
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
+				if([tmpStr length]) [tmpStr appendFormat:@"; Duration TC=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]];
+				else [tmpStr appendFormat:@"Duration TC=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]];
+			}
+			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]) {
+				if([tmpStr length]) [tmpStr appendFormat:@"; Media FPS=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]];
+				else [tmpStr appendFormat:@"Media FPS=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]];
+			}
+			if([tmpStr length]) {
+				NSData *dat = [tmpStr dataUsingEncoding:NSUnicodeStringEncoding];
+				buffer = (char *)malloc([dat length]+10);
+				[dat getBytes:buffer];
+				buffer[[dat length]] = 0;
+				buffer[[dat length]+1] = 0;
+				swap_utf16((unsigned short*)buffer);
+				id3tag_set_comment_utf16(gfp,"eng",desc,(unsigned short *)buffer);
+				free(buffer);
+			}
+		}
 #ifdef USE_ID3TAG_CUSTOMIZED_LAME
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS]) {
 			NSData *dat = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS] dataUsingEncoding:NSUnicodeStringEncoding];
@@ -432,6 +456,35 @@ void swap_utf16(unsigned short *str)
 			id3tag_set_fieldvalue(gfp,buffer);
 			free(buffer);
 		}
+#if 1
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
+			NSString *value = [NSString stringWithFormat:@"TXXX=SMPTE_TIMECODE_START=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]];
+			NSData *dat = [value dataUsingEncoding:NSISOLatin1StringEncoding];
+			buffer = (char *)malloc([dat length]+10);
+			[dat getBytes:buffer];
+			buffer[[dat length]] = 0;
+			id3tag_set_fieldvalue(gfp,buffer);
+			free(buffer);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
+			NSString *value = [NSString stringWithFormat:@"TXXX=SMPTE_TIMECODE_DURATION=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]];
+			NSData *dat = [value dataUsingEncoding:NSISOLatin1StringEncoding];
+			buffer = (char *)malloc([dat length]+10);
+			[dat getBytes:buffer];
+			buffer[[dat length]] = 0;
+			id3tag_set_fieldvalue(gfp,buffer);
+			free(buffer);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]) {
+			NSString *value = [NSString stringWithFormat:@"TXXX=MEDIA_FPS=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]];
+			NSData *dat = [value dataUsingEncoding:NSISOLatin1StringEncoding];
+			buffer = (char *)malloc([dat length]+10);
+			[dat getBytes:buffer];
+			buffer[[dat length]] = 0;
+			id3tag_set_fieldvalue(gfp,buffer);
+			free(buffer);
+		}
+#endif
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER]) {
 			NSData *imgDat = [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER];
 			id3tag_set_albumart(gfp, [imgDat bytes], [imgDat length]);
