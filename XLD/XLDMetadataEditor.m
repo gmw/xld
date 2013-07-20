@@ -1084,7 +1084,7 @@ static const char* ID3v1GenreList[] = {
 	[o_picture setImage:img];
 	[o_picture setImgData:[NSData dataWithContentsOfFile:[op filename]]];
 	[img release];*/
-	[o_picture setImageData:[NSData dataWithContentsOfFile:[op filename]]];
+	[o_picture setImageFromPath:[op filename]];
 }
 
 - (void)controlTextDidChange:(NSNotification *)aNotification
