@@ -407,6 +407,39 @@ int WavpackGetTagItemIndexed (WavpackContext *wpc, int index, char *item, int si
 			}
 			free(buf);
 		}
+		else if(!strcasecmp(tagIdx,"SMPTE_TIMECODE_START")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:str forKey:XLD_METADATA_SMPTE_TIMECODE_START];
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"SMPTE_TIMECODE_DURATION")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:str forKey:XLD_METADATA_SMPTE_TIMECODE_DURATION];
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"MEDIA_FPS")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:str forKey:XLD_METADATA_MEDIA_FPS];
+				[str release];
+			}
+			free(buf);
+		}
 		else { //unknown text metadata
 			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
 			char *buf = (char *)malloc(size+10);
