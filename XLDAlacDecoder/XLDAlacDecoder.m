@@ -42,6 +42,9 @@
 #define XLD_METADATA_MB_RELEASECOUNTRY	@"MusicBrainz_ReleaseCountry"
 #define XLD_METADATA_MB_RELEASEGROUPID	@"MusicBrainz_ReleaseGroupID"
 #define XLD_METADATA_MB_WORKID	@"MusicBrainz_WorkID"
+#define XLD_METADATA_SMPTE_TIMECODE_START	@"SMTPE Timecode Start"
+#define XLD_METADATA_SMPTE_TIMECODE_DURATION	@"SMTPE Timecode Duration"
+#define XLD_METADATA_MEDIA_FPS	@"Media FPS"
 
 static const char* ID3v1GenreList[] = {
     "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk",
@@ -1148,6 +1151,42 @@ tagExist:
 				NSString *str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(current+offset+24,tmp-16)] encoding:NSUTF8StringEncoding];
 				if(!str) goto last;
 				[metadataDic setObject:str forKey:XLD_METADATA_MB_WORKID];
+				[str release];
+			}
+			else if([nameStr isEqualToString:@"SMPTE_TIMECODE_START"]) {
+				[dat getBytes:&tmp range:NSMakeRange(current+offset+8,4)];
+				[dat getBytes:&flag range:NSMakeRange(current+offset+16,4)];
+				tmp = NSSwapBigIntToHost(tmp);
+				flag = NSSwapBigIntToHost(flag);
+				if(flag != 1) goto last;
+				if(tmp <= 16) goto last;
+				NSString *str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(current+offset+24,tmp-16)] encoding:NSUTF8StringEncoding];
+				if(!str) goto last;
+				[metadataDic setObject:str forKey:XLD_METADATA_SMPTE_TIMECODE_START];
+				[str release];
+			}
+			else if([nameStr isEqualToString:@"SMPTE_TIMECODE_DURATION"]) {
+				[dat getBytes:&tmp range:NSMakeRange(current+offset+8,4)];
+				[dat getBytes:&flag range:NSMakeRange(current+offset+16,4)];
+				tmp = NSSwapBigIntToHost(tmp);
+				flag = NSSwapBigIntToHost(flag);
+				if(flag != 1) goto last;
+				if(tmp <= 16) goto last;
+				NSString *str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(current+offset+24,tmp-16)] encoding:NSUTF8StringEncoding];
+				if(!str) goto last;
+				[metadataDic setObject:str forKey:XLD_METADATA_SMPTE_TIMECODE_DURATION];
+				[str release];
+			}
+			else if([nameStr isEqualToString:@"MEDIA_FPS"]) {
+				[dat getBytes:&tmp range:NSMakeRange(current+offset+8,4)];
+				[dat getBytes:&flag range:NSMakeRange(current+offset+16,4)];
+				tmp = NSSwapBigIntToHost(tmp);
+				flag = NSSwapBigIntToHost(flag);
+				if(flag != 1) goto last;
+				if(tmp <= 16) goto last;
+				NSString *str = [[NSString alloc] initWithData:[dat subdataWithRange:NSMakeRange(current+offset+24,tmp-16)] encoding:NSUTF8StringEncoding];
+				if(!str) goto last;
+				[metadataDic setObject:str forKey:XLD_METADATA_MEDIA_FPS];
 				[str release];
 			}
 		}
