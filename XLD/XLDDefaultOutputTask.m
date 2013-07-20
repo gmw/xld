@@ -374,6 +374,20 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 			appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Work Id"], [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_WORKID], 0);
 		}
 		
+		/* Timecode related tags */
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
+			added = YES;
+			appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"SMPTE_TIMECODE_START"], [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START], 0);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
+			added = YES;
+			appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"SMPTE_TIMECODE_DURATION"], [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION], 0);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]) {
+			added = YES;
+			appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MEDIA_FPS"], [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS], 0);
+		}
+		
 		/* APIC */
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER]) {
 			NSData *imgData = [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER];
