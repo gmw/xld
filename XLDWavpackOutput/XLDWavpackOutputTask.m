@@ -249,6 +249,21 @@ static int write_block (void *id, void *data, int32_t length)
 			WavpackAppendTagItem(wpc,"MUSICBRAINZ_WORKID",tag,strlen(tag));
 			tagAdded = YES;
 		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
+			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START] UTF8String];
+			WavpackAppendTagItem(wpc,"SMPTE_TIMECODE_START",tag,strlen(tag));
+			tagAdded = YES;
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
+			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION] UTF8String];
+			WavpackAppendTagItem(wpc,"SMPTE_TIMECODE_DURATION",tag,strlen(tag));
+			tagAdded = YES;
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]) {
+			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS] UTF8String];
+			WavpackAppendTagItem(wpc,"MEDIA_FPS",tag,strlen(tag));
+			tagAdded = YES;
+		}
 		if(!(config.flags & CONFIG_HYBRID_FLAG)) {
 			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN]) {
 				const char *tag = [[NSString stringWithFormat:@"%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] floatValue]] UTF8String];
