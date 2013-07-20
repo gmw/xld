@@ -370,7 +370,7 @@ last:
 		char *ptr = strchr(fpsStr, '/');
 		unsigned int denominator = strtoul(fpsStr, NULL, 10);
 		unsigned int numerator = strtoul(ptr+1, NULL, 10);
-		fps = (float)denominator / (float)numerator;
+		fps = (double)denominator / (double)numerator;
 	}
 	else fps = strtod(fpsStr, NULL);
 	if(fps <= 0) {
