@@ -1163,6 +1163,26 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		memcpy(atomID+1,"cmt",3);
 		appendTextTag(tagData, atomID, str);
 	}
+	else {
+		NSMutableString *tmpStr = [NSMutableString string];
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
+			[tmpStr appendFormat:@"Start TC=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]];
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
+			if([tmpStr length]) [tmpStr appendFormat:@"; Duration TC=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]];
+			else [tmpStr appendFormat:@"Duration TC=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]];
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]) {
+			if([tmpStr length]) [tmpStr appendFormat:@"; Media FPS=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]];
+			else [tmpStr appendFormat:@"Media FPS=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]];
+		}
+		if([tmpStr length]) {
+			added = YES;
+			atomID[0] = 0xa9;
+			memcpy(atomID+1,"cmt",3);
+			appendTextTag(tagData, atomID, tmpStr);
+		}
+	}
 	
 	/* lyr atom */
 	if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS]) {
@@ -1303,6 +1323,20 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_WORKID]) {
 		added = YES;
 		appendUserDefinedComment(tagData, @"MusicBrainz Work Id", [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MB_WORKID]);
+	}
+	
+	/* Timecode related tags */
+	if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
+		added = YES;
+		appendUserDefinedComment(tagData, @"SMPTE_TIMECODE_START", [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]);
+	}
+	if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
+		added = YES;
+		appendUserDefinedComment(tagData, @"SMPTE_TIMECODE_DURATION", [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]);
+	}
+	if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]) {
+		added = YES;
+		appendUserDefinedComment(tagData, @"MEDIA_FPS", [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]);
 	}
 	
 	/* covr atom */
