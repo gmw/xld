@@ -55,6 +55,9 @@ typedef enum {
 #define XLD_METADATA_MB_RELEASECOUNTRY	@"MusicBrainz_ReleaseCountry"
 #define XLD_METADATA_MB_RELEASEGROUPID	@"MusicBrainz_ReleaseGroupID"
 #define XLD_METADATA_MB_WORKID	@"MusicBrainz_WorkID"
+#define XLD_METADATA_SMPTE_TIMECODE_START	@"SMTPE Timecode Start"
+#define XLD_METADATA_SMPTE_TIMECODE_DURATION	@"SMTPE Timecode Duration"
+#define XLD_METADATA_MEDIA_FPS	@"Media FPS"
 
 #import <FLAC/all.h>
 #import "XLDDecoder.h"

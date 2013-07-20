@@ -350,6 +350,27 @@ void metadata_callback(const FLAC__StreamDecoder *decoder, const FLAC__StreamMet
 					[dat release];
 				}
 			}
+			else if(!strncasecmp((char *)comment.comments[i].entry,"SMPTE_TIMECODE_START=",21)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+21 length:comment.comments[i].length-21+nullFix] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[delegate->metadataDic setObject:dat forKey:XLD_METADATA_SMPTE_TIMECODE_START];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp((char *)comment.comments[i].entry,"SMPTE_TIMECODE_DURATION=",24)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+24 length:comment.comments[i].length-24+nullFix] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[delegate->metadataDic setObject:dat forKey:XLD_METADATA_SMPTE_TIMECODE_DURATION];
+					[dat release];
+				}
+			}
+			else if(!strncasecmp((char *)comment.comments[i].entry,"MEDIA_FPS=",10)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+10 length:comment.comments[i].length-10+nullFix] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[delegate->metadataDic setObject:dat forKey:XLD_METADATA_MEDIA_FPS];
+					[dat release];
+				}
+			}
 			else if(!strncasecmp((char *)comment.comments[i].entry,"encoder=",8)) {
 				// do nothing
 			}
