@@ -4447,8 +4447,17 @@ fail:
     toolbar = [[[NSToolbar alloc] initWithIdentifier:@"PrefToolbar"] autorelease];
     [toolbar setDelegate:self];
     [o_prefPane setToolbar:toolbar];
-	[toolbar setSelectedItemIdentifier:GeneralIdentifier];
-	[self resizePrefPane];
+	if([defs objectForKey:@"SelectedPreferencesToolbarItem"]) {
+		NSString *rectStr = [defs objectForKey:@"NSWindow Frame Preferences"];
+		[toolbar setSelectedItemIdentifier:[defs objectForKey:@"SelectedPreferencesToolbarItem"]];
+		[o_preferencesTab selectTabViewItemWithIdentifier:[defs objectForKey:@"SelectedPreferencesToolbarItem"]];
+		[self resizePrefPane];
+		if(rectStr) [o_prefPane setFrameFromString:rectStr];
+	}
+	else {
+		[toolbar setSelectedItemIdentifier:GeneralIdentifier];
+		[self resizePrefPane];
+	}
 	
 	toolbar = [[[NSToolbar alloc] initWithIdentifier:@"LogToolbar"] autorelease];
     [toolbar setDelegate:self];
@@ -4510,6 +4519,9 @@ fail:
 	[profileManager savePrefs];
 	[customFormatManager savePrefs];
 	[self savePrefs];
+	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+	[pref setObject:[[o_prefPane toolbar] selectedItemIdentifier] forKey:@"SelectedPreferencesToolbarItem"];
+	[pref synchronize];
 	return YES;
 }
 
