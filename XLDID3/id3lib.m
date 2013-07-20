@@ -52,6 +52,9 @@
 #define XLD_METADATA_MB_RELEASECOUNTRY	@"MusicBrainz_ReleaseCountry"
 #define XLD_METADATA_MB_RELEASEGROUPID	@"MusicBrainz_ReleaseGroupID"
 #define XLD_METADATA_MB_WORKID	@"MusicBrainz_WorkID"
+#define XLD_METADATA_SMPTE_TIMECODE_START	@"SMTPE Timecode Start"
+#define XLD_METADATA_SMPTE_TIMECODE_DURATION	@"SMTPE Timecode Duration"
+#define XLD_METADATA_MEDIA_FPS	@"Media FPS"
 
 static inline unsigned int getByte(NSData *dat, int *pos)
 {
@@ -622,6 +625,15 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 						else if(desc && [desc isEqualToString:@"MusicBrainz Work Id"]) {
 							[metadata setObject:str forKey:XLD_METADATA_MB_WORKID];
 						}
+						else if(desc && [desc isEqualToString:@"SMPTE_TIMECODE_START"]) {
+							[metadata setObject:str forKey:XLD_METADATA_SMPTE_TIMECODE_START];
+						}
+						else if(desc && [desc isEqualToString:@"SMPTE_TIMECODE_DURATION"]) {
+							[metadata setObject:str forKey:XLD_METADATA_SMPTE_TIMECODE_DURATION];
+						}
+						else if(desc && [desc isEqualToString:@"MEDIA_FPS"]) {
+							[metadata setObject:str forKey:XLD_METADATA_MEDIA_FPS];
+						}
 					}
 				}
 				else if(!strncmp(name,"APIC",4)) {
@@ -791,6 +803,15 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 						}
 						else if(desc && [desc isEqualToString:@"MusicBrainz Album Release Country"]) {
 							[metadata setObject:str forKey:XLD_METADATA_MB_RELEASECOUNTRY];
+						}
+						else if(desc && [desc isEqualToString:@"SMPTE_TIMECODE_START"]) {
+							[metadata setObject:str forKey:XLD_METADATA_SMPTE_TIMECODE_START];
+						}
+						else if(desc && [desc isEqualToString:@"SMPTE_TIMECODE_DURATION"]) {
+							[metadata setObject:str forKey:XLD_METADATA_SMPTE_TIMECODE_DURATION];
+						}
+						else if(desc && [desc isEqualToString:@"MEDIA_FPS"]) {
+							[metadata setObject:str forKey:XLD_METADATA_MEDIA_FPS];
 						}
 					}
 				}
