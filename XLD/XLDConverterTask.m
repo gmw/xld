@@ -709,8 +709,13 @@ typedef struct {
 
 - (void)updateStatus
 {
-	[progress setDoubleValue:percent];
-	[speedField setStringValue:[NSString stringWithFormat:LS(@"%.1f %%, %.1fx realtime, %d:%02d remaining"),percent,speed,(int)remainingMin,(int)remainingSec]];
+	if([progress isIndeterminate]) {
+		[speedField setStringValue:[NSString stringWithFormat:LS(@"%.1fx realtime"),speed]];
+	}
+	else {
+		[progress setDoubleValue:percent];
+		[speedField setStringValue:[NSString stringWithFormat:LS(@"%.1f %%, %.1fx realtime, %d:%02d remaining"),percent,speed,(int)remainingMin,(int)remainingSec]];
+	}
 }
 
 - (BOOL)writeBuffer:(int *)buffer ForMultipleTasks:(int)ret
@@ -759,7 +764,12 @@ typedef struct {
 		info->lasttrack = 1;
 		info->framesToCopy = [decoder totalFrames] - index;
 		totalFrame = info->framesToCopy;
-		//NSLog(@"%lld,%lld",totalFrame,framesToCopy);
+		//NSLog(@"%lld,%lld",totalFrame,info->framesToCopy);
+	}
+	else if(totalFrame == 0) {
+		info->lasttrack = 1;
+		[progress setIndeterminate:YES];
+		[progress performSelectorOnMainThread:@selector(startAnimation:) withObject:nil waitUntilDone:NO];
 	}
 	
 	if(detectOffset) {
