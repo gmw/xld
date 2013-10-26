@@ -642,16 +642,18 @@ FLAC__StreamDecoderWriteStatus write_callback(const FLAC__StreamDecoder *decoder
 
 - (int)decodeToBuffer:(int *)buffer frames:(int)count
 {
-	if(totalFrames == samplesConsumpted) return 0;
-	
-	
-	
 	int samplesToRead;
 	int rest;
-	if(totalFrames - samplesConsumpted < count) {
-		samplesToRead = totalFrames - samplesConsumpted;
+	if(totalFrames > 0) {
+		if(totalFrames == samplesConsumpted) return 0;
+		
+		if(totalFrames - samplesConsumpted < count) {
+			samplesToRead = totalFrames - samplesConsumpted;
+		}
+		else samplesToRead = count;
 	}
 	else samplesToRead = count;
+	if(FLAC__stream_decoder_get_state(flac) == FLAC__STREAM_DECODER_END_OF_STREAM) return 0;
 	
 	rest = samplesToRead;
 	
