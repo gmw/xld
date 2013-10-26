@@ -37,6 +37,7 @@
 #import "XLDLogChecker.h"
 #import "XLDRenamer.h"
 #import "XLDLMAXMLLoader.h"
+#import "XLDCCDLoader.h"
 
 static NSString*    GeneralIdentifier = @"General";
 static NSString*    BatchIdentifier = @"Batch";
@@ -2848,6 +2849,25 @@ end:
 			return;
 		}
 		[loader release];
+		XLDCCDLoader *ccdLoader = [[XLDCCDLoader alloc] init];
+		result = [ccdLoader openFile:filename];
+		if(result) {
+			NSMutableArray *arr = [ccdLoader trackList];
+			XLDFormat fmt;
+			fmt.bps = 2;
+			fmt.channels = 2;
+			fmt.isFloat = 0;
+			fmt.samplerate = 44100;
+			XLDRawDecoder *decoder = [[XLDRawDecoder alloc] initWithFormat:fmt endian:XLDLittleEndian offset:0];
+			[(id <XLDDecoder>)decoder openFile:(char *)[[ccdLoader pcmFile] UTF8String]];
+			[(XLDCueParser *)cueParser openRawFile:[ccdLoader pcmFile] withTrackData:arr decoder:decoder];
+			[decoder closeFile];
+			[decoder release];
+			[self openParsedDisc:cueParser originalFile:filename];
+			[ccdLoader release];
+			[cueParser release];
+			return;
+		}
 		int ret = NSRunCriticalAlertPanel(LS(@"error"), LS(@"unsupported input file"), @"OK", LS(@"Open as Raw PCM"), nil);
 		if(ret == NSAlertAlternateReturn) {
 			//[self openRawFileWithDefaultPath:filename];
