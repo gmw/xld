@@ -2042,6 +2042,8 @@ last:
 		[[trk metadata] setObject:obj forKey:XLD_METADATA_COMPOSER];
 	if(obj = [[[trackList objectAtIndex:0] metadata] objectForKey:XLD_METADATA_YEAR])
 		[[trk metadata] setObject:obj forKey:XLD_METADATA_YEAR];
+	if(obj = [[[trackList objectAtIndex:0] metadata] objectForKey:XLD_METADATA_GENRE])
+		[[trk metadata] setObject:obj forKey:XLD_METADATA_GENRE];
 	if(obj = [[[trackList objectAtIndex:0] metadata] objectForKey:XLD_METADATA_DISC])
 		[[trk metadata] setObject:obj forKey:XLD_METADATA_DISC];
 	if(obj = [[[trackList objectAtIndex:0] metadata] objectForKey:XLD_METADATA_TOTALDISCS])
