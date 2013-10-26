@@ -84,8 +84,8 @@ void swap_utf16(unsigned short *str)
 	lame_set_num_channels(gfp, format.channels);
 	if([[configurations objectForKey:@"AppendTLEN"] boolValue]) {
 		//NSLog(@"length:%d",[track frames]);
-		if([track frames] != -1) lame_set_num_samples(gfp,[track frames]);
-		else lame_set_num_samples(gfp,format.samplerate*[track seconds]);
+		if([track frames] > 0) lame_set_num_samples(gfp,[track frames]);
+		else if([track seconds] > 0) lame_set_num_samples(gfp,format.samplerate*[track seconds]);
 	}
 	int lame_quality = [[configurations objectForKey:@"Quality"] intValue];
 				
