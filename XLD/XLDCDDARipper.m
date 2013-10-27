@@ -122,14 +122,10 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 	return self;
 }
 
-- (BOOL)openFile:(char *)path
+- (BOOL)openDisc:(xld_cdread_t *)disc
 {
-	//NSLog(@"open");
 	unsigned int i, k, value;
-	
-	//NSLog(@"engine is: %@",useOldEngine ? @"old" : @"new");
-	
-	if(xld_cdda_open(&cdread, path) == -1) return NO;
+	memcpy(&cdread,disc,sizeof(xld_cdread_t));
 	if(maxSpeed) xld_cdda_set_max_speed(&cdread, maxSpeed);
 	
 	totalFrames = 588*(xld_cdda_disc_lastsector(&cdread) + 1);
@@ -162,7 +158,7 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 	}
 	
 	if(srcPath) [srcPath release];
-	srcPath = [[NSString alloc] initWithUTF8String:path];
+	srcPath = [[NSString alloc] initWithUTF8String:cdread.device];
 	
 	cddaBufferSize = 0;
 	currentFrame = 0;
@@ -186,6 +182,13 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 	currentLSN = 0;
     
 	return YES;
+}
+
+- (BOOL)openFile:(char *)path
+{
+	xld_cdread_t disc;
+	if(xld_cdda_open(&disc, path) == -1) return NO;
+	return [self openDisc:&disc];
 }
 
 - (void)dealloc

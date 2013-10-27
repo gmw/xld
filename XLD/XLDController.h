@@ -143,7 +143,6 @@
 	//NSString *queuedFile;
 	NSMutableArray *queue;
 	BOOL firstDrag;
-	struct statfs statDisc;
 	BOOL ejected;
 	NSString *tempOutputDir;
 	id updater;

@@ -82,4 +82,5 @@ typedef struct
 - (void)analyzeTrackGain;
 - (void)setMaxSpeed:(int)speed;
 - (NSString *)mediaType;
+- (BOOL)openDisc:(xld_cdread_t *)disc;
 @end

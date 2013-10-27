@@ -3156,6 +3156,7 @@ end:
 	NSMutableString *tmpStr = [NSMutableString stringWithString:volume];
 	[tmpStr replaceOccurrencesOfString:@"/" withString:@":" options:0 range:NSMakeRange(0, [tmpStr length])];
 	//NSLog(@"%s",[[@"/Volumes" stringByAppendingPathComponent:tmpStr] UTF8String]);
+	struct statfs statDisc;
 	statfs([[@"/Volumes" stringByAppendingPathComponent:tmpStr] UTF8String], &statDisc);
 	//NSLog(@"%s",stat.f_mntfromname);
 	
@@ -3233,17 +3234,25 @@ end:
 		}
 
 		[o_detectPregapProgress setDoubleValue:cdread.numTracks-1];
-		xld_cdda_close(&cdread);
-		driveIsBusy = NO;
-		[self performSelectorOnMainThread:@selector(finishedReadingPregapWithTrackData:) withObject:trackArr waitUntilDone:YES];
-		
-		session = DASessionCreate(NULL);
-		disk = DADiskCreateFromBSDName(NULL,session,statDisc.f_mntfromname);
-		DADiskMount(disk,NULL,kDADiskMountOptionDefault,NULL,NULL);
-		CFRelease(disk);
-		CFRelease(session);
-		
-		[self performSelectorOnMainThread:@selector(delayedRefleshList) withObject:nil waitUntilDone:NO];
+		//xld_cdda_close(&cdread);
+		//driveIsBusy = NO;
+		XLDCDDARipper *ripper = [[XLDCDDARipper alloc] init];
+		if(![ripper openDisc:&cdread]) {
+			[ripper closeFile];
+			[ripper release];
+			driveIsBusy = NO;
+			session = DASessionCreate(NULL);
+			disk = DADiskCreateFromBSDName(NULL,session,statDisc.f_mntfromname);
+			DADiskMount(disk,NULL,kDADiskMountOptionDefault,NULL,NULL);
+			CFRelease(disk);
+			CFRelease(session);
+			[self performSelectorOnMainThread:@selector(delayedRefleshList) withObject:nil waitUntilDone:NO];
+		}
+		else {
+			NSArray *args = [NSArray arrayWithObjects:ripper,trackArr,nil];
+			[self performSelectorOnMainThread:@selector(finishedReadingPregapWithTrackData:) withObject:args waitUntilDone:YES];
+			[ripper release];
+		}
 		
 		[trackArr release];
 		[o_detectPregapPane close];
@@ -3760,32 +3769,38 @@ end:
     return nil;
 }
 
-- (void)finishedReadingPregapWithTrackData:(NSMutableArray *)trackArr
+- (void)finishedReadingPregapWithTrackData:(NSArray *)args
 {
-	XLDCDDARipper *decoder = [[XLDCDDARipper alloc] init];
-	if(![decoder openFile:statDisc.f_mntfromname]) {
-		NSLog(@"device open failure");
-	}
+	XLDCDDARipper *decoder = [args objectAtIndex:0];
+	NSMutableArray *trackArr = [args objectAtIndex:1];
+	NSString *path = [decoder srcPath];
 	
 	id cueParser = [[XLDCueParser alloc] initWithDelegate:self];
 	
-	NSString *volumeName2 = [mountNameFromBSDName(statDisc.f_mntfromname) precomposedStringWithCanonicalMapping];
+	NSString *volumeName2 = [mountNameFromBSDName([path UTF8String]) precomposedStringWithCanonicalMapping];
 	NSString *volumeName = [[[NSFileManager defaultManager] displayNameAtPath:[[NSString stringWithString:@"/Volumes"] stringByAppendingPathComponent:volumeName2]] precomposedStringWithCanonicalMapping];
 	//NSString *volumeName = [[[NSFileManager defaultManager] displayNameAtPath:mountNameFromBSDName(statDisc.f_mntfromname)] precomposedStringWithCanonicalMapping];
 	//NSString *volumeName2 = [[[NSMutableString stringWithUTF8String:statDisc.f_mntonname] lastPathComponent] precomposedStringWithCanonicalMapping];
 	//NSLog(@"%@\n%@",volumeName,volumeName2);
 	NSString *title = [self setTrackMetadata:trackArr forDisc:volumeName alternativeName:volumeName2];
 	
-	[cueParser openFile:[NSString stringWithUTF8String:statDisc.f_mntfromname] withTrackData:trackArr decoder:decoder];
+	[cueParser openFile:path withTrackData:trackArr decoder:decoder];
 	if(title) [cueParser setTitle:title];
 	else [cueParser setTitle:volumeName];
 	[cueParser setDriveStr:[decoder driveStr]];
 	[cueParser setMediaType:[decoder mediaType]];
 	[decoder closeFile];
-	[decoder release];
 	
 	[self openParsedDisc:cueParser originalFile:nil];
 	[cueParser release];
+	
+	driveIsBusy = NO;
+	DASessionRef session = DASessionCreate(NULL);
+	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,[path UTF8String]);
+	DADiskMount(disk,NULL,kDADiskMountOptionDefault,NULL,NULL);
+	CFRelease(disk);
+	CFRelease(session);
+	[self delayedRefleshList];
 }
 
 /* delegate methods */
