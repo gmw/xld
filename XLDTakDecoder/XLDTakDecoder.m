@@ -104,8 +104,10 @@
 	NSMutableArray *args;
 	if([shell isEqualToString:@"/bin/csh"] || [shell isEqualToString:@"/bin/tcsh"])
 		args = [NSMutableArray arrayWithObjects:@"-i",@"-c",@"/usr/bin/which wine",nil];
-	else
+	else if(NSApp)
 		args = [NSMutableArray arrayWithObjects:@"-l",@"-i",@"-c",@"/usr/bin/which wine",nil];
+	else
+		args = [NSMutableArray arrayWithObjects:@"-l",@"-c",@"/usr/bin/which wine",nil];
 	[task setArguments:args];
 	[task launch];
 	NSData *data = [[[task standardOutput] fileHandleForReading] readDataToEndOfFile];
@@ -158,7 +160,10 @@
 	NSMutableArray *args;
 	if([shell isEqualToString:@"/bin/csh"] || [shell isEqualToString:@"/bin/tcsh"])
 		args = [NSMutableArray arrayWithObjects:@"-i",@"-c",@"/usr/bin/which wine",nil];
-	else args = [NSMutableArray arrayWithObjects:@"-l",@"-i",@"-c",@"/usr/bin/which wine",nil];
+	else if(NSApp)
+		args = [NSMutableArray arrayWithObjects:@"-l",@"-i",@"-c",@"/usr/bin/which wine",nil];
+	else
+		args = [NSMutableArray arrayWithObjects:@"-l",@"-c",@"/usr/bin/which wine",nil];
 	[tmptask setArguments:args];
 	[tmptask launch];
 	NSData *data = [[[tmptask standardOutput] fileHandleForReading] readDataToEndOfFile];
