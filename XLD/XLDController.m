@@ -512,9 +512,10 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	if(useProxy) [util setProxyServer:[o_cddbProxyServer stringValue] port:[o_cddbProxyServerPort intValue] user:[o_cddbProxyUser stringValue] passwd:[o_cddbProxyPassword stringValue]];
 	int ret = [util query];
 	//NSLog(@"%d",ret);
+	id hasMetadata = [[[[cueParser trackList] objectAtIndex:0] metadata] objectForKey:@"HasMetadata"];
 	if(ret == 0) {
 		[util readCDDBWithInfo:nil];
-		if(start) {
+		if(start && ([o_autoStartCondition state] == NSOffState || hasMetadata)) {
 			NSData *data = [util coverData];
 			if(data) {
 				[cueParser setCoverData:data];
@@ -536,7 +537,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	}
 	else if(ret == -1) {
 		[util readCDDBWithInfo:nil];
-		if(start) {
+		if(start && ([o_autoStartCondition state] == NSOffState || hasMetadata)) {
 			NSData *data = [util coverData];
 			if(data) {
 				[cueParser setCoverData:data];
@@ -643,6 +644,10 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			[self cddbGetTracksWithAutoStart:(([o_autoMountDisc state] == NSOnState) && ([o_autoStartRipping state] == NSOnState)) ? YES : NO isManualQuery:NO];
 		}
 		else if(([o_autoMountDisc state] == NSOnState) && ([o_autoStartRipping state] == NSOnState)) {
+			if([o_autoStartCondition state] == NSOnState) {
+				id hasMetadata = [[[[cueParser trackList] objectAtIndex:0] metadata] objectForKey:@"HasMetadata"];
+				if(!hasMetadata) return;
+			}
 			[self performSelectorOnMainThread:@selector(beginDecode:) withObject:nil waitUntilDone:NO];
 		}
 	}
@@ -1207,9 +1212,16 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	
 	if([o_autoMountDisc state] == NSOnState) {
 		[o_autoStartRipping setEnabled:YES];
+		if([o_autoStartRipping state] == NSOnState) {
+			[o_autoStartCondition setEnabled:YES];
+		}
+		else {
+			[o_autoStartCondition setEnabled:NO];
+		}
 	}
 	else {
 		[o_autoStartRipping setEnabled:NO];
+		[o_autoStartCondition setEnabled:NO];
 	}
 	
 	if([o_limitExtension state] == NSOnState) {
@@ -3785,7 +3797,10 @@ end:
 	NSString *title = [self setTrackMetadata:trackArr forDisc:volumeName alternativeName:volumeName2];
 	
 	[cueParser openFile:path withTrackData:trackArr decoder:decoder];
-	if(title) [cueParser setTitle:title];
+	if(title) {
+		[cueParser setTitle:title];
+		[[[[cueParser trackList] objectAtIndex:0] metadata] setObject:[NSNumber numberWithBool:YES] forKey:@"HasMetadata"];
+	}
 	else [cueParser setTitle:volumeName];
 	[cueParser setDriveStr:[decoder driveStr]];
 	[cueParser setMediaType:[decoder mediaType]];

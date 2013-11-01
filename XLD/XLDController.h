@@ -128,6 +128,7 @@
 	IBOutlet id o_driveSpeedControl;
 	IBOutlet id o_renamer;
 	IBOutlet id o_priority;
+	IBOutlet id o_autoStartCondition;
 	id multipleOutputFormatMatrix;
 	//id decoder;
 	id decoderCenter;
