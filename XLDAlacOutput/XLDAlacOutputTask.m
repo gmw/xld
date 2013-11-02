@@ -1555,7 +1555,10 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	FILE *fp = fopen([path UTF8String], "r+b");
 	if(!fp) return;
 	
-	if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) fcntl(fileno(fp), F_NOCACHE, 1);
+	if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+		if(![[[NSBundle bundleWithIdentifier:@"jp.tmkk.XLDAlacOutput"] objectForInfoDictionaryKey: @"XLDAlacOutputUseDiskCache"] boolValue])
+			fcntl(fileno(fp), F_NOCACHE, 1);
+	}
 	
 	updateM4aFileInfo(fp);
 	
@@ -1734,7 +1737,10 @@ end:
 	struct stat stbuf;
 	stat([path UTF8String], &stbuf);
 	
-	if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) fcntl(fileno(fp), F_NOCACHE, 1);
+	if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+		if(![[[NSBundle bundleWithIdentifier:@"jp.tmkk.XLDAlacOutput"] objectForInfoDictionaryKey: @"XLDAlacOutputUseDiskCache"] boolValue])
+			fcntl(fileno(fp), F_NOCACHE, 1);
+	}
 	
 	/* write mdat at the end of file */
 	if(fseeko(fp,0,SEEK_END) != 0) goto end;
@@ -1840,7 +1846,10 @@ end:
 		
 		FILE *fp = fopen([path UTF8String], "r+b");
 		if(!fp) return;
-		if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) fcntl(fileno(fp), F_NOCACHE, 1);
+		if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+			if(![[[NSBundle bundleWithIdentifier:@"jp.tmkk.XLDAlacOutput"] objectForInfoDictionaryKey: @"XLDAlacOutputUseDiskCache"] boolValue])
+				fcntl(fileno(fp), F_NOCACHE, 1);
+		}
 		int bufferSize = 1024*1024;
 		char *tmpbuf = (char *)malloc(bufferSize);
 		char *tmpbuf2 = (char *)malloc(bufferSize);

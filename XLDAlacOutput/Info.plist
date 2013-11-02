@@ -24,5 +24,7 @@
 	<string>XLDAlacOutput</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© tmkk, 2006-2012</string>
+	<key>XLDAlacOutputUseDiskCache</key>
+	<false/>
 </dict>
 </plist>
