@@ -2884,6 +2884,7 @@ end:
 			[cueParser release];
 			return;
 		}
+		[ccdLoader release];
 		int ret = NSRunCriticalAlertPanel(LS(@"error"), LS(@"unsupported input file"), @"OK", LS(@"Open as Raw PCM"), nil);
 		if(ret == NSAlertAlternateReturn) {
 			//[self openRawFileWithDefaultPath:filename];
