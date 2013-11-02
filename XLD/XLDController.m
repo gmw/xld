@@ -1926,6 +1926,7 @@ end:
 	[pref setInteger:[[o_htoaStyle selectedCell] tag] forKey:@"HTOAStyle"];
 	[pref setInteger:[[o_driveSpeedControl selectedItem] tag] forKey:@"DriveSpeedControl"];
 	[pref setInteger:[[o_priority selectedItem] tag] forKey:@"Priority"];
+	[pref setInteger:[o_autoStartCondition state] forKey:@"AutoStartCondition"];
 }
 
 - (void)savePrefs
@@ -2299,6 +2300,9 @@ end:
 		int idx = [o_priority indexOfItemWithTag:[obj intValue]];
 		if(idx >= 0) [o_priority selectItemAtIndex:idx];
 		[self renice:nil];
+	}
+	if(obj=[pref objectForKey:@"AutoStartCondition"]) {
+		[o_autoStartCondition setState:[obj intValue]];
 	}
 }
 
