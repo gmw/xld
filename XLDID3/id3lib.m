@@ -56,6 +56,35 @@
 #define XLD_METADATA_SMPTE_TIMECODE_DURATION	@"SMTPE Timecode Duration"
 #define XLD_METADATA_MEDIA_FPS	@"Media FPS"
 
+static const char* ID3v1GenreList[] = {
+    "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk",
+    "Grunge", "Hip-Hop", "Jazz", "Metal", "New Age", "Oldies",
+    "Other", "Pop", "R&B", "Rap", "Reggae", "Rock",
+    "Techno", "Industrial", "Alternative", "Ska", "Death Metal", "Pranks",
+    "Soundtrack", "Euro-Techno", "Ambient", "Trip-Hop", "Vocal", "Jazz+Funk",
+    "Fusion", "Trance", "Classical", "Instrumental", "Acid", "House",
+    "Game", "Sound Clip", "Gospel", "Noise", "AlternRock", "Bass",
+    "Soul", "Punk", "Space", "Meditative", "Instrumental Pop", "Instrumental Rock",
+    "Ethnic", "Gothic", "Darkwave", "Techno-Industrial", "Electronic", "Pop-Folk",
+    "Eurodance", "Dream", "Southern Rock", "Comedy", "Cult", "Gangsta",
+    "Top 40", "Christian Rap", "Pop/Funk", "Jungle", "Native American", "Cabaret",
+    "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi",
+    "Tribal", "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical",
+    "Rock & Roll", "Hard Rock", "Folk", "Folk/Rock", "National Folk", "Swing",
+    "Fast-Fusion", "Bebob", "Latin", "Revival", "Celtic", "Bluegrass", "Avantgarde",
+    "Gothic Rock", "Progressive Rock", "Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band",
+    "Chorus", "Easy Listening", "Acoustic", "Humour", "Speech", "Chanson",
+    "Opera", "Chamber Music", "Sonata", "Symphony", "Booty Bass", "Primus",
+    "Porn Groove", "Satire", "Slow Jam", "Club", "Tango", "Samba",
+    "Folklore", "Ballad", "Power Ballad", "Rhythmic Soul", "Freestyle", "Duet",
+    "Punk Rock", "Drum Solo", "A capella", "Euro-House", "Dance Hall",
+    "Goa", "Drum & Bass", "Club House", "Hardcore", "Terror",
+    "Indie", "BritPop", "NegerPunk", "Polsk Punk", "Beat",
+    "Christian Gangsta", "Heavy Metal", "Black Metal", "Crossover", "Contemporary C",
+    "Christian Rock", "Merengue", "Salsa", "Thrash Metal", "Anime", "JPop",
+    "SynthPop",
+};
+
 static inline unsigned int getByte(NSData *dat, int *pos)
 {
 	unsigned char byteData;
@@ -497,7 +526,19 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 				}
 				else if(!strncmp(name,"TCON",4)) {
 					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
-					if(str) [metadata setObject:str forKey:XLD_METADATA_GENRE];
+					if(str) {
+						BOOL hasNumericGenre = NO;
+						if([str length] > 1 && [str characterAtIndex:0] == '(' && [str characterAtIndex:[str length]-1] == ')') {
+							if([str characterAtIndex:1] >= '0' && [str characterAtIndex:1] <= '9') {
+								int genreCode = [[str substringFromIndex:1] intValue];
+								if(genreCode >= 0 && genreCode < sizeof(ID3v1GenreList)/sizeof(*ID3v1GenreList)) {
+									[metadata setObject:[NSString stringWithUTF8String:ID3v1GenreList[genreCode]] forKey:XLD_METADATA_GENRE];
+									hasNumericGenre = YES;
+								}
+							}
+						}
+						if(!hasNumericGenre) [metadata setObject:str forKey:XLD_METADATA_GENRE];
+					}
 				}
 				else if(!strncmp(name,"TCOM",4)) {
 					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
@@ -682,7 +723,19 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 				}
 				else if(!strncmp(name,"TCO",3)) {
 					NSString *str = getTextFrame22(dat,&pos);
-					if(str) [metadata setObject:str forKey:XLD_METADATA_GENRE];
+					if(str) {
+						BOOL hasNumericGenre = NO;
+						if([str length] > 1 && [str characterAtIndex:0] == '(' && [str characterAtIndex:[str length]-1] == ')') {
+							if([str characterAtIndex:1] >= '0' && [str characterAtIndex:1] <= '9') {
+								int genreCode = [[str substringFromIndex:1] intValue];
+								if(genreCode >= 0 && genreCode < sizeof(ID3v1GenreList)/sizeof(*ID3v1GenreList)) {
+									[metadata setObject:[NSString stringWithUTF8String:ID3v1GenreList[genreCode]] forKey:XLD_METADATA_GENRE];
+									hasNumericGenre = YES;
+								}
+							}
+						}
+						if(!hasNumericGenre) [metadata setObject:str forKey:XLD_METADATA_GENRE];
+					}
 				}
 				else if(!strncmp(name,"TCM",3)) {
 					NSString *str = getTextFrame22(dat,&pos);
