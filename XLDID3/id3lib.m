@@ -162,7 +162,7 @@ static NSString *getTextFrame23(NSData *dat, int *pos)
 	return str;
 }
 
-static NSString *getCommentDesc23(NSData *dat, int *pos, int encoding, int *read)
+static NSString *getCommentDesc23(NSData *dat, int *pos, int encoding, int *read, int limit)
 {
 	int length = 0;
 	NSString *str = nil;
@@ -171,6 +171,11 @@ static NSString *getCommentDesc23(NSData *dat, int *pos, int encoding, int *read
 		while(1) {
 			[dat getBytes:&tmp range:NSMakeRange(*pos+length,1)];
 			length++;
+			if(length >= limit) {
+				if(read) *read = length;
+				*pos += limit;
+				return nil;
+			}
 			if(!tmp) break;
 		}
 		NSStringEncoding enc = (encoding == 0) ? NSISOLatin1StringEncoding : NSUTF8StringEncoding;
@@ -182,6 +187,11 @@ static NSString *getCommentDesc23(NSData *dat, int *pos, int encoding, int *read
 		while(1) {
 			[dat getBytes:&tmp range:NSMakeRange(*pos+length,2)];
 			length += 2;
+			if(length >= limit) {
+				if(read) *read = length;
+				*pos += limit;
+				return nil;
+			}
 			if(!tmp) break;
 		}
 		NSStringEncoding enc = (encoding == 1) ? NSUnicodeStringEncoding : CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF16BE);
@@ -203,9 +213,10 @@ static NSString *getCommentFrame23(NSData *dat, int *pos, NSString **desc)
 	length -= 4;
 	if(encoding == 0 || encoding == 1) {
 		int read;
-		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read);
-		if(desc) *desc = tmp;
+		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read,length);
 		length -= read;
+		if(length <= 0) return nil;
+		if(desc) *desc = tmp;
 		str = getString(dat,pos,length,encoding);
 	}
 	else *pos += length;
@@ -220,13 +231,15 @@ static NSData *getAPICFrame23(NSData *dat, int *pos, int *imgType)
 	int encoding = getByte(dat,pos);
 	length -= 1;
 	int read;
-	getCommentDesc23(dat,pos,0,&read);
+	getCommentDesc23(dat,pos,0,&read,length);
 	length -= read;
+	if(length <= 0) return nil;
 	int type = getByte(dat,pos);
 	length -= 1;
 	if(imgType) *imgType = type;
-	getCommentDesc23(dat,pos,encoding,&read);
+	getCommentDesc23(dat,pos,encoding,&read,length);
 	length -= read;
+	if(length <= 0) return nil;
 	NSData *img = [dat subdataWithRange:NSMakeRange(*pos,length)];
 	*pos += length;
 	return img;
@@ -241,9 +254,10 @@ static NSString *getTxxxFrame23(NSData *dat, int *pos, NSString **desc)
 	length -= 1;
 	if(encoding == 0 || encoding == 1) {
 		int read;
-		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read);
-		if(desc) *desc = tmp;
+		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read,length);
 		length -= read;
+		if(length <= 0) return nil;
+		if(desc) *desc = tmp;
 		str = getString(dat,pos,length,encoding);
 	}
 	else *pos += length;
@@ -257,9 +271,10 @@ static NSString *getUFIDFrame23(NSData *dat, int *pos, NSString **desc)
 	int length = getInt(dat,pos);
 	int flag = getShort(dat,pos);
 	int read;
-	NSString *tmp = getCommentDesc23(dat,pos,0,&read);
-	if(desc) *desc = tmp;
+	NSString *tmp = getCommentDesc23(dat,pos,0,&read,length);
 	length -= read;
+	if(length <= 0) return nil;
+	if(desc) *desc = tmp;
 	str = getString(dat,pos,length,0);
 	
 	return str;
@@ -294,9 +309,10 @@ static NSString *getCommentFrame22(NSData *dat, int *pos, NSString **desc)
 	length -= 4;
 	if(encoding == 0 || encoding == 1) {
 		int read;
-		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read);
-		if(desc) *desc = tmp;
+		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read,length);
 		length -= read;
+		if(length <= 0) return nil;
+		if(desc) *desc = tmp;
 		str = getString(dat,pos,length,encoding);
 	}
 	else *pos += length;
@@ -313,8 +329,9 @@ static NSData *getPICFrame22(NSData *dat, int *pos, int *imgType)
 	length -= 1;
 	if(imgType) *imgType = type;
 	int read;
-	getCommentDesc23(dat,pos,encoding,&read);
+	getCommentDesc23(dat,pos,encoding,&read,length);
 	length -= read;
+	if(length <= 0) return nil;
 	NSData *img = [dat subdataWithRange:NSMakeRange(*pos,length)];
 	*pos += length;
 	return img;
@@ -328,9 +345,10 @@ static NSString *getTxxFrame22(NSData *dat, int *pos, NSString **desc)
 	length -= 1;
 	if(encoding == 0 || encoding == 1) {
 		int read;
-		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read);
-		if(desc) *desc = tmp;
+		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read,length);
 		length -= read;
+		if(length <= 0) return nil;
+		if(desc) *desc = tmp;
 		str = getString(dat,pos,length,encoding);
 	}
 	else *pos += length;
@@ -342,9 +360,10 @@ static NSString *getUFIFrame22(NSData *dat, int *pos, NSString **desc)
 	NSString *str = nil;
 	int length = get24bit(dat,pos);
 	int read;
-	NSString *tmp = getCommentDesc23(dat,pos,0,&read);
-	if(desc) *desc = tmp;
+	NSString *tmp = getCommentDesc23(dat,pos,0,&read,length);
 	length -= read;
+	if(length <= 0) return nil;
+	if(desc) *desc = tmp;
 	str = getString(dat,pos,length,0);
 	return str;
 }
@@ -397,9 +416,10 @@ static NSString *getCommentFrame24(NSData *dat, int *pos, NSString **desc)
 	length -= 4;
 	if(encoding >= 0 && encoding <= 3) {
 		int read;
-		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read);
-		if(desc) *desc = tmp;
+		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read,length);
 		length -= read;
+		if(length <= 0) return nil;
+		if(desc) *desc = tmp;
 		str = getString(dat,pos,length,encoding);
 	}
 	else *pos += length;
@@ -418,13 +438,15 @@ static NSData *getAPICFrame24(NSData *dat, int *pos, int *imgType)
 	int encoding = getByte(dat,pos);
 	length -= 1;
 	int read;
-	getCommentDesc23(dat,pos,0,&read);
+	getCommentDesc23(dat,pos,0,&read,length);
 	length -= read;
+	if(length <= 0) return nil;
 	int type = getByte(dat,pos);
 	length -= 1;
 	if(imgType) *imgType = type;
-	getCommentDesc23(dat,pos,encoding,&read);
+	getCommentDesc23(dat,pos,encoding,&read,length);
 	length -= read;
+	if(length <= 0) return nil;
 	NSData *img = [dat subdataWithRange:NSMakeRange(*pos,length)];
 	*pos += length;
 	return img;
@@ -443,9 +465,10 @@ static NSString *getTxxxFrame24(NSData *dat, int *pos, NSString **desc)
 	length -= 1;
 	if(encoding >= 0 && encoding <= 3) {
 		int read;
-		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read);
-		if(desc) *desc = tmp;
+		NSString *tmp = getCommentDesc23(dat,pos,encoding,&read,length);
 		length -= read;
+		if(length <= 0) return nil;
+		if(desc) *desc = tmp;
 		str = getString(dat,pos,length,encoding);
 	}
 	else *pos += length;
@@ -463,9 +486,10 @@ static NSString *getUFIDFrame24(NSData *dat, int *pos, NSString **desc)
 		return nil;
 	}
 	int read;
-	NSString *tmp = getCommentDesc23(dat,pos,0,&read);
-	if(desc) *desc = tmp;
+	NSString *tmp = getCommentDesc23(dat,pos,0,&read,length);
 	length -= read;
+	if(length <= 0) return nil;
+	if(desc) *desc = tmp;
 	str = getString(dat,pos,length,0);
 	
 	return str;
