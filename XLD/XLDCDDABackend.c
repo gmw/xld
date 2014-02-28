@@ -576,6 +576,8 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 			unsigned int adr = buffer[2352] & 0xf;
 			unsigned int crc = buffer[2362]<<8 | buffer[2363];
 			if(disc->nonBCD && adr == 0x1) {
+				buffer[2352+1] = ((buffer[2352+1]/10)<<4) | (buffer[2352+1]%10);
+				buffer[2352+2] = ((buffer[2352+2]/10)<<4) | (buffer[2352+2]%10);
 				buffer[2352+3] = ((buffer[2352+3]/10)<<4) | (buffer[2352+3]%10);
 				buffer[2352+4] = ((buffer[2352+4]/10)<<4) | (buffer[2352+4]%10);
 				buffer[2352+5] = ((buffer[2352+5]/10)<<4) | (buffer[2352+5]%10);
@@ -610,26 +612,38 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 				success = 1;
 			}
 			else {
+				if(adr == 1 && crc && !disc->nonBCD) {
+					buffer[2352+1] = ((buffer[2352+1]/10)<<4) | (buffer[2352+1]%10);
+					buffer[2352+2] = ((buffer[2352+2]/10)<<4) | (buffer[2352+2]%10);
+					buffer[2352+3] = ((buffer[2352+3]/10)<<4) | (buffer[2352+3]%10);
+					buffer[2352+4] = ((buffer[2352+4]/10)<<4) | (buffer[2352+4]%10);
+					buffer[2352+5] = ((buffer[2352+5]/10)<<4) | (buffer[2352+5]%10);
+					buffer[2352+7] = ((buffer[2352+7]/10)<<4) | (buffer[2352+7]%10);
+					buffer[2352+8] = ((buffer[2352+8]/10)<<4) | (buffer[2352+8]%10);
+					buffer[2352+9] = ((buffer[2352+9]/10)<<4) | (buffer[2352+9]%10);
+					if(crc == calc_crc(10, buffer+2352)) {
+						//fprintf(stderr,"This drive seems to return non-BCD MSF, switching to non-BCD mode...\n");
+						disc->nonBCD = 1;
+						state = 0;
+						errorCount = 0;
+						totalErrorCount = 0;
+						pregapLength = 0;
+						success = 0;
+						firstQchannelRead = 1;
+						beginOffset = 300; /* 4 sec */
+						if(disc->tracks[track-2].length/588 <= 300) {
+							beginOffset = disc->tracks[track-2].length/588 - 1;
+							firstQchannelRead = 0;
+						}
+						cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*(2352+16);
+						continue;
+					}
+				}
 				if(!success) {
 					totalErrorCount++;
 					if(totalErrorCount == 100) {
-						if(disc->nonBCD) goto last;
-						else {
-							disc->nonBCD = 1;
-							state = 0;
-							errorCount = 0;
-							totalErrorCount = 0;
-							pregapLength = 0;
-							success = 0;
-							firstQchannelRead = 1;
-							beginOffset = 300; /* 4 sec */
-							if(disc->tracks[track-2].length/588 <= 300) {
-								beginOffset = disc->tracks[track-2].length/588 - 1;
-								firstQchannelRead = 0;
-							}
-							cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*(2352+16);
-							continue;
-						}
+						//fprintf(stderr,"Too many CRC errors while reading subchannel, giving up.\n");
+						goto last;
 					}
 				}
 				errorCount++;
