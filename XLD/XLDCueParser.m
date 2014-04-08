@@ -1679,7 +1679,7 @@ last:
 	}
 }
 
-- (XLDErr)openFiles:(NSArray *)files offset:(xldoffset_t)offset prepended:(BOOL)prepended withMetadata:(NSArray *)metadata
+- (XLDErr)openFiles:(NSArray *)files offset:(xldoffset_t)offset prepended:(BOOL)prepended withMetadata:(NSArray *)metadata aligned:(BOOL)align
 {
 	int i;
 	XLDErr error = XLDNoErr;
@@ -1694,6 +1694,8 @@ last:
 	
 	if(offset > 0 && !prepended) [layout addSection:nil withLength:offset];
 	
+	xldoffset_t remaining = 0;
+	xldoffset_t alignedTotalFrames = 0;
 	for(i=0;i<[files count];i++) {
 		id <XLDDecoder> decoder = [[delegate decoderCenter] preferredDecoderForFile:[files objectAtIndex:i]];
 		if(!decoder) continue;
@@ -1725,15 +1727,38 @@ last:
 		if(!coverData) coverData = [[decoder metadata] objectForKey:XLD_METADATA_COVER];
 		
 		XLDTrack *trk = [[XLDTrack alloc] init];
-		if(track == 1 && offset > 0) {
-			if(prepended) [trk setFrames:[decoder totalFrames]-offset];
-			else [trk setFrames:[decoder totalFrames]];
-			[trk setIndex:offset];
-			[trk setGap:offset];
+		if(!align) {
+			if(track == 1 && offset > 0) {
+				if(prepended) [trk setFrames:[decoder totalFrames]-offset];
+				else [trk setFrames:[decoder totalFrames]];
+				[trk setIndex:offset];
+				[trk setGap:offset];
+			}
+			else {
+				[trk setFrames:[decoder totalFrames]];
+				[trk setIndex:[layout totalFrames]];
+			}
 		}
 		else {
-			[trk setFrames:[decoder totalFrames]];
-			[trk setIndex:[layout totalFrames]];
+			if(track == 1 && offset > 0) {
+				xldoffset_t length = [decoder totalFrames];
+				if(prepended) length -= offset;
+				xldoffset_t alignedLength = (length / 588) * 588;
+				remaining = length - alignedLength;
+				[trk setFrames:alignedLength];
+				[trk setIndex:offset];
+				[trk setGap:offset];
+				alignedTotalFrames += alignedLength;
+				if(prepended) alignedTotalFrames += offset;
+			}
+			else {
+				xldoffset_t length = [decoder totalFrames] + remaining;
+				xldoffset_t alignedLength = (length / 588) * 588;
+				remaining = length - alignedLength;
+				[trk setFrames:alignedLength];
+				[trk setIndex:alignedTotalFrames];
+				alignedTotalFrames += alignedLength;
+			}
 		}
 		[[trk metadata] addEntriesFromDictionary:[decoder metadata]];
 		if(metadata) {
@@ -1757,6 +1782,12 @@ last:
 		[layout release];
 		return error;
 	}
+	if(align && remaining) {
+		XLDTrack *trk = [arr objectAtIndex:[arr count]-1];
+		[trk setFrames:[trk frames] + 588];
+		[layout addSection:nil withLength:588-remaining];
+	}
+	NSLog(@"%lld\n",[layout totalFrames]);
 	
 	if(!currentSamplerate) currentSamplerate = 44100;
 	unsigned int discid = getDiscId(arr, [layout totalFrames]);

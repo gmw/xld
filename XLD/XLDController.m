@@ -681,7 +681,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		sortedFiles = [files sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 	}
 	id cueParser = [[XLDCueParser alloc] initWithDelegate:self];
-	XLDErr err = [cueParser openFiles:sortedFiles offset:offset prepended:prepended withMetadata:nil];
+	XLDErr err = [cueParser openFiles:sortedFiles offset:offset prepended:prepended withMetadata:nil aligned:[o_alignTracks state] == NSOnState];
 	if(err == XLDNoErr)
 		[self openParsedDisc:cueParser originalFile:[sortedFiles objectAtIndex:0]];
 	else if(err == XLDReadErr) {
@@ -1927,6 +1927,7 @@ end:
 	[pref setInteger:[[o_driveSpeedControl selectedItem] tag] forKey:@"DriveSpeedControl"];
 	[pref setInteger:[[o_priority selectedItem] tag] forKey:@"Priority"];
 	[pref setInteger:[o_autoStartCondition state] forKey:@"AutoStartCondition"];
+	[pref setInteger:[o_alignTracks state] forKey:@"AlignTracks"];
 }
 
 - (void)savePrefs
@@ -2303,6 +2304,9 @@ end:
 	}
 	if(obj=[pref objectForKey:@"AutoStartCondition"]) {
 		[o_autoStartCondition setState:[obj intValue]];
+	}
+	if(obj=[pref objectForKey:@"AlignTracks"]) {
+		[o_alignTracks setState:[obj intValue]];
 	}
 }
 
@@ -2852,7 +2856,7 @@ end:
 		XLDLMAXMLLoader *loader = [[XLDLMAXMLLoader alloc] init];
 		result = [loader openFile:filename];
 		if(result) {
-			XLDErr err = [cueParser openFiles:[loader fileList] offset:0 prepended:NO withMetadata:[loader metadataList]];
+			XLDErr err = [cueParser openFiles:[loader fileList] offset:0 prepended:NO withMetadata:[loader metadataList] aligned:NO];
 			if(err == XLDNoErr)
 				[self openParsedDisc:cueParser originalFile:filename];
 			else if(err == XLDReadErr) {

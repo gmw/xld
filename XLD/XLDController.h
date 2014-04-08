@@ -129,6 +129,7 @@
 	IBOutlet id o_renamer;
 	IBOutlet id o_priority;
 	IBOutlet id o_autoStartCondition;
+	IBOutlet id o_alignTracks;
 	id multipleOutputFormatMatrix;
 	//id decoder;
 	id decoderCenter;
