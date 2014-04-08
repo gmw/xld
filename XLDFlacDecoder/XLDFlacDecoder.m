@@ -203,6 +203,13 @@ void metadata_callback(const FLAC__StreamDecoder *decoder, const FLAC__StreamMet
 					[dat release];
 				}
 			}
+			else if(!strncasecmp((char *)comment.comments[i].entry,"lyrics=",7)) {
+				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+7 length:comment.comments[i].length-7+nullFix] encoding:NSUTF8StringEncoding];
+				if(dat) {
+					[delegate->metadataDic setObject:dat forKey:XLD_METADATA_LYRICS];
+					[dat release];
+				}
+			}
 			else if(!strncasecmp((char *)comment.comments[i].entry,"titlesort=",10)) {
 				NSString *dat = [[NSString alloc] initWithData:[NSData dataWithBytes:comment.comments[i].entry+10 length:comment.comments[i].length-10+nullFix] encoding:NSUTF8StringEncoding];
 				if(dat) {
@@ -556,7 +563,32 @@ FLAC__StreamDecoderWriteStatus write_callback(const FLAC__StreamDecoder *decoder
 		return NO;
 	}
 	
-	if(FLAC__stream_decoder_set_metadata_respond_all(flac) == false) {
+	/*if(FLAC__stream_decoder_set_metadata_respond_all(flac) == false) {
+		error = YES;
+		FLAC__stream_decoder_delete(flac);
+		flac = NULL;
+		return NO;
+	}*/
+	
+	if(FLAC__stream_decoder_set_metadata_respond(flac,FLAC__METADATA_TYPE_STREAMINFO) == false) {
+		error = YES;
+		FLAC__stream_decoder_delete(flac);
+		flac = NULL;
+		return NO;
+	}
+	if(FLAC__stream_decoder_set_metadata_respond(flac,FLAC__METADATA_TYPE_VORBIS_COMMENT) == false) {
+		error = YES;
+		FLAC__stream_decoder_delete(flac);
+		flac = NULL;
+		return NO;
+	}
+	if(FLAC__stream_decoder_set_metadata_respond(flac,FLAC__METADATA_TYPE_CUESHEET) == false) {
+		error = YES;
+		FLAC__stream_decoder_delete(flac);
+		flac = NULL;
+		return NO;
+	}
+	if(FLAC__stream_decoder_set_metadata_respond(flac,FLAC__METADATA_TYPE_PICTURE) == false) {
 		error = YES;
 		FLAC__stream_decoder_delete(flac);
 		flac = NULL;
@@ -586,11 +618,46 @@ FLAC__StreamDecoderWriteStatus write_callback(const FLAC__StreamDecoder *decoder
 	}
 	
 	samplerate = 0;
+	
 	if(FLAC__stream_decoder_process_until_end_of_metadata(flac) == false) {
+		/* do nothing */
+	}
+	
+	/* close stream and open again... (to avoid metadata related errors) */
+	
+	FLAC__stream_decoder_delete(flac);
+	flac = FLAC__stream_decoder_new();
+	if(!flac) {
+		error = YES;
+		return NO;
+	}
+	
+	if(FLAC__stream_decoder_set_metadata_respond(flac,FLAC__METADATA_TYPE_STREAMINFO) == false) {
 		error = YES;
 		FLAC__stream_decoder_delete(flac);
 		flac = NULL;
 		return NO;
+	}
+	
+	if(!memcmp(temp,"OggS",4)) {
+		if(FLAC__stream_decoder_init_ogg_file(flac,path,write_callback,metadata_callback,error_callback,self) != FLAC__STREAM_DECODER_INIT_STATUS_OK) {
+			error = YES;
+			FLAC__stream_decoder_delete(flac);
+			flac = NULL;
+			return NO;
+		}
+	}
+	else {
+		if(FLAC__stream_decoder_init_file(flac,path,write_callback,metadata_callback,error_callback,self) != FLAC__STREAM_DECODER_INIT_STATUS_OK) {
+			error = YES;
+			FLAC__stream_decoder_delete(flac);
+			flac = NULL;
+			return NO;
+		}
+	}
+	
+	if(FLAC__stream_decoder_process_until_end_of_metadata(flac) == false) {
+		/* do nothing */
 	}
 	
 	writeCallbackDecodedSample = 0;
