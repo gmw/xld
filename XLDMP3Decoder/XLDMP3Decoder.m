@@ -465,6 +465,8 @@ NSData *getBinaryFromFrame(struct id3_frame *frame)
 	if(file) ExtAudioFileDispose(file);
 	file = NULL;
 	[metadataDic removeAllObjects];
+	if(srcPath) [srcPath release];
+	srcPath = nil;
 	error = NO;
 }
 
