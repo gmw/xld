@@ -65,14 +65,11 @@ static NSString *fixArtist(NSString *str)
 	NSArray *artists = [rel nodesForXPath:@"./artists/artist" error:nil];
 	if([artists count]) {
 		NSMutableString *str = [NSMutableString string];
+		NSString *joinphrase = nil;
 		int j;
 		for(j=0;j<[artists count];j++) {
 			id node = [artists objectAtIndex:j];
 			NSString *artist = nil;
-			NSString *joinphrase = nil;
-			objs = [node nodesForXPath:@"./join" error:nil];
-			if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
-				joinphrase = [[objs objectAtIndex:0] stringValue];
 			objs = [node nodesForXPath:@"./name" error:nil];
 			if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
 				artist = [[objs objectAtIndex:0] stringValue];
@@ -80,8 +77,12 @@ static NSString *fixArtist(NSString *str)
 			if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
 				artist = [[objs objectAtIndex:0] stringValue];
 			artist = fixArtist(artist);
-			if(artist && joinphrase) [str appendFormat:@"%@ %@ ",artist,joinphrase];
+			if(artist && joinphrase) [str appendFormat:@" %@ %@",joinphrase,artist];
 			else if(artist) [str appendFormat:@"%@",artist];
+			objs = [node nodesForXPath:@"./join" error:nil];
+			if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
+				joinphrase = [[objs objectAtIndex:0] stringValue];
+			else joinphrase = nil;
 		}
 		if(![str isEqualToString:@""] && ![[str lowercaseString] hasPrefix:@"various"]) [release setObject:str forKey:@"Artist"];
 	}
@@ -175,13 +176,10 @@ static NSString *fixArtist(NSString *str)
 		if([release objectForKey:@"Artist"]) [track setObject:[release objectForKey:@"Artist"] forKey:@"Artist"];
 		if([artists count]) {
 			NSMutableString *str = [NSMutableString string];
+			NSString *joinphrase = nil;
 			for(j=0;j<[artists count];j++) {
 				id node = [artists objectAtIndex:j];
 				NSString *artist = nil;
-				NSString *joinphrase = nil;
-				objs = [node nodesForXPath:@"./join" error:nil];
-				if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
-					joinphrase = [[objs objectAtIndex:0] stringValue];
 				objs = [node nodesForXPath:@"./name" error:nil];
 				if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
 					artist = [[objs objectAtIndex:0] stringValue];
@@ -189,8 +187,12 @@ static NSString *fixArtist(NSString *str)
 				if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
 					artist = [[objs objectAtIndex:0] stringValue];
 				artist = fixArtist(artist);
-				if(artist && joinphrase) [str appendFormat:@"%@ %@ ",artist,joinphrase];
+				if(artist && joinphrase) [str appendFormat:@" %@ %@",joinphrase,artist];
 				else if(artist) [str appendFormat:@"%@",artist];
+				objs = [node nodesForXPath:@"./join" error:nil];
+				if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
+					joinphrase = [[objs objectAtIndex:0] stringValue];
+				else joinphrase = nil;
 			}
 			if(![str isEqualToString:@""]) [track setObject:str forKey:@"Artist"];
 		}
