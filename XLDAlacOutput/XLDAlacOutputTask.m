@@ -385,7 +385,6 @@ static int updateM4aFileInfo(FILE *fp)
 		//fprintf(stderr,"frame size: %d\n",n);
 		if(n==0) {
 			if(fseeko(fp,stblPos,SEEK_SET) != 0) goto end;
-			
 			while(1) { //skip until stts;
 				if(fread(&tmp,4,1,fp) < 1) goto end;
 				if(fread(atom,1,4,fp) < 4) goto end;
@@ -393,11 +392,29 @@ static int updateM4aFileInfo(FILE *fp)
 				if(!memcmp(atom,"stts",4)) break;
 				if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 			}
-			
 			if(fseeko(fp,4,SEEK_CUR) != 0) goto end;
 			if(fread(&n,4,1,fp) < 1) goto end;
 			n = SWAP32(n);
 			if(n>1) if(fseeko(fp,(n-1)*8,SEEK_CUR) != 0) goto end;
+			if(fread(&tmp,4,1,fp) < 1) goto end;
+			tmp = SWAP32(tmp);
+			tmp--;
+			tmp = SWAP32(tmp);
+			if(fseeko(fp,-4,SEEK_CUR) != 0) goto end;
+			if(fwrite(&tmp,4,1,fp) < 1) goto end;
+			
+			if(fseeko(fp,stblPos,SEEK_SET) != 0) goto end;
+			while(1) { //skip until stsc;
+				if(fread(&tmp,4,1,fp) < 1) goto end;
+				if(fread(atom,1,4,fp) < 4) goto end;
+				tmp = SWAP32(tmp);
+				if(!memcmp(atom,"stsc",4)) break;
+				if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
+			}
+			if(fseeko(fp,4,SEEK_CUR) != 0) goto end;
+			if(fread(&n,4,1,fp) < 1) goto end;
+			n = SWAP32(n);
+			if(fseeko(fp,(n-1)*12+4,SEEK_CUR) != 0) goto end;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
 			tmp = SWAP32(tmp);
 			tmp--;
