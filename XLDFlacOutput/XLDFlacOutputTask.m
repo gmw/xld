@@ -290,6 +290,11 @@ typedef int64_t xldoffset_t;
 			entry.length = strlen((char *)entry.entry);
 			FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
 		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS]) {
+			entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"LYRICS=%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS]] UTF8String];
+			entry.length = strlen((char *)entry.entry);
+			FLAC__metadata_object_vorbiscomment_append_comment(tag,entry,true);
+		}
 		if(writeRGTags) {
 			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN]) {
 				entry.entry = (FLAC__byte *)[[NSString stringWithFormat:@"REPLAYGAIN_TRACK_GAIN=%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] floatValue]] UTF8String];
