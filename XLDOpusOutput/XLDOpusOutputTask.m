@@ -373,7 +373,7 @@ int opus_header_to_packet(const OpusHeader *h, unsigned char *packet, int len)
 		goto fail;
 	}
 	
-#ifdef OPUS_SET_EXPERT_FRAME_DURATION
+#if defined(OPUS_SET_EXPERT_FRAME_DURATION) && defined(OPUS_FRAMESIZE_VARIABLE)
 	if(useVariableFramesize) {
 		i=OPUS_FRAMESIZE_VARIABLE;
 		ret = opus_multistream_encoder_ctl(st, OPUS_SET_EXPERT_FRAME_DURATION(i));

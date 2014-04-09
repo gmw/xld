@@ -28,7 +28,7 @@
 	[NSBundle loadNibNamed:@"XLDOpusOutput" owner:self];
 	[o_credit setStringValue:[NSString stringWithFormat:@"%@%s",[o_credit stringValue],opus_get_version_string()]];
 	[o_frameSize setAutoenablesItems:NO];
-#ifdef OPUS_SET_EXPERT_FRAME_DURATION
+#if defined(OPUS_SET_EXPERT_FRAME_DURATION) && defined(OPUS_FRAMESIZE_VARIABLE)
 	[[o_frameSize itemAtIndex:[o_frameSize indexOfItemWithTag:0]] setEnabled:YES];
 #endif
 	srand(time(NULL));
