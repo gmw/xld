@@ -699,6 +699,8 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 	int totalErrorCount = 0;
 	int success = 0;
 	unsigned char *buffer = malloc(2352+16);
+	int preEmphasis = 0;
+	int dcp = 0;
 	dk_cd_read_t cdread;
 	memset(&cdread, 0, sizeof(cdread));
 	cdread.sectorArea = kCDSectorAreaUser | kCDSectorAreaSubChannelQ;
@@ -711,6 +713,13 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 		if(result != -1) {
 			unsigned int adr = buffer[2352] & 0xf;
 			unsigned int crc = buffer[2362]<<8 | buffer[2363];
+			if(adr == 0x1) {
+				int ctrl = (buffer[2352] & 0xf0) >> 4;
+				if(ctrl & 0x1) preEmphasis++;
+				else preEmphasis--;
+				if(ctrl & 0x10) dcp++;
+				else dcp--;
+			}
 			if(adr != 0x3 && adr != 0x2) goto nextSector;
 			if(crc && crc == calc_crc(10, buffer+2352)) {
 				errorCount = 0;
@@ -771,6 +780,8 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 			break;
 		}
 	}
+	if(preEmphasis > 0) disc->tracks[track-1].preEmphasis = 1;
+	if(dcp < 0) disc->tracks[track-1].dcp = 1;
 last:
 	free(buffer);
 #endif

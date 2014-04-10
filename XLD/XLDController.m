@@ -3244,6 +3244,12 @@ end:
 					xld_cdda_read_isrc(&cdread,i+1);
 					if(cdread.mcn[0]) [[[trackArr objectAtIndex:i] metadata] setObject:[NSString stringWithUTF8String:cdread.mcn] forKey:XLD_METADATA_CATALOG];
 					if(cdread.tracks[i].isrc[0]) [[[trackArr objectAtIndex:i] metadata] setObject:[NSString stringWithUTF8String:cdread.tracks[i].isrc] forKey:XLD_METADATA_ISRC];
+					if(cdread.tracks[i].preEmphasis) {
+						[[[trackArr objectAtIndex:i] metadata] setObject:[NSNumber numberWithBool:YES] forKey:XLD_METADATA_PREEMPHASIS];
+					}
+					if(cdread.tracks[i].dcp) {
+						[[[trackArr objectAtIndex:i] metadata] setObject:[NSNumber numberWithBool:YES] forKey:XLD_METADATA_DCP];
+					}
 				}
 				if(i>0 && cdread.tracks[i].type == kTrackTypeAudio && cdread.tracks[i-1].type == kTrackTypeAudio) {
 					xld_cdda_read_pregap(&cdread,i+1);
