@@ -781,7 +781,7 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 		}
 	}
 	if(preEmphasis > 0) disc->tracks[track-1].preEmphasis = 1;
-	if(dcp < 0) disc->tracks[track-1].dcp = 1;
+	if(dcp > 0) disc->tracks[track-1].dcp = 1;
 last:
 	free(buffer);
 #endif
