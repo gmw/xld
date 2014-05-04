@@ -13,10 +13,10 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="8"/>
-			<integer value="327"/>
-			<integer value="37"/>
 			<integer value="206"/>
 			<integer value="153"/>
+			<integer value="37"/>
+			<integer value="327"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -274,13 +274,13 @@
 						<object class="NSTextField" id="290376606">
 							<reference key="NSNextResponder" ref="359073182"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{17, 179}, {65, 14}}</string>
+							<string key="NSFrame">{{17, 176}, {71, 17}}</string>
 							<reference key="NSSuperview" ref="359073182"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="1062036216">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">272629760</int>
-								<string key="NSContents">Composist</string>
+								<string key="NSContents">Componist</string>
 								<reference key="NSSupport" ref="27"/>
 								<reference key="NSControlView" ref="290376606"/>
 								<reference key="NSBackgroundColor" ref="681190038"/>
@@ -1302,7 +1302,7 @@
 								<object class="NSButtonCell" id="871609543">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">131072</int>
-									<string key="NSContents">Composist</string>
+									<string key="NSContents">Componist</string>
 									<reference key="NSSupport" ref="27"/>
 									<reference key="NSControlView" ref="574086849"/>
 									<int key="NSTag">5</int>
@@ -1743,13 +1743,13 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 						<object class="NSTextField" id="27419688">
 							<reference key="NSNextResponder" ref="915780396"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{17, 360}, {65, 14}}</string>
+							<string key="NSFrame">{{17, 357}, {72, 17}}</string>
 							<reference key="NSSuperview" ref="915780396"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="472474924">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">272629760</int>
-								<string key="NSContents">Composist</string>
+								<string key="NSContents">Componist</string>
 								<reference key="NSSupport" ref="27"/>
 								<reference key="NSControlView" ref="27419688"/>
 								<reference key="NSBackgroundColor" ref="681190038"/>
@@ -6105,9 +6105,9 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{348, 328}, {603, 369}}</string>
+					<string>{{289, 328}, {603, 369}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{348, 328}, {603, 369}}</string>
+					<string>{{289, 328}, {603, 369}}</string>
 					<boolean value="NO"/>
 					<boolean value="YES"/>
 					<string>{600, 350}</string>
@@ -6264,6 +6264,21 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSCell</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="1048693484">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">XLDCustomClasses.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSScrollView</string>
+					<reference key="sourceIdentifier" ref="1048693484"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
+					<reference key="sourceIdentifier" ref="1048693484"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">XLDMetadataEditor</string>
@@ -7246,14 +7261,7 @@ eHQAAAAAQ29weXJpZ2h0IEFwcGxlLCBJbmMuLCAyMDA4AA</bytes>
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Sparkle.framework/Headers/SUAppcast.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Sparkle.framework/Headers/SUUpdater.h</string>
+						<string key="minorKey">Print.framework/Headers/PDEPluginInterface.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
