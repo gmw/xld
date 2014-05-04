@@ -139,6 +139,8 @@ static int updateM4aFileInfo(FILE *fp)
 	unsigned int *chunkIndexTable = NULL;
 	int lastChunkStartALACFrame = 1;
 	int lastALACFrameSampleCount = 0;
+	int numStscTable = 0;
+	int lastChunkSampleCount = 0;
 	
 	if(fseeko(fp,0,SEEK_SET) != 0) goto end;
 	
@@ -297,6 +299,7 @@ static int updateM4aFileInfo(FILE *fp)
 	if(fseeko(fp,4,SEEK_CUR) != 0) goto end;
 	if(fread(&n,4,1,fp) < 1) goto end;
 	n = SWAP32(n);
+	numStscTable = n;
 	m=0;
 	tmp = -1;
 	tmp3 = 0;
@@ -307,6 +310,7 @@ static int updateM4aFileInfo(FILE *fp)
 		if(fseeko(fp,4,SEEK_CUR) != 0) goto end;
 		tmp = SWAP32(tmp);
 		tmp2 = SWAP32(tmp2);
+		lastChunkSampleCount = tmp2;
 		if(tmp3 && tmp3+1 != tmp) {
 			for(j=tmp3;j<tmp-1&&m<totalALACFrames;j++) {
 				lastChunkStartALACFrame = m+1;
@@ -383,7 +387,7 @@ static int updateM4aFileInfo(FILE *fp)
 		if(fread(&chan,1,1,fp) < 1) goto end;
 		n |= ((unsigned int)chan) >> 1;
 		//fprintf(stderr,"frame size: %d\n",n);
-		if(n==0) {
+		if(n==0 && numStscTable > 1 && lastChunkSampleCount > 1) {
 			if(fseeko(fp,stblPos,SEEK_SET) != 0) goto end;
 			while(1) { //skip until stts;
 				if(fread(&tmp,4,1,fp) < 1) goto end;
