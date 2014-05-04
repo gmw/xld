@@ -84,12 +84,12 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 - (BOOL)setOutputFormat:(XLDFormat)fmt
 {
 	inFormat = fmt;
-	sfinfo.samplerate = fmt.samplerate;
 	sfinfo.channels = fmt.channels;
 	
 	/* BitDepth == 0 if same as original */
 	int bps = [[configurations objectForKey:@"BitDepth"] intValue] ? [[configurations objectForKey:@"BitDepth"] intValue] : fmt.bps;
 	int isFloat = [[configurations objectForKey:@"BitDepth"] intValue] ? [[configurations objectForKey:@"IsFloat"] intValue] : fmt.isFloat;
+	sfinfo.samplerate = [[configurations objectForKey:@"Samplerate"] intValue] ? [[configurations objectForKey:@"Samplerate"] intValue] : fmt.samplerate;
 	
 	switch(bps) {
 		case 1:
@@ -108,6 +108,24 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 			break;
 		default:
 			return NO;
+	}
+	
+	if(fmt.samplerate != sfinfo.samplerate) {
+		unsigned int quality = [[configurations objectForKey:@"SRCAlgorithm"] unsignedIntValue] ? [[configurations objectForKey:@"SRCAlgorithm"] unsignedIntValue] : SOXR_HQ;
+		soxr_error_t err;
+		soxr_io_spec_t spec;
+		soxr_quality_spec_t qspec = soxr_quality_spec(quality, 0);
+		if(fmt.isFloat) {
+			spec = soxr_io_spec(SOXR_FLOAT32_I, SOXR_FLOAT32_I);
+		}
+		else {
+			spec = soxr_io_spec(SOXR_INT32_I, SOXR_INT32_I);
+		}
+		soxr = soxr_create(fmt.samplerate,sfinfo.samplerate,fmt.channels,&err,&spec,&qspec,NULL);
+		if(err) {
+			fprintf(stderr,"sox resampler initialization error\n");
+			return NO;
+		}
 	}
 	
 	return YES;
@@ -495,9 +513,25 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 
 - (BOOL)writeBuffer:(int *)buffer frames:(int)counts
 {
-	if(inFormat.isFloat)
-		sf_writef_float(sf_w,(float *)buffer,counts);
-	else sf_writef_int(sf_w,buffer,counts);
+	if(soxr) {
+		int bufSize = 2.0f * sizeof(int) * counts * sfinfo.samplerate * sfinfo.channels / inFormat.samplerate;
+		if(resampleBufferSize < bufSize) {
+			resampleBuffer = realloc(resampleBuffer, bufSize);
+			resampleBufferSize = bufSize;
+		}
+		size_t done = 0;
+		soxr_process(soxr,buffer,counts,NULL,resampleBuffer,resampleBufferSize,&done);
+		if(done > 0) {
+			if(inFormat.isFloat)
+				sf_writef_float(sf_w,(float *)resampleBuffer,done);
+			else sf_writef_int(sf_w,resampleBuffer,done);
+		}
+	}
+	else {
+		if(inFormat.isFloat)
+			sf_writef_float(sf_w,(float *)buffer,counts);
+		else sf_writef_int(sf_w,buffer,counts);
+	}
 	
 	if(sf_error(sf_w)) {
 		return NO;
@@ -507,6 +541,15 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 
 - (void)finalize
 {
+	if(soxr) {
+		size_t done = 0;
+		soxr_process(soxr,NULL,0,NULL,resampleBuffer,resampleBufferSize,&done);
+		if(done > 0) {
+			if(inFormat.isFloat)
+				sf_writef_float(sf_w,(float *)resampleBuffer,done);
+			else sf_writef_int(sf_w,resampleBuffer,done);
+		}
+	}
 	if(!addTag || ![tagData length]) return;
 	if(sf_w) sf_close(sf_w);
 	sf_w = NULL;
@@ -565,6 +608,11 @@ end:
 	if(path) [path release];
 	path = NULL;
 	[tagData setLength:0];
+	if(soxr) soxr_delete(soxr);
+	soxr = NULL;
+	if(resampleBuffer) free(resampleBuffer);
+	resampleBuffer = NULL;
+	resampleBufferSize = 0;
 }
 
 - (void)setEnableAddTag:(BOOL)flag

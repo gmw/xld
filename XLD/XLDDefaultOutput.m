@@ -42,6 +42,8 @@
 	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
 	[pref setInteger:[o_bitDepth indexOfSelectedItem] forKey:@"XLDDefaultOutput_BitDepth"];
 	[pref setInteger:[o_isFloat state] forKey:@"XLDDefaultOutput_IsFloat"];
+	[pref setInteger:[[o_samplerate selectedItem] tag] forKey:@"XLDDefaultOutput_Samplerate"];
+	[pref setInteger:[[o_srcAlgorithm selectedItem] tag] forKey:@"XLDDefaultOutput_SRCAlgorithm"];
 	[pref synchronize];
 }
 
@@ -70,6 +72,14 @@
 		[o_isFloat setEnabled:NO];
 		[o_isFloat setState:NSOffState];
 	}
+	if([[o_samplerate selectedItem] tag]) {
+		[o_srcAlgorithm setEnabled:YES];
+		[o_text4 setTextColor:[NSColor blackColor]];
+	}
+	else {
+		[o_srcAlgorithm setEnabled:NO];
+		[o_text4 setTextColor:[NSColor lightGrayColor]];
+	}
 }
 
 - (NSMutableDictionary *)configurations
@@ -78,6 +88,8 @@
 	/* for task */
 	[cfg setObject:[NSNumber numberWithInt:[[o_bitDepth selectedItem] tag]] forKey:@"BitDepth"];
 	[cfg setObject:[NSNumber numberWithBool:([o_isFloat state] == NSOnState)] forKey:@"IsFloat"];
+	[cfg setObject:[NSNumber numberWithInt:[[o_samplerate selectedItem] tag]] forKey:@"Samplerate"];
+	[cfg setObject:[NSNumber numberWithInt:[[o_srcAlgorithm selectedItem] tag]] forKey:@"SRCAlgorithm"];
 	/* desc */
 	if([o_isFloat state]==NSOnState) [cfg setObject:@"32-bit, float" forKey:@"ShortDesc"];
 	else if([[o_bitDepth selectedItem] tag]) [cfg setObject:[NSString stringWithFormat:@"%d-bit",[[o_bitDepth selectedItem] tag]*8] forKey:@"ShortDesc"];
@@ -92,6 +104,12 @@
 	}
 	if(obj=[cfg objectForKey:@"XLDDefaultOutput_IsFloat"]) {
 		[o_isFloat setState:[obj intValue]];
+	}
+	if(obj=[cfg objectForKey:@"XLDDefaultOutput_Samplerate"]) {
+		[o_samplerate selectItemWithTag:[obj intValue]];
+	}
+	if(obj=[cfg objectForKey:@"XLDDefaultOutput_SRCAlgorithm"]) {
+		[o_srcAlgorithm selectItemWithTag:[obj intValue]];
 	}
 	[self statusChanged:nil];
 }

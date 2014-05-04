@@ -1204,6 +1204,7 @@
 				OTHER_LDFLAGS = (
 					"-lsndfile",
 					"-lcddb",
+					"-lsoxr",
 				);
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
@@ -1228,6 +1229,7 @@
 				OTHER_LDFLAGS = (
 					"-lsndfile",
 					"-lcddb",
+					"-lsoxr",
 				);
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;

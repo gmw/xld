@@ -13,6 +13,9 @@
 	IBOutlet id o_bitDepth;
 	IBOutlet id o_isFloat;
 	IBOutlet id o_view;
+	IBOutlet id o_samplerate;
+	IBOutlet id o_srcAlgorithm;
+	IBOutlet id o_text4;
 }
 
 - (IBAction)statusChanged:(id)target;

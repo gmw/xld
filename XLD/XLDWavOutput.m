@@ -35,6 +35,8 @@
 	[pref setInteger:[o_addTags state] forKey:@"XLDWavOutput_AddTags"];
 	[pref setInteger:[[o_tagFormat selectedCell] tag] forKey:@"XLDWavOutput_WavTagFormat"];
 	[pref setInteger:[[o_tagEncoding selectedItem] tag] forKey:@"XLDWavOutput_WavTagEncoding"];
+	[pref setInteger:[[o_samplerate selectedItem] tag] forKey:@"XLDWavOutput_Samplerate"];
+	[pref setInteger:[[o_srcAlgorithm selectedItem] tag] forKey:@"XLDWavOutput_SRCAlgorithm"];
 	[pref synchronize];
 }
 
@@ -46,6 +48,8 @@
 	[cfg setObject:[NSNumber numberWithInt:[o_isFloat state]] forKey:@"XLDWavOutput_IsFloat"];
 	[cfg setObject:[NSNumber numberWithInt:[[o_tagFormat selectedCell] tag]] forKey:@"XLDWavOutput_WavTagFormat"];
 	[cfg setObject:[NSNumber numberWithInt:[[o_tagEncoding selectedItem] tag]] forKey:@"XLDWavOutput_WavTagEncoding"];
+	[cfg setObject:[NSNumber numberWithInt:[[o_samplerate selectedItem] tag]] forKey:@"XLDWavOutput_Samplerate"];
+	[cfg setObject:[NSNumber numberWithInt:[[o_srcAlgorithm selectedItem] tag]] forKey:@"XLDWavOutput_SRCAlgorithm"];
 	/* for task */
 	[cfg setObject:[NSNumber numberWithUnsignedInt:SF_FORMAT_WAV] forKey:@"SFFormat"];
 	if([o_addTags state] == NSOnState) {
@@ -72,6 +76,12 @@
 	}
 	if(obj=[cfg objectForKey:@"XLDWavOutput_WavTagEncoding"]) {
 		[o_tagEncoding selectItemWithTag:[obj intValue]];
+	}
+	if(obj=[cfg objectForKey:@"XLDWavOutput_Samplerate"]) {
+		[o_samplerate selectItemWithTag:[obj intValue]];
+	}
+	if(obj=[cfg objectForKey:@"XLDWavOutput_SRCAlgorithm"]) {
+		[o_srcAlgorithm selectItemWithTag:[obj intValue]];
 	}
 	
 	[self statusChanged:nil];

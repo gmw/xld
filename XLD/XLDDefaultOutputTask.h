@@ -10,6 +10,7 @@
 #import "XLDOutputTask.h"
 #import <sndfile.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import <soxr.h>
 
 @interface XLDDefaultOutputTask : NSObject <XLDOutputTask> {
 	SF_INFO sfinfo;
@@ -19,6 +20,9 @@
 	NSMutableData *tagData;
 	XLDFormat inFormat;
 	NSDictionary *configurations;
+	soxr_t soxr;
+	void *resampleBuffer;
+	int resampleBufferSize;
 }
 
 - (BOOL)setOutputFormat:(XLDFormat)fmt;
