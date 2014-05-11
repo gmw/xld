@@ -91,7 +91,7 @@ static inline void convertSamples(int *dst, float *src, int numSamples)
 		if(fseeko(fp, 8, SEEK_CUR) != 0) goto fail;
 		if(fread(&tmp, 4, 1, fp) < 1) goto fail;
 		tmp = OSSwapLittleToHostInt32(tmp);
-		if(tmp != 2822400) goto fail;
+		if(tmp != 2822400 && tmp != 5644800) goto fail;
 		if(fread(&tmp, 4, 1, fp) < 1) goto fail;
 		tmp = OSSwapLittleToHostInt32(tmp);
 		if(tmp != 1) goto fail;
@@ -144,7 +144,7 @@ static inline void convertSamples(int *dst, float *src, int numSamples)
 			else if(fseeko(fp,tmp2,SEEK_CUR) != 0) goto fail;
 			read += tmp2 + 12;
 		}
-		if(fs != 2822400 || !dsd) goto fail;
+		if((fs != 2822400 && fs != 5644800) || !dsd) goto fail;
 		
 		if(fseeko(fp,pos,SEEK_SET) != 0) goto fail;
 		while(1) { //skip until DSD;
@@ -208,8 +208,8 @@ fail:
 		if(fread(&tmp, 4, 1, dsd_fp) < 1) goto fail;
 		channels = OSSwapLittleToHostInt32(tmp);
 		if(fread(&tmp, 4, 1, dsd_fp) < 1) goto fail;
-		tmp = OSSwapLittleToHostInt32(tmp);
-		if(tmp != 2822400) goto fail;
+		samplerate = OSSwapLittleToHostInt32(tmp);
+		if(samplerate != 2822400 && samplerate != 5644800) goto fail;
 		if(fread(&tmp, 4, 1, dsd_fp) < 1) goto fail;
 		tmp = OSSwapLittleToHostInt32(tmp);
 		if(tmp != 1) goto fail;
@@ -304,7 +304,8 @@ fail:
 			else if(fseeko(dsd_fp,tmp2,SEEK_CUR) != 0) goto fail;
 			read += tmp2 + 12;
 		}
-		if(fs != 2822400 || !dsd) goto fail;
+		if((fs != 2822400 && fs != 5644800) || !dsd) goto fail;
+		samplerate = fs;
 		
 		if(fseeko(dsd_fp,pos,SEEK_SET) != 0) goto fail;
 		while(1) { //skip until DSD;
@@ -316,7 +317,7 @@ fail:
 		}
 		dataStart = ftello(dsd_fp);
 		
-		blockSize = 32768;
+		blockSize = 16384 * channels;
 		totalDSDSamples = tmp2 * 8 / channels;
 		totalPCMSamples = tmp2 / channels;
 		DSDSamplesPerBlock = blockSize * 8 / channels;
@@ -349,7 +350,7 @@ fail:
 
 - (int)samplerate
 {
-	return OUTPUT_HZ;
+	return samplerate / 8;
 }
 
 - (int)bytesPerSample

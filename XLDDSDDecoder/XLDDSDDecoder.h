@@ -24,6 +24,7 @@ typedef enum {
 @interface XLDDSDDecoder : NSObject <XLDDecoder> {
 	FILE *dsd_fp;
 	int channels;
+	int samplerate;
 	int blockSize;
 	int DSDStride;
 	unsigned char *dsdBuffer;
