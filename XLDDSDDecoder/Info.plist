@@ -28,5 +28,7 @@
 	<string>© tmkk, 2006-2014</string>
 	<key>XLDDSDDecoderOutputSamplerate</key>
 	<integer>0</integer>
+	<key>XLDDSDDecoderApply6dBGain</key>
+	<false/>
 </dict>
 </plist>

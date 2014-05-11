@@ -9,15 +9,16 @@
 #import "XLDDSDDecoder.h"
 #import "id3lib.h"
 
-#define OUTPUT_HZ 352800
+#define GAIN_6DB 2.0f
+#define GAIN_0DB 1.0f
 
-static inline void convertSamples(int *dst, float *src, int numSamples)
+static inline void convertSamples(int *dst, float *src, int numSamples, float gain)
 {
 #if 1
 	int i;
 	for(i=0;i<numSamples;i++) {
 #ifdef __i386__
-		float value = src[i] * 8388608;
+		float value = src[i] * 8388608 * gain;
 		int rounded;
 		__asm__ (
 			"cvtss2si	%1, %0\n\t"
@@ -26,7 +27,7 @@ static inline void convertSamples(int *dst, float *src, int numSamples)
 		);
 #else
 		float fix = src[i] >= 0 ? 0.5 : -0.5;
-		int rounded = (int)(src[i] * 8388608 + fix);
+		int rounded = (int)(src[i] * 8388608 * gain + fix);
 #endif
 		if(rounded < -8388608) dst[i] = -8388608 << 8;
 		else if(rounded > 8388607) dst[i] = 8388607 << 8;
@@ -354,6 +355,10 @@ fail:
 	}
 	else outSamplerate = samplerate / 8;
 	
+	globalGain = GAIN_0DB;
+	if([[[NSBundle bundleWithIdentifier:@"jp.tmkk.XLDDSDDecoder"] objectForInfoDictionaryKey: @"XLDDSDDecoderApply6dBGain"] boolValue]) {
+		globalGain = GAIN_6DB;
+	}
 	residueSampleCount = 0;
 	currentBlock = 0;
 	srcPath = [[NSString stringWithUTF8String:path] retain];
@@ -384,13 +389,13 @@ fail:
 	if(currentBlock == totalBlocks) {
 		if(!residueSampleCount) return 0;
 		if(count >= residueSampleCount) {
-			convertSamples(buffer,residueBuffer,residueSampleCount*channels);
+			convertSamples(buffer,residueBuffer,residueSampleCount*channels,globalGain);
 			int tmp = residueSampleCount;
 			residueSampleCount = 0;
 			return tmp;
 		}
 		else {
-			convertSamples(buffer,residueBuffer,count*channels);
+			convertSamples(buffer,residueBuffer,count*channels,globalGain);
 			memmove(residueBuffer, residueBuffer+count*channels, sizeof(float)*(residueSampleCount - count)*channels);
 			residueSampleCount -= count;
 			return count;
@@ -401,13 +406,13 @@ fail:
 		int offset = 0;
 		if(residueSampleCount) {
 			if(rest >= residueSampleCount) {
-				convertSamples(buffer,residueBuffer,residueSampleCount*channels);
+				convertSamples(buffer,residueBuffer,residueSampleCount*channels,globalGain);
 				rest -= residueSampleCount;
 				offset = residueSampleCount * channels;
 				residueSampleCount = 0;
 			}
 			else {
-				convertSamples(buffer,residueBuffer,count*channels);
+				convertSamples(buffer,residueBuffer,count*channels,globalGain);
 				memmove(residueBuffer, residueBuffer+count*channels, sizeof(float)*(residueSampleCount - count)*channels);
 				residueSampleCount -= count;
 				return count;
@@ -438,12 +443,12 @@ fail:
 					done += done2;
 				}
 				if(rest >= done) {
-					convertSamples(buffer+offset,resampleBuffer,done*channels);
+					convertSamples(buffer+offset,resampleBuffer,done*channels,globalGain);
 					rest -= done;
 					offset += done * channels;
 				}
 				else {
-					convertSamples(buffer+offset,resampleBuffer,rest*channels);
+					convertSamples(buffer+offset,resampleBuffer,rest*channels,globalGain);
 					memcpy(residueBuffer, resampleBuffer+rest*channels, sizeof(float)*(done - rest)*channels);
 					residueSampleCount = done - rest;
 					rest = 0;
@@ -451,12 +456,12 @@ fail:
 			}
 			else {
 				if(rest >= currentPCMSamplesPerBlock) {
-					convertSamples(buffer+offset,pcmBuffer,currentPCMSamplesPerBlock*channels);
+					convertSamples(buffer+offset,pcmBuffer,currentPCMSamplesPerBlock*channels,globalGain);
 					rest -= currentPCMSamplesPerBlock;
 					offset += currentPCMSamplesPerBlock * channels;
 				}
 				else {
-					convertSamples(buffer+offset,pcmBuffer,rest*channels);
+					convertSamples(buffer+offset,pcmBuffer,rest*channels,globalGain);
 					memcpy(residueBuffer, pcmBuffer+rest*channels, sizeof(float)*(currentPCMSamplesPerBlock - rest)*channels);
 					residueSampleCount = currentPCMSamplesPerBlock - rest;
 					rest = 0;

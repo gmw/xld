@@ -47,6 +47,7 @@ typedef enum {
 	XLDDSDFormat dsdFormat;
 	id metadataDic;
 	soxr_t soxr;
+	float globalGain;
 }
 
 + (BOOL)canHandleFile:(char *)path;
