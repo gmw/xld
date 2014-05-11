@@ -15,6 +15,7 @@ typedef enum {
 #import <Cocoa/Cocoa.h>
 #import "XLDDecoder.h"
 #import "dsd2pcm.h"
+#import <soxr.h>
 
 typedef enum {
 	XLDDSDFormatDFF = 0,
@@ -25,11 +26,13 @@ typedef enum {
 	FILE *dsd_fp;
 	int channels;
 	int samplerate;
+	int outSamplerate;
 	int blockSize;
 	int DSDStride;
 	unsigned char *dsdBuffer;
 	float *pcmBuffer;
 	float *residueBuffer;
+	float *resampleBuffer;
 	int residueSampleCount;
 	xldoffset_t currentBlock;
 	xldoffset_t totalBlocks;
@@ -43,6 +46,7 @@ typedef enum {
 	NSString *srcPath;
 	XLDDSDFormat dsdFormat;
 	id metadataDic;
+	soxr_t soxr;
 }
 
 + (BOOL)canHandleFile:(char *)path;

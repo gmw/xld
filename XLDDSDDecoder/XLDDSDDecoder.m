@@ -339,6 +339,21 @@ fail:
 		dsdProc[i] = dsd2pcm_init();
 	}
 	
+	outSamplerate = [[[NSBundle bundleWithIdentifier:@"jp.tmkk.XLDDSDDecoder"] objectForInfoDictionaryKey: @"XLDDSDDecoderOutputSamplerate"] intValue];
+	if(outSamplerate >= samplerate / 8 || outSamplerate < 0) outSamplerate = 0;
+	if(outSamplerate) {
+		soxr_error_t err;
+		soxr_io_spec_t spec = soxr_io_spec(SOXR_FLOAT32_I, SOXR_FLOAT32_I);
+		soxr_quality_spec_t qspec = soxr_quality_spec(SOXR_VHQ, 0);
+		soxr = soxr_create(samplerate/8,outSamplerate,channels,&err,&spec,&qspec,NULL);
+		if(err) {
+			fprintf(stderr,"sox resampler initialization error\n");
+			return NO;
+		}
+		resampleBuffer = malloc(blockSize*sizeof(float)*8);
+	}
+	else outSamplerate = samplerate / 8;
+	
 	residueSampleCount = 0;
 	currentBlock = 0;
 	srcPath = [[NSString stringWithUTF8String:path] retain];
@@ -350,7 +365,7 @@ fail:
 
 - (int)samplerate
 {
-	return samplerate / 8;
+	return outSamplerate;
 }
 
 - (int)bytesPerSample
@@ -413,16 +428,39 @@ fail:
 					dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i,channels,0,pcmBuffer+i,channels);
 				}
 			}
-			if(rest >= currentPCMSamplesPerBlock) {
-				convertSamples(buffer+offset,pcmBuffer,currentPCMSamplesPerBlock*channels);
-				rest -= currentPCMSamplesPerBlock;
-				offset += currentPCMSamplesPerBlock * channels;
+			if(soxr) {
+				size_t done = 0;
+				//NSLog(@"%d,%d\n",currentPCMSamplesPerBlock,blockSize/channels);
+				soxr_process(soxr,pcmBuffer,currentPCMSamplesPerBlock,NULL,resampleBuffer,blockSize/channels,&done);
+				if(currentBlock == totalBlocks) {
+					size_t done2 = 0;
+					soxr_process(soxr,NULL,0,NULL,resampleBuffer+done*channels,blockSize/channels,&done2);
+					done += done2;
+				}
+				if(rest >= done) {
+					convertSamples(buffer+offset,resampleBuffer,done*channels);
+					rest -= done;
+					offset += done * channels;
+				}
+				else {
+					convertSamples(buffer+offset,resampleBuffer,rest*channels);
+					memcpy(residueBuffer, resampleBuffer+rest*channels, sizeof(float)*(done - rest)*channels);
+					residueSampleCount = done - rest;
+					rest = 0;
+				}
 			}
 			else {
-				convertSamples(buffer+offset,pcmBuffer,rest*channels);
-				memcpy(residueBuffer, pcmBuffer+rest*channels, sizeof(float)*(currentPCMSamplesPerBlock - rest)*channels);
-				residueSampleCount = currentPCMSamplesPerBlock - rest;
-				rest = 0;
+				if(rest >= currentPCMSamplesPerBlock) {
+					convertSamples(buffer+offset,pcmBuffer,currentPCMSamplesPerBlock*channels);
+					rest -= currentPCMSamplesPerBlock;
+					offset += currentPCMSamplesPerBlock * channels;
+				}
+				else {
+					convertSamples(buffer+offset,pcmBuffer,rest*channels);
+					memcpy(residueBuffer, pcmBuffer+rest*channels, sizeof(float)*(currentPCMSamplesPerBlock - rest)*channels);
+					residueSampleCount = currentPCMSamplesPerBlock - rest;
+					rest = 0;
+				}
 			}
 		}
 		return count - rest;
@@ -440,6 +478,8 @@ fail:
 	dsdBuffer = NULL;
 	if(residueBuffer) free(residueBuffer);
 	residueBuffer = NULL;
+	if(resampleBuffer) free(resampleBuffer);
+	resampleBuffer = NULL;
 	if(dsdProc) {
 		int i;
 		for(i<0;i<channels;i++) {
@@ -452,6 +492,8 @@ fail:
 	srcPath = nil;
 	if(metadataDic) [metadataDic release];
 	metadataDic = nil;
+	if(soxr) soxr_delete(soxr);
+	soxr = NULL;
 }
 
 - (xldoffset_t)seekToFrame:(xldoffset_t)count
@@ -459,6 +501,16 @@ fail:
 	int i;
 	for(i=0;i<channels;i++) {
 		dsd2pcm_reset(dsdProc[i]);
+	}
+	if(soxr) {
+		double scale = (double)samplerate / outSamplerate / 8.0;
+		scale = scale * count + 0.5;
+		count = (xldoffset_t)scale;
+		soxr_delete(soxr);
+		soxr_error_t err;
+		soxr_io_spec_t spec = soxr_io_spec(SOXR_FLOAT32_I, SOXR_FLOAT32_I);;
+		soxr_quality_spec_t qspec = soxr_quality_spec(SOXR_VHQ, 0);
+		soxr = soxr_create(samplerate/8,outSamplerate,channels,&err,&spec,&qspec,NULL);
 	}
 	if(count > totalPCMSamples) count = totalPCMSamples;
 	currentBlock = count / PCMSamplesPerBlock;
@@ -478,14 +530,27 @@ fail:
 			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i,channels,0,pcmBuffer+i,channels);
 		}
 	}
-	memcpy(residueBuffer,pcmBuffer+start*channels,sizeof(float)*channels*(PCMSamplesPerBlock - start));
-	residueSampleCount = PCMSamplesPerBlock - start;
+	if(soxr) {
+		size_t done = 0;
+		soxr_process(soxr,pcmBuffer+start*channels,PCMSamplesPerBlock - start,NULL,resampleBuffer,blockSize/channels,&done);
+		memcpy(residueBuffer,resampleBuffer,sizeof(float)*channels*done);
+		residueSampleCount = done;
+	}
+	else {
+		memcpy(residueBuffer,pcmBuffer+start*channels,sizeof(float)*channels*(PCMSamplesPerBlock - start));
+		residueSampleCount = PCMSamplesPerBlock - start;
+	}
 	
 	return count;
 }
 
 - (xldoffset_t)totalFrames
 {
+	if(soxr) {
+		double scale = outSamplerate * 8.0 / samplerate;
+		scale = scale * totalPCMSamples + 0.5;
+		return (xldoffset_t)scale;
+	}
 	return totalPCMSamples;
 }
 
