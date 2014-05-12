@@ -40,7 +40,7 @@ typedef enum {
 	xldoffset_t totalPCMSamples;
 	int DSDSamplesPerBlock;
 	int PCMSamplesPerBlock;
-	int lastBlockDSDSampleCount;
+	int lastBlockPCMSampleCount;
 	dsd2pcm_ctx **dsdProc;
 	off_t dataStart;
 	NSString *srcPath;
@@ -48,6 +48,9 @@ typedef enum {
 	id metadataDic;
 	soxr_t soxr;
 	float globalGain;
+	int isFloat;
+	unsigned long srcAlgorithm;
+	int decimation;
 }
 
 + (BOOL)canHandleFile:(char *)path;

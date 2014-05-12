@@ -11,6 +11,8 @@
 		BF573147191E2D7700050D54 /* dsd2pcm.c in Sources */ = {isa = PBXBuildFile; fileRef = BF573145191E2D7700050D54 /* dsd2pcm.c */; };
 		BF573153191E2DFB00050D54 /* XLDDSDDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BF573152191E2DFB00050D54 /* XLDDSDDecoder.m */; };
 		BF573317191EB4B600050D54 /* XLDID3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF573316191EB4B600050D54 /* XLDID3.framework */; };
+		BF5737081920FCDF00050D54 /* XLDDSDDecoder.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF5737061920FCDF00050D54 /* XLDDSDDecoder.xib */; };
+		BF5737191920FCFB00050D54 /* XLDDSDDecoderConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5737181920FCFB00050D54 /* XLDDSDDecoderConfig.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,10 @@
 		BF57315A191E2E0700050D54 /* XLDDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDecoder.h; sourceTree = "<group>"; };
 		BF573315191EB4A600050D54 /* id3lib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = id3lib.h; sourceTree = "<group>"; };
 		BF573316191EB4B600050D54 /* XLDID3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XLDID3.framework; path = ../XLDID3/build/Release/XLDID3.framework; sourceTree = SOURCE_ROOT; };
+		BF5736DF1920FA1E00050D54 /* filters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filters.h; sourceTree = "<group>"; };
+		BF5737071920FCDF00050D54 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/XLDDSDDecoder.xib; sourceTree = "<group>"; };
+		BF5737171920FCFB00050D54 /* XLDDSDDecoderConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDSDDecoderConfig.h; sourceTree = "<group>"; };
+		BF5737181920FCFB00050D54 /* XLDDSDDecoderConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDSDDecoderConfig.m; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -68,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				8D5B49B7048680CD000E48DA /* Info.plist */,
+				BF5737061920FCDF00050D54 /* XLDDSDDecoder.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -77,6 +84,8 @@
 			children = (
 				BF573151191E2DFB00050D54 /* XLDDSDDecoder.h */,
 				BF573152191E2DFB00050D54 /* XLDDSDDecoder.m */,
+				BF5737171920FCFB00050D54 /* XLDDSDDecoderConfig.h */,
+				BF5737181920FCFB00050D54 /* XLDDSDDecoderConfig.m */,
 				BF57315A191E2E0700050D54 /* XLDDecoder.h */,
 			);
 			name = Classes;
@@ -114,6 +123,7 @@
 			children = (
 				BF573146191E2D7700050D54 /* dsd2pcm.h */,
 				BF573145191E2D7700050D54 /* dsd2pcm.c */,
+				BF5736DF1920FA1E00050D54 /* filters.h */,
 				BF573315191EB4A600050D54 /* id3lib.h */,
 				32DBCF630370AF2F00C91783 /* XLDDSDDecoder_Prefix.pch */,
 			);
@@ -170,6 +180,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF5737081920FCDF00050D54 /* XLDDSDDecoder.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,10 +193,22 @@
 			files = (
 				BF573147191E2D7700050D54 /* dsd2pcm.c in Sources */,
 				BF573153191E2DFB00050D54 /* XLDDSDDecoder.m in Sources */,
+				BF5737191920FCFB00050D54 /* XLDDSDDecoderConfig.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		BF5737061920FCDF00050D54 /* XLDDSDDecoder.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF5737071920FCDF00050D54 /* English */,
+			);
+			name = XLDDSDDecoder.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB913B08733D840010E9CD /* Debug */ = {
