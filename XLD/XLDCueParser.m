@@ -18,9 +18,9 @@
 static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 {
 	int min = frames/samplerate/60;
-	frames -= min*samplerate*60;
+	frames -= (xldoffset_t)min*samplerate*60;
 	int sec = frames/samplerate;
-	frames -= sec*samplerate;
+	frames -= (xldoffset_t)sec*samplerate;
 	int f = frames*75/samplerate;
 	return [NSString stringWithFormat:@"%02d:%02d:%02d",min,sec,f];
 }
@@ -28,9 +28,9 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 {
 	xldoffset_t ret;
-	ret = min*60*samplerate;
-	ret += sec*samplerate;
-	ret += sector*samplerate/75;
+	ret = (xldoffset_t)min*60*samplerate;
+	ret += (xldoffset_t)sec*samplerate;
+	ret += (xldoffset_t)sector*samplerate/75;
 	return ret;
 }
 
@@ -1787,7 +1787,6 @@ last:
 		[trk setFrames:[trk frames] + 588];
 		[layout addSection:nil withLength:588-remaining];
 	}
-	NSLog(@"%lld\n",[layout totalFrames]);
 	
 	if(!currentSamplerate) currentSamplerate = 44100;
 	unsigned int discid = getDiscId(arr, [layout totalFrames]);

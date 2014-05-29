@@ -59,9 +59,9 @@ typedef struct ddppq_s ddppq_t;
 static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 {
 	xldoffset_t ret;
-	ret = min*60*samplerate;
-	ret += sec*samplerate;
-	ret += sector*samplerate/75;
+	ret = (xldoffset_t)min*60*samplerate;
+	ret += (xldoffset_t)sec*samplerate;
+	ret += (xldoffset_t)sector*samplerate/75;
 	return ret;
 }
 

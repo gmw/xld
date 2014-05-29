@@ -24,9 +24,9 @@
 static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 {
 	int min = frames/samplerate/60;
-	frames -= min*samplerate*60;
+	frames -= (xldoffset_t)min*samplerate*60;
 	int sec = frames/samplerate;
-	frames -= sec*samplerate;
+	frames -= (xldoffset_t)sec*samplerate;
 	int f = frames*75/samplerate;
 	return [NSString stringWithFormat:@"%d:%02d:%02d",min,sec,f];
 }
