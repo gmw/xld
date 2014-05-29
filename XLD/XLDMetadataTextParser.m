@@ -54,6 +54,7 @@
 				if(range.location == NSNotFound) read = str;
 				else read = [str substringToIndex:range.location];
 			}
+			read = [read stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\r\n"]];
 			if(![read length]) {
 				continue;
 			}
