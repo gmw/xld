@@ -237,7 +237,9 @@ last:
 	if([objs count]) [release setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Title"];
 	objs = [rel nodesForXPath:@"./artist-credit/name-credit/artist/name" error:nil];
 	if([objs count] == 1) {
-		[release setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Artist"];
+		id name = [rel nodesForXPath:@"./artist-credit/name-credit/name" error:nil];
+		if([name count]) [release setObject:[[name objectAtIndex:0] stringValue] forKey:@"Artist"];
+		else [release setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Artist"];
 		objs = [rel nodesForXPath:@"./artist-credit/name-credit/artist/@id" error:nil];
 		if([objs count]) [release setObject:[[objs objectAtIndex:0]  stringValue] forKey:@"ArtistID"];
 	}
@@ -251,8 +253,12 @@ last:
 			NSString *joinphrase = nil;
 			objs = [node nodesForXPath:@"./@joinphrase" error:nil];
 			if([objs count]) joinphrase = [[objs objectAtIndex:0] stringValue];
-			objs = [node nodesForXPath:@"./artist/name" error:nil];
+			objs = [node nodesForXPath:@"./name" error:nil];
 			if([objs count]) artist = [[objs objectAtIndex:0] stringValue];
+			else {
+				objs = [node nodesForXPath:@"./artist/name" error:nil];
+				if([objs count]) artist = [[objs objectAtIndex:0] stringValue];
+			}
 			if(artist && joinphrase) [str appendFormat:@"%@%@",artist,joinphrase];
 			else if(artist) [str appendFormat:@"%@",artist];
 		}
@@ -339,7 +345,9 @@ last:
 				if([objs count]) artistNode = [[tr nodesForXPath:@"./recording/artist-credit" error:nil] objectAtIndex:0];
 			}
 			if([objs count] == 1) {
-				[track setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Artist"];
+				id name = [artistNode nodesForXPath:@"./name-credit/name" error:nil];
+				if([name count]) [track setObject:[[name objectAtIndex:0] stringValue] forKey:@"Artist"];
+				else [track setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Artist"];
 				objs = [artistNode nodesForXPath:@"./name-credit/artist/@id" error:nil];
 				if([objs count]) [track setObject:[[objs objectAtIndex:0]  stringValue] forKey:@"ArtistID"];
 			}
@@ -353,8 +361,12 @@ last:
 					NSString *joinphrase = nil;
 					objs = [node nodesForXPath:@"./@joinphrase" error:nil];
 					if([objs count]) joinphrase = [[objs objectAtIndex:0] stringValue];
-					objs = [node nodesForXPath:@"./artist/name" error:nil];
+					objs = [node nodesForXPath:@"./name" error:nil];
 					if([objs count]) artist = [[objs objectAtIndex:0] stringValue];
+					else {
+						objs = [node nodesForXPath:@"./artist/name" error:nil];
+						if([objs count]) artist = [[objs objectAtIndex:0] stringValue];
+					}
 					if(artist && joinphrase) [str appendFormat:@"%@%@",artist,joinphrase];
 					else if(artist) [str appendFormat:@"%@",artist];
 				}
