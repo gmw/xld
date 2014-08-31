@@ -39,6 +39,8 @@
 #import "XLDLMAXMLLoader.h"
 #import "XLDCCDLoader.h"
 
+#define NSAppKitVersionNumber10_5 949
+
 static NSString*    GeneralIdentifier = @"General";
 static NSString*    BatchIdentifier = @"Batch";
 static NSString*    CDDBIdentifier = @"CDDB";
@@ -2490,6 +2492,14 @@ end:
 				[[track metadata] setObject:[[file lastPathComponent] precomposedStringWithCanonicalMapping] forKey:XLD_METADATA_ORIGINALFILENAME];
 				[[track metadata] setObject:@"Single" forKey:@"Single"];
 				[[track metadata] setObject:file forKey:XLD_METADATA_ORIGINALFILEPATH];
+				if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
+					NSURL* fileURL = [NSURL fileURLWithPath:file];
+					id labelValue = nil;
+					NSError* err;
+					if([fileURL getResourceValue:&labelValue forKey:@"NSURLLabelNumberKey" error:&err]) {
+						if(labelValue) [[track metadata] setObject:labelValue forKey:XLD_METADATA_FINDERLABEL];
+					}
+				}
 				[trackList addObject:track];
 				[track release];
 				removeOriginal = ([o_removeOriginalFile state] == NSOnState);
@@ -2728,6 +2738,14 @@ end:
 		[[track metadata] setObject:[[filename lastPathComponent] precomposedStringWithCanonicalMapping] forKey:XLD_METADATA_ORIGINALFILENAME];
 		[[track metadata] setObject:@"Single" forKey:@"Single"];
 		[[track metadata] setObject:filename forKey:XLD_METADATA_ORIGINALFILEPATH];
+		if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
+			NSURL* fileURL = [NSURL fileURLWithPath:filename];
+			id labelValue = nil;
+			NSError* err;
+			if([fileURL getResourceValue:&labelValue forKey:@"NSURLLabelNumberKey" error:&err]) {
+				if(labelValue) [[track metadata] setObject:labelValue forKey:XLD_METADATA_FINDERLABEL];
+			}
+		}
 		
 		[self setDefaultCommentValueForTrackList:[NSArray arrayWithObject:track]];
 		

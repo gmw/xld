@@ -152,3 +152,10 @@
 + (BOOL)hasOrientationTag:(NSData *)data;
 + (NSImage *)imageWithDataConsideringOrientation:(NSData *)data;
 @end
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED < 1060
+@interface NSURL (XLDNSURL1060OverMethod)
+- (BOOL)getResourceValue:(id *)value forKey:(NSString *)key error:(NSError **)error;
+- (BOOL)setResourceValue:(id)value forKey:(NSString *)key error:(NSError **)error;
+@end
+#endif

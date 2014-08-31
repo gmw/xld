@@ -19,6 +19,8 @@
 #import <sys/time.h>
 #import <math.h>
 
+#define NSAppKitVersionNumber10_5 949
+
 typedef struct {
 	struct timeval tv1,tv2,tv_start;
 	int lasttrack;
@@ -954,6 +956,7 @@ typedef struct {
 	
 	if(!info->error) {
 		NSMutableDictionary *attrDic = nil;
+		id label = [[track metadata] objectForKey:XLD_METADATA_FINDERLABEL];
 		if([[track metadata] objectForKey:XLD_METADATA_CREATIONDATE] || [[track metadata] objectForKey:XLD_METADATA_MODIFICATIONDATE]) {
 			attrDic = [NSMutableDictionary dictionary];
 			if([[track metadata] objectForKey:XLD_METADATA_CREATIONDATE]) {
@@ -967,6 +970,13 @@ typedef struct {
 			if(attrDic) {
 				if(moveAfterFinish) [fm changeFileAttributes:attrDic atPath:tmpPathStr];
 				else [fm changeFileAttributes:attrDic atPath:dstPathStr];
+			}
+			if(label) {
+				if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
+					NSURL *fileURL = moveAfterFinish ? [NSURL fileURLWithPath:tmpPathStr] : [NSURL fileURLWithPath:dstPathStr];
+					NSError *err = nil;
+					[fileURL setResourceValue:label forKey:@"NSURLLabelNumberKey" error:&err];
+				}
 			}
 			if(moveAfterFinish) {
 				[fm createDirectoryWithIntermediateDirectoryInPath:[dstPathStr stringByDeletingLastPathComponent]];
