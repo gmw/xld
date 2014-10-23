@@ -4581,6 +4581,14 @@ fail:
 		[logcheckerItem release];
 	}
 	
+	Class DSDImporter = (Class)objc_lookUpClass("XLDDSDDecoderConfig");
+	if(DSDImporter) {
+		NSMenuItem *DSDImporterItem = [[NSMenuItem alloc] initWithTitle:LS(@"DSD Importer Settings...") action:@selector(prefPane) keyEquivalent:@""];
+		[DSDImporterItem setTarget:[[DSDImporter alloc] init]];
+		[[[[NSApp mainMenu] itemAtIndex:0] submenu] insertItem:DSDImporterItem atIndex:5];
+		[DSDImporterItem release];
+	}
+	
 	[self performSelector:@selector(launchOK) withObject:nil afterDelay:0.5];
 	/*if(queuedFile) {
 	 [self application:NSApp openFile:queuedFile];
