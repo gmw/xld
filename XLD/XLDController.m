@@ -3396,7 +3396,7 @@ end:
 	[out appendString:[NSString stringWithFormat:@"Used drive : %@\n\n",[cueParser driveStr]]];
 	
 	if((ret < 0) || (result.cache_sector_size < 0)) {
-		[out appendString:LS(@"Some errors occured during analysis.\n\n")];
+		[out appendString:LS(@"Some errors occurred during analysis.\n\n")];
 	}
 	else {
 		[out appendString:[NSString stringWithFormat:LS(@"Your drive seems to have a cache of %d sectors (%d Kbytes).\n"),result.cache_sector_size,result.cache_sector_size*2352/1024]];

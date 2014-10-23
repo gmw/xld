@@ -849,7 +849,7 @@ typedef struct {
 			info->error = YES;
 			[statusField setTextColor:[NSColor redColor]];
 			[statusField setFont:[NSFont boldSystemFontOfSize:[[statusField font] pointSize]]];
-			[statusField setStringValue:LS(@"Error has occured in the decoder")];
+			[statusField setStringValue:LS(@"Error has occurred in the decoder")];
 			[pool2 release];
 			break;
 		}
@@ -862,7 +862,7 @@ typedef struct {
 					info->error = YES;
 					[statusField setTextColor:[NSColor redColor]];
 					[statusField setFont:[NSFont boldSystemFontOfSize:[[statusField font] pointSize]]];
-					[statusField setStringValue:LS(@"Error has occured in the encoder")];
+					[statusField setStringValue:LS(@"Error has occurred in the encoder")];
 					[pool2 release];
 					break;
 				}
@@ -873,7 +873,7 @@ typedef struct {
 					info->error = YES;
 					[statusField setTextColor:[NSColor redColor]];
 					[statusField setFont:[NSFont boldSystemFontOfSize:[[statusField font] pointSize]]];
-					[statusField setStringValue:LS(@"Error has occured in the encoder")];
+					[statusField setStringValue:LS(@"Error has occurred in the encoder")];
 					[pool2 release];
 					break;
 				}
@@ -1061,7 +1061,7 @@ finish:
 		[superview setTag:1];
 		/*[statusField setTextColor:[NSColor redColor]];
 		[statusField setFont:[NSFont boldSystemFontOfSize:[[statusField font] pointSize]]];
-		[statusField setStringValue:LS(@"Error has occured during the process")];*/
+		[statusField setStringValue:LS(@"Error has occurred during the process")];*/
 		[statusField setHidden:NO];
 	}
 	else if(stopConvert) {
