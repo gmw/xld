@@ -14,6 +14,7 @@
 #define OVERLAP 3
 /* SECTOR_READ should be large enough to kill a chace on most drives */
 #define SECTOR_READ 600
+#define SECTORS_PER_IOCTL 10
 #define SLOWDOWN_THREASHOLD 10
 #define ACCEPTED_MATCH 8
 
@@ -112,12 +113,38 @@ static int xld_cdda_read_wrapper(xld_cdread_t *disc, void *buffer, int beginLSN,
 {
 	int retry = 0;
 	int ret;
+	int read = 0;
 	do {
-		if(useC2) ret = xld_cdda_read_with_c2(disc, buffer, beginLSN, nSectors);
-		else ret = xld_cdda_read(disc, buffer, beginLSN, nSectors);
-		if(ret >= 0) break;
+		if(useC2) {
+			int n = SECTORS_PER_IOCTL;
+			for(;read<nSectors;) {
+				if(read+SECTORS_PER_IOCTL>nSectors) n = nSectors - read;
+				ret = xld_cdda_read_with_c2(disc, (unsigned char *)buffer+read*(2352+294), beginLSN, n);
+				if(ret >= 0) {
+					beginLSN += ret;
+					read += ret;
+				}
+				else break;
+			}
+			if(ret >= 0) break;
+		}
+		else {
+			int n = SECTORS_PER_IOCTL;
+			for(;read<nSectors;) {
+				if(read+SECTORS_PER_IOCTL>nSectors) n = nSectors - read;
+				ret = xld_cdda_read(disc, (unsigned char *)buffer+read*2352, beginLSN, n);
+				if(ret >= 0) {
+					beginLSN += ret;
+					read += ret;
+				}
+				else break;
+			}
+			if(ret >= 0) break;
+		}
+		
 	} while(++retry < 20);
-	return ret;
+	
+	return read;
 }
 
 @implementation XLDSecureRipperEngine
