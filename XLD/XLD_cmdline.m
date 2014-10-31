@@ -307,7 +307,7 @@ int cmdline_main(int argc, char *argv[])
 	Class customOutputClass = nil;
 	id encoder = nil;
 	BOOL acceptStdoutWriting = YES;
-	NSDictionary *profileDic;
+	NSDictionary *profileDic = nil;
 	char infile[512];
 	int error = 0;
 	BOOL logcheckerMode = NO;
