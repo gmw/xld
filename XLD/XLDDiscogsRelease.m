@@ -9,6 +9,225 @@
 #import "XLDDiscogsRelease.h"
 #import "XLDCustomClasses.h"
 
+#define SKIP_TO_NEXT(str) while(*str == ' ' || *str == '\t' || *str == '\n') str++; \
+if(*str == 0) break;
+
+#define SEARCHING_OBJECT 0
+#define SEARCHING_DICTIONARY_HEADER 1
+#define SEARCHING_DICTIONARY_VALUE 2
+#define SEARCHING_DICTIONARY_NEXT 3
+#define SEARCHING_ARRAY_VALUE 4
+#define SEARCHING_ARRAY_NEXT 5
+
+static NSString *parseString(const char *str, const char **last)
+{
+	char *tmp = malloc(2048);
+	char *ptr = tmp;
+	while(1) {
+		if(*str == '\\' && *(str+1) == '"') {
+			*ptr++ = '"';
+			str += 2;
+		}
+		else if(*str == '"' || *str == 0) break;
+		else if(*str == '&') {
+			*ptr++ = '&';
+			*ptr++ = 'a';
+			*ptr++ = 'm';
+			*ptr++ = 'p';
+			*ptr++ = ';';
+			str++;
+		}
+		else *ptr++ = *str++;
+	}
+	*last = str;
+	*ptr = 0;
+	NSString *ret = [NSMutableString stringWithUTF8String:tmp];
+	CFStringRef transform = CFSTR("Any-Hex/Java");
+	CFStringTransform((CFMutableStringRef)ret, NULL, transform, YES);
+	free(tmp);
+	return ret;
+}
+
+NSData *json2xml(NSData *json)
+{
+	NSMutableString *xml = [NSMutableString string];
+	NSString *str = [[NSString alloc] initWithData: json encoding: NSUTF8StringEncoding];
+	const char *cstr = [str UTF8String];
+	[xml appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<root>\n"];
+	
+	int indent = 0;
+	int state = SEARCHING_OBJECT;
+	NSMutableArray *headerStack = [NSMutableArray array];
+	NSMutableArray *stateStack = [NSMutableArray array];
+	while(1) {
+		SKIP_TO_NEXT(cstr);
+		if(state == SEARCHING_OBJECT) {
+			if(*cstr == '{') {
+				[stateStack insertObject: [NSNumber numberWithInt:state] atIndex:0];
+				state = SEARCHING_DICTIONARY_HEADER;
+				cstr++;
+				continue;
+			}
+			cstr++;
+			continue;
+		}
+		else if(state == SEARCHING_DICTIONARY_HEADER) {
+			if(*cstr == '"') {
+				cstr++;
+				NSString *header = parseString(cstr, &cstr);
+				if(*cstr == 0) break;
+				[headerStack insertObject: header atIndex: 0];
+				cstr++;
+				SKIP_TO_NEXT(cstr);
+				if(*cstr++ != ':') break;
+				state = SEARCHING_DICTIONARY_VALUE;
+				continue;
+			}
+			else break;
+		}
+		else if(state == SEARCHING_DICTIONARY_VALUE) {
+			if(*cstr == '"') {
+				cstr++;
+				NSString *value = parseString(cstr, &cstr);
+				if(*cstr == 0) break;
+				NSString *header = [headerStack objectAtIndex:0];
+				int i;
+				for(i=0;i<indent;i++) {
+					[xml appendString:@"\t"];
+				}
+				[xml appendFormat:@"<%@>%@</%@>\n",header,value,header];
+				cstr++;
+				state = SEARCHING_DICTIONARY_NEXT;
+				continue;
+			}
+			else if(*cstr == '[') {
+				[stateStack insertObject: [NSNumber numberWithInt:SEARCHING_DICTIONARY_NEXT] atIndex:0];
+				state = SEARCHING_ARRAY_VALUE;
+				cstr++;
+				continue;
+			}
+			else if(*cstr == '{') {
+				NSString *header = [headerStack objectAtIndex:0];
+				int i;
+				for(i=0;i<indent;i++) {
+					[xml appendString:@"\t"];
+				}
+				[xml appendFormat:@"<%@>\n",header];
+				[stateStack insertObject: [NSNumber numberWithInt:SEARCHING_DICTIONARY_NEXT] atIndex:0];
+				state = SEARCHING_DICTIONARY_HEADER;
+				indent++;
+				cstr++;
+				continue;
+			}
+			else {
+				const char *ptr = cstr;
+				while(*cstr != ',' && *cstr != '}' && *cstr != 0) cstr++;
+				if(*cstr == 0) break;
+				NSString *value = [[NSString alloc] initWithBytes:ptr length:cstr-ptr encoding:NSUTF8StringEncoding];
+				NSString *header = [headerStack objectAtIndex:0];
+				int i;
+				for(i=0;i<indent;i++) {
+					[xml appendString:@"\t"];
+				}
+				[xml appendFormat:@"<%@>%@</%@>\n",header,value,header];
+				[value release];
+				state = SEARCHING_DICTIONARY_NEXT;
+				continue;
+			}
+		}
+		else if(state == SEARCHING_DICTIONARY_NEXT) {
+			if(*cstr == ',') {
+				cstr++;
+				[headerStack removeObjectAtIndex:0];
+				state = SEARCHING_DICTIONARY_HEADER;
+				continue;
+			}
+			else if(*cstr == '}') {
+				cstr++;
+				state = [[stateStack objectAtIndex:0] intValue];
+				if(state == SEARCHING_OBJECT) break;
+				indent--;
+				[stateStack removeObjectAtIndex:0];
+				[headerStack removeObjectAtIndex:0];
+				NSString *header = [headerStack objectAtIndex:0];
+				int i;
+				for(i=0;i<indent;i++) {
+					[xml appendString:@"\t"];
+				}
+				[xml appendFormat:@"</%@>\n",header];
+				if(state == SEARCHING_OBJECT) break;
+				continue;
+			}
+		}
+		else if(state == SEARCHING_ARRAY_VALUE) {
+			if(*cstr == '"') {
+				cstr++;
+				NSString *value = parseString(cstr, &cstr);
+				if(*cstr == 0) break;
+				NSString *header = [headerStack objectAtIndex:0];
+				int i;
+				for(i=0;i<indent;i++) {
+					[xml appendString:@"\t"];
+				}
+				[xml appendFormat:@"<%@>%@</%@>\n",header,value,header];
+				cstr++;
+				state = SEARCHING_ARRAY_NEXT;
+				continue;
+			}
+			else if(*cstr == '{') {
+				NSString *header = [headerStack objectAtIndex:0];
+				int i;
+				for(i=0;i<indent;i++) {
+					[xml appendString:@"\t"];
+				}
+				[xml appendFormat:@"<%@>\n",header];
+				[stateStack insertObject: [NSNumber numberWithInt:SEARCHING_ARRAY_NEXT] atIndex:0];
+				state = SEARCHING_DICTIONARY_HEADER;
+				cstr++;
+				indent++;
+				continue;
+			}
+			else if(*cstr == ']') {
+				cstr++;
+				state = [[stateStack objectAtIndex:0] intValue];
+				[stateStack removeObjectAtIndex:0];
+				continue;
+			}
+			else {
+				const char *ptr = cstr;
+				while(*cstr != ',' && *cstr != ']' && *cstr != 0) cstr++;
+				if(*cstr == 0) break;
+				NSString *value = [[NSString alloc] initWithBytes:ptr length:cstr-ptr encoding:NSUTF8StringEncoding];
+				NSString *header = [headerStack objectAtIndex:0];
+				int i;
+				for(i=0;i<indent;i++) {
+					[xml appendString:@"\t"];
+				}
+				[xml appendFormat:@"<%@>%@</%@>\n",header,value,header];
+				[value release];
+				state = SEARCHING_ARRAY_NEXT;
+				continue;
+			}
+		}
+		else if(state == SEARCHING_ARRAY_NEXT) {
+			if(*cstr == ',') {
+				cstr++;
+				state = SEARCHING_ARRAY_VALUE;
+				continue;
+			}
+			else if(*cstr == ']') {
+				cstr++;
+				state = [[stateStack objectAtIndex:0] intValue];
+				[stateStack removeObjectAtIndex:0];
+				continue;
+			}
+		}
+	}
+	[xml appendString:@"</root>\n"];
+	[str release];
+	return [xml dataUsingEncoding:NSUTF8StringEncoding];
+}
+
 static NSString *fixArtist(NSString *str)
 {
 	int i = [str length]-1;
@@ -36,21 +255,21 @@ static NSString *fixArtist(NSString *str)
 		return nil;
 	}
 	
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://api.discogs.com/release/%@?f=xml",releaseid]];
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://api.discogs.com/releases/%@",releaseid]];
 	//NSLog(@"%@",[url description]);
 	NSData *data = [NSData fastDataWithContentsOfURL:url];
 	if(!data || [data length] == 0) {
 		[super dealloc];
 		return nil;
 	}
-	NSXMLDocument *xml = [[NSXMLDocument alloc] initWithData:data options:NSXMLNodePreserveWhitespace error:nil];
+	NSXMLDocument *xml = [[NSXMLDocument alloc] initWithData:json2xml(data) options:NSXMLNodePreserveWhitespace error:nil];
 	if(!xml) {
 		[super dealloc];
 		return nil;
 	}
 	
 	release = [[NSMutableDictionary alloc] init];
-	NSArray *arr = [xml nodesForXPath:@"/resp/release" error:nil];
+	NSArray *arr = [xml nodesForXPath:@"/root" error:nil];
 	if(![arr count]) {
 		[release release];
 		[xml release];
@@ -62,7 +281,7 @@ static NSString *fixArtist(NSString *str)
 	NSArray *objs = [rel nodesForXPath:@"./title" error:nil];
 	if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
 		[release setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Title"];
-	NSArray *artists = [rel nodesForXPath:@"./artists/artist" error:nil];
+	NSArray *artists = [rel nodesForXPath:@"./artists" error:nil];
 	if([artists count]) {
 		NSMutableString *str = [NSMutableString string];
 		NSString *joinphrase = nil;
@@ -89,29 +308,29 @@ static NSString *fixArtist(NSString *str)
 	objs = [rel nodesForXPath:@"./released" error:nil];
 	if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
 		[release setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Date"];
-	objs = [rel nodesForXPath:@"./identifiers/identifier" error:nil];
+	objs = [rel nodesForXPath:@"./identifiers" error:nil];
 	if([objs count]) {
 		int j;
 		for(j=0;j<[objs count];j++) {
 			id node = [objs objectAtIndex:j];
-			NSString *nodeType = [[[[node nodesForXPath:@"./@type" error:nil] objectAtIndex:0] stringValue] lowercaseString];
+			NSString *nodeType = [[[[node nodesForXPath:@"./type" error:nil] objectAtIndex:0] stringValue] lowercaseString];
 			if([nodeType isEqualToString:@"asin"]) {
-				[release setObject:[[[node nodesForXPath:@"./@value" error:nil] objectAtIndex:0] stringValue] forKey:@"ASIN"];
+				[release setObject:[[[node nodesForXPath:@"./value" error:nil] objectAtIndex:0] stringValue] forKey:@"ASIN"];
 			}
 			else if([nodeType isEqualToString:@"barcode"]) {
-				NSArray *tmp = [[[[node nodesForXPath:@"./@value" error:nil] objectAtIndex:0] stringValue] componentsSeparatedByString:@" "];
+				NSArray *tmp = [[[[node nodesForXPath:@"./value" error:nil] objectAtIndex:0] stringValue] componentsSeparatedByString:@" "];
 				[release setObject:[tmp componentsJoinedByString:@""] forKey:@"Barcode"];
 			}
 		}
 	}
-	objs = [rel nodesForXPath:@"./images/image/@uri" error:nil];
-	if([objs count]) [release setObject:[NSURL URLWithString:[[objs objectAtIndex:0] stringValue]] forKey:@"CoverURL"];
-	objs = [rel nodesForXPath:@"./genres/genre" error:nil];
+	//objs = [rel nodesForXPath:@"./images/image/@uri" error:nil];
+	//if([objs count]) [release setObject:[NSURL URLWithString:[[objs objectAtIndex:0] stringValue]] forKey:@"CoverURL"];
+	objs = [rel nodesForXPath:@"./genres" error:nil];
 	if([objs count] && ![[[objs objectAtIndex:0] stringValue] isEqualToString:@""])
 		[release setObject:[[objs objectAtIndex:0] stringValue] forKey:@"Genre"];
 	
 	NSMutableDictionary *trackList = [NSMutableDictionary dictionary];
-	NSArray *tracks = [rel nodesForXPath:@"./tracklist/track" error:nil];
+	NSArray *tracks = [rel nodesForXPath:@"./tracklist" error:nil];
 	NSString *alternateDiscTitle = nil;
 	NSString *currentAlternateDiscTitle = nil;
 	int i,j;
@@ -123,7 +342,7 @@ static NSString *fixArtist(NSString *str)
 		NSString *position = [[[[tracks objectAtIndex:i] nodesForXPath:@"./position" error:nil] objectAtIndex:0] stringValue];
 		NSString *duration = [[[[tracks objectAtIndex:i] nodesForXPath:@"./duration" error:nil] objectAtIndex:0] stringValue];
 		NSString *title = [[[[tracks objectAtIndex:i] nodesForXPath:@"./title" error:nil] objectAtIndex:0] stringValue];
-		NSArray *artists = [[tracks objectAtIndex:i] nodesForXPath:@"./artists/artist" error:nil];
+		NSArray *artists = [[tracks objectAtIndex:i] nodesForXPath:@"./artists" error:nil];
 
 		int pos = 0;
 		if(![position isEqualToString:@""]) {
