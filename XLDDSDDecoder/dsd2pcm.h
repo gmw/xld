@@ -50,7 +50,7 @@ typedef struct dsd2pcm_ctx_s dsd2pcm_ctx;
  * POSIX thread-safety definition because it modifies global state
  * (lookup tables are computed during the first call)
  */
-extern dsd2pcm_ctx* dsd2pcm_init(int decimation);
+extern dsd2pcm_ctx* dsd2pcm_init(int decimation, int lsbf);
 
 /**
  * deinitializes a "dsd2pcm engine"
@@ -83,7 +83,6 @@ extern void dsd2pcm_reset(dsd2pcm_ctx *ctx);
 extern void dsd2pcm_translate(dsd2pcm_ctx *ctx,
 	size_t samples,
 	const unsigned char *src, ptrdiff_t src_stride,
-	int lsbitfirst,
 	float *dst, ptrdiff_t dst_stride);
 
 #ifdef __cplusplus

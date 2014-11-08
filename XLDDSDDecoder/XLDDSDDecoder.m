@@ -359,7 +359,8 @@ fail:
 		if([obj intValue] <= 0) {
 			outSamplerate = 0;
 			if([obj intValue] == 0) decimation = 8;
-			else decimation = 16;
+			else if([obj intValue] == -1) decimation = 16;
+			else decimation = 32;
 		}
 		else {
 			outSamplerate = [obj intValue];
@@ -372,9 +373,12 @@ fail:
 	if(obj=[pref objectForKey:@"XLDDSDDecoderQuantization"]) {
 		isFloat = [obj intValue];
 	}
-	if(obj=[pref objectForKey:@"XLDDSDDecoderApplyGain"]) {
-		if([obj boolValue]) globalGain = pow(10.0f,6.0f/20);
+	if(obj=[pref objectForKey:@"XLDDSDDecoderGain"]) {
+		globalGain = pow(10.0,[obj doubleValue]/20.0);
 	}
+	/*if(obj=[pref objectForKey:@"XLDDSDDecoderApplyGain"]) {
+		if([obj boolValue]) globalGain = pow(10.0f,6.0f/20);
+	}*/
 #endif
 	if(outSamplerate >= samplerate / decimation || outSamplerate < 0) {
 		outSamplerate = 0;
@@ -407,7 +411,7 @@ fail:
 	
 	int i;
 	for(i=0;i<channels;i++) {
-		dsdProc[i] = dsd2pcm_init(decimation);
+		dsdProc[i] = dsd2pcm_init(decimation, (dsdFormat == XLDDSDFormatDSF) ? 1 : 0);
 	}
 	
 	residueSampleCount = 0;
@@ -477,12 +481,12 @@ fail:
 			if(currentBlock == totalBlocks) currentPCMSamplesPerBlock = lastBlockPCMSampleCount;
 			if(dsdFormat == XLDDSDFormatDSF) {
 				for(i=0;i<channels;i++) {
-					dsd2pcm_translate(dsdProc[i],currentPCMSamplesPerBlock,dsdBuffer+i*DSDStride,1,1,pcmBuffer+i,channels);
+					dsd2pcm_translate(dsdProc[i],currentPCMSamplesPerBlock,dsdBuffer+i*DSDStride,1,pcmBuffer+i,channels);
 				}
 			}
 			else if(dsdFormat == XLDDSDFormatDFF) {
 				for(i=0;i<channels;i++) {
-					dsd2pcm_translate(dsdProc[i],currentPCMSamplesPerBlock,dsdBuffer+i,channels,0,pcmBuffer+i,channels);
+					dsd2pcm_translate(dsdProc[i],currentPCMSamplesPerBlock,dsdBuffer+i,channels,pcmBuffer+i,channels);
 				}
 			}
 			if(soxr) {
@@ -579,12 +583,12 @@ fail:
 	currentBlock++;
 	if(dsdFormat == XLDDSDFormatDSF) {
 		for(i=0;i<channels;i++) {
-			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i*DSDStride,1,1,pcmBuffer+i,channels);
+			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i*DSDStride,1,pcmBuffer+i,channels);
 		}
 	}
 	else if(dsdFormat == XLDDSDFormatDFF) {
 		for(i=0;i<channels;i++) {
-			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i,channels,0,pcmBuffer+i,channels);
+			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i,channels,pcmBuffer+i,channels);
 		}
 	}
 	if(soxr) {
