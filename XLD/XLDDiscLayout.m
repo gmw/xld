@@ -17,6 +17,15 @@
 {
 	[self init];
 	decoderCenter = [center retain];
+	Class DSDImporter = (Class)objc_lookUpClass("XLDDSDDecoderConfig");
+	if(DSDImporter) {
+		NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+		dsdConfig = [[NSDictionary alloc] initWithObjectsAndKeys:
+							  [pref objectForKey:@"XLDDSDDecoderSamplerate"], @"XLDDSDDecoderSamplerate",
+							  [pref objectForKey:@"XLDDSDDecoderSRCAlgorithm"], @"XLDDSDDecoderSRCAlgorithm",
+							  [pref objectForKey:@"XLDDSDDecoderQuantization"], @"XLDDSDDecoderQuantization",
+							  [pref objectForKey:@"XLDDSDDecoderGain"], @"XLDDSDDecoderGain",nil];
+	}
 	return self;
 }
 
@@ -30,6 +39,7 @@
 	clone->isFloat = isFloat;
 	clone->sections = malloc(sizeof(xld_disc_section_t)*totalSections);
 	memcpy(clone->sections,sections,sizeof(xld_disc_section_t)*totalSections);
+	if(dsdConfig) clone->dsdConfig = [dsdConfig copyWithZone:zone];
 	return clone;
 }
 
@@ -41,6 +51,7 @@
 	}
 	free(sections);
 	[decoderCenter release];
+	if(dsdConfig) [dsdConfig release];
 	[super dealloc];
 }
 
@@ -131,8 +142,13 @@
 			fmt.samplerate = samplerate;
 			decoder = [[[XLDRawDecoder alloc] initWithFormat:(XLDFormat)fmt endian:sections[i-1].endian offset:sections[i-1].rawOffset] autorelease];
 		}
-		else
+		else {
 			decoder = [decoderCenter preferredDecoderForFile:sections[i-1].path];
+			Class DSDImporter = (Class)objc_lookUpClass("XLDDSDDecoder");
+			if(DSDImporter && [decoder isKindOfClass:DSDImporter]) {
+				[(id)decoder performSelector:@selector(loadConfigurations:) withObject:dsdConfig];
+			}
+		}
 		[(id <XLDDecoder>)decoder openFile:(char *)[sections[i-1].path UTF8String]];
 	}
 	//NSLog(@"creating decoder class %@ @ %lld (section %lld-%lld)",[[decoder class] className],index,sections[i-1].index,sections[i-1].index+sections[i-1].length);

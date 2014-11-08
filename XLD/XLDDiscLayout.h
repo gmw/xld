@@ -27,6 +27,7 @@ typedef struct
 	int samplerate;
 	int bytesPerSample;
 	int isFloat;
+	NSDictionary *dsdConfig;
 }
 
 - (id)initWithDecoderCenter:(id)center;
