@@ -51,6 +51,7 @@ typedef enum {
 	int isFloat;
 	unsigned long srcAlgorithm;
 	int decimation;
+	NSDictionary *configurations;
 }
 
 + (BOOL)canHandleFile:(char *)path;
@@ -69,5 +70,6 @@ typedef enum {
 - (id)cueSheet;
 - (id)metadata;
 - (NSString *)srcPath;
+- (void)loadConfigurations:(NSDictionary *)cfg;
 
 @end

@@ -174,6 +174,14 @@ fail:
 	return YES;
 }
 
+- (void)dealloc
+{
+	if(srcPath) [srcPath release];
+	if(configurations) [configurations release];
+	if(metadataDic) [metadataDic release];
+	[super dealloc];
+}
+
 - (BOOL)openFile:(char *)path
 {
 	dsd_fp = fopen(path, "rb");
@@ -353,9 +361,17 @@ fail:
 		globalGain = pow(10.0f,6.0f/20);
 	}
 #else
-	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+	NSDictionary *cfg = configurations;
+	if(!cfg) {
+		NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+		cfg = [NSDictionary dictionaryWithObjectsAndKeys:
+			   [pref objectForKey:@"XLDDSDDecoderSamplerate"], @"XLDDSDDecoderSamplerate",
+			   [pref objectForKey:@"XLDDSDDecoderSRCAlgorithm"], @"XLDDSDDecoderSRCAlgorithm",
+			   [pref objectForKey:@"XLDDSDDecoderQuantization"], @"XLDDSDDecoderQuantization",
+			   [pref objectForKey:@"XLDDSDDecoderGain"], @"XLDDSDDecoderGain",nil];
+	}
 	id obj;
-	if(obj=[pref objectForKey:@"XLDDSDDecoderSamplerate"]) {
+	if(obj=[cfg objectForKey:@"XLDDSDDecoderSamplerate"]) {
 		if([obj intValue] <= 0) {
 			outSamplerate = 0;
 			if([obj intValue] == 0) decimation = 8;
@@ -367,13 +383,13 @@ fail:
 			decimation = 8;
 		}
 	}
-	if(obj=[pref objectForKey:@"XLDDSDDecoderSRCAlgorithm"]) {
+	if(obj=[cfg objectForKey:@"XLDDSDDecoderSRCAlgorithm"]) {
 		srcAlgorithm = [obj unsignedLongValue];
 	}
-	if(obj=[pref objectForKey:@"XLDDSDDecoderQuantization"]) {
+	if(obj=[cfg objectForKey:@"XLDDSDDecoderQuantization"]) {
 		isFloat = [obj intValue];
 	}
-	if(obj=[pref objectForKey:@"XLDDSDDecoderGain"]) {
+	if(obj=[cfg objectForKey:@"XLDDSDDecoderGain"]) {
 		globalGain = pow(10.0,[obj doubleValue]/20.0);
 	}
 	/*if(obj=[pref objectForKey:@"XLDDSDDecoderApplyGain"]) {
@@ -555,6 +571,8 @@ fail:
 	metadataDic = nil;
 	if(soxr) soxr_delete(soxr);
 	soxr = NULL;
+	if(configurations) [configurations release];
+	configurations = nil;
 }
 
 - (xldoffset_t)seekToFrame:(xldoffset_t)count
@@ -643,6 +661,11 @@ fail:
 - (NSString *)srcPath
 {
 	return srcPath;
+}
+
+- (void)loadConfigurations:(NSDictionary *)cfg
+{
+	configurations = [cfg retain];
 }
 
 @end
