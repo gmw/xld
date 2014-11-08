@@ -157,6 +157,7 @@
 	id discView;
 	id coverArtSearcher;
 	int currentNice;
+	id dsdConfig;
 }
 - (IBAction)beginDecode:(id)sender;
 - (IBAction)setOutputDir:(id)sender;

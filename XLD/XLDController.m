@@ -4159,6 +4159,7 @@ end:
 		[dic addEntriesFromDictionary:(NSDictionary *)[[outputArr objectAtIndex:[o_formatList indexOfSelectedItem]] configurations]];
 	}
 	[dic addEntriesFromDictionary:[(XLDRenamer *)o_renamer configurations]];
+	if(dsdConfig)[dic addEntriesFromDictionary:(NSDictionary *)[dsdConfig configurations]];
 	return dic;
 }
 
@@ -4173,6 +4174,7 @@ end:
 	[self statusChanged:nil];
 	[self updateFormatDescriptionMenu];
 	[o_renamer loadConfigurations:dic];
+	if(dsdConfig) [dsdConfig loadConfigurations:dic];
 }
 
 - (id)discView
@@ -4583,8 +4585,9 @@ fail:
 	
 	Class DSDImporter = (Class)objc_lookUpClass("XLDDSDDecoderConfig");
 	if(DSDImporter) {
+		dsdConfig = [[DSDImporter alloc] init];
 		NSMenuItem *DSDImporterItem = [[NSMenuItem alloc] initWithTitle:LS(@"DSD Importer Settings...") action:@selector(prefPane) keyEquivalent:@""];
-		[DSDImporterItem setTarget:[[DSDImporter alloc] init]];
+		[DSDImporterItem setTarget:dsdConfig];
 		[[[[NSApp mainMenu] itemAtIndex:0] submenu] insertItem:DSDImporterItem atIndex:5];
 		[DSDImporterItem release];
 	}
