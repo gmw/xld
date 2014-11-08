@@ -25,7 +25,20 @@ static NSString *parseString(const char *str, const char **last)
 	char *ptr = tmp;
 	while(1) {
 		if(*str == '\\' && *(str+1) == '"') {
-			*ptr++ = '"';
+			*ptr++ = '&';
+			*ptr++ = 'q';
+			*ptr++ = 'u';
+			*ptr++ = 'o';
+			*ptr++ = 't';
+			*ptr++ = ';';
+			str += 2;
+		}
+		else if(*str == '\\' && *(str+1) == '\\') {
+			*ptr++ = '\\';
+			str += 2;
+		}
+		else if(*str == '\\' && *(str+1) == '/') {
+			*ptr++ = '/';
 			str += 2;
 		}
 		else if(*str == '"' || *str == 0) break;
@@ -34,6 +47,29 @@ static NSString *parseString(const char *str, const char **last)
 			*ptr++ = 'a';
 			*ptr++ = 'm';
 			*ptr++ = 'p';
+			*ptr++ = ';';
+			str++;
+		}
+		else if(*str == '>') {
+			*ptr++ = '&';
+			*ptr++ = 'g';
+			*ptr++ = 't';
+			*ptr++ = ';';
+			str++;
+		}
+		else if(*str == '<') {
+			*ptr++ = '&';
+			*ptr++ = 'l';
+			*ptr++ = 't';
+			*ptr++ = ';';
+			str++;
+		}
+		else if(*str == '\'') {
+			*ptr++ = '&';
+			*ptr++ = 'a';
+			*ptr++ = 'p';
+			*ptr++ = 'o';
+			*ptr++ = 's';
 			*ptr++ = ';';
 			str++;
 		}
