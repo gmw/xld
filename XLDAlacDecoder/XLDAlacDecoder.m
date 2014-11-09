@@ -297,7 +297,7 @@ static xldoffset_t getTotalFrames(FILE *fp)
 	//fprintf(stderr,"chank start position: %llx\n",lastFramePos);
 	
 	/* analyze last ALAC frame... */
-	if(fseek(fp,2,SEEK_CUR) != 0) goto end;
+	if(fseeko(fp,2,SEEK_CUR) != 0) goto end;
 	if(fread(&chan,1,1,fp) < 1) goto end;
 	//fprintf(stderr,"has size:%d,verbatim:%d\n",chan & 0x10, chan & 0x02);
 	if(chan & 0x10) {
@@ -670,7 +670,7 @@ tag:
 		if(fread(atom,1,4,fp) < 4) goto end;
 		tmp = NSSwapBigIntToHost(tmp);
 		if(!memcmp(atom,"moov",4)) break;
-		if(fseek(fp,tmp-8,SEEK_CUR) != 0) goto end;
+		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
 	
 	int moovSize = tmp;
@@ -681,21 +681,21 @@ tag:
 		if(fread(atom,1,4,fp) < 4) goto end;
 		tmp = NSSwapBigIntToHost(tmp);
 		if(!memcmp(atom,"udta",4)) goto tagExist;
-		if(fseek(fp,tmp-8,SEEK_CUR) != 0) goto end;
+		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 		read += tmp;
 	}
 	goto end;
 	
 tagExist:
 	
-	if(fseek(fp,12,SEEK_CUR) != 0) goto end; //skip until hdlr;
+	if(fseeko(fp,12,SEEK_CUR) != 0) goto end; //skip until hdlr;
 	
 	while(1) { //skip until ilst;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
 		tmp = NSSwapBigIntToHost(tmp);
 		if(!memcmp(atom,"ilst",4)) break;
-		if(fseek(fp,tmp-8,SEEK_CUR) != 0) goto end;
+		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
 	
 	if(tmp <= 8) goto end;
