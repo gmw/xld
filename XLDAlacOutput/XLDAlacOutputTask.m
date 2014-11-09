@@ -373,7 +373,7 @@ static int updateM4aFileInfo(FILE *fp)
 	//fprintf(stderr,"chank start position: %llx\n",lastFramePos);
 	
 	/* analyze last ALAC frame... */
-	if(fseek(fp,2,SEEK_CUR) != 0) goto end;
+	if(fseeko(fp,2,SEEK_CUR) != 0) goto end;
 	if(fread(&chan,1,1,fp) < 1) goto end;
 	//fprintf(stderr,"has size:%d,verbatim:%d\n",chan & 0x10, chan & 0x02);
 	if(chan & 0x10) {
