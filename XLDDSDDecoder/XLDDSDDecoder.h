@@ -14,12 +14,14 @@ typedef enum {
 
 #import <Cocoa/Cocoa.h>
 #import "XLDDecoder.h"
+#import "XLDSACDISOReader.h"
 #import "dsd2pcm.h"
 #import <soxr.h>
 
 typedef enum {
 	XLDDSDFormatDFF = 0,
-	XLDDSDFormatDSF = 1
+	XLDDSDFormatDSF = 1,
+	XLDDSDFormatSACDISO = 2
 } XLDDSDFormat;
 
 @interface XLDDSDDecoder : NSObject <XLDDecoder> {
@@ -52,6 +54,8 @@ typedef enum {
 	unsigned long srcAlgorithm;
 	int decimation;
 	NSDictionary *configurations;
+	XLDSACDISOReader *sacdReader;
+	NSMutableArray *trackList;
 }
 
 + (BOOL)canHandleFile:(char *)path;

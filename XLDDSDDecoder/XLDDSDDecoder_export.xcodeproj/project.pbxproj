@@ -13,6 +13,14 @@
 		BF573317191EB4B600050D54 /* XLDID3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF573316191EB4B600050D54 /* XLDID3.framework */; };
 		BF5737081920FCDF00050D54 /* XLDDSDDecoder.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF5737061920FCDF00050D54 /* XLDDSDDecoder.xib */; };
 		BF5737191920FCFB00050D54 /* XLDDSDDecoderConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5737181920FCFB00050D54 /* XLDDSDDecoderConfig.m */; };
+		BF814F3B1A20797C00B494A2 /* XLDSACDISOReader.m in Sources */ = {isa = PBXBuildFile; fileRef = BF814F3A1A20797C00B494A2 /* XLDSACDISOReader.m */; };
+		BF814F661A2079E000B494A2 /* ccp_calc.c in Sources */ = {isa = PBXBuildFile; fileRef = BF814F561A2079E000B494A2 /* ccp_calc.c */; };
+		BF814F671A2079E000B494A2 /* dst_ac.c in Sources */ = {isa = PBXBuildFile; fileRef = BF814F591A2079E000B494A2 /* dst_ac.c */; };
+		BF814F681A2079E000B494A2 /* dst_data.c in Sources */ = {isa = PBXBuildFile; fileRef = BF814F5B1A2079E000B494A2 /* dst_data.c */; };
+		BF814F691A2079E000B494A2 /* dst_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = BF814F5D1A2079E000B494A2 /* dst_decoder.c */; };
+		BF814F6A1A2079E000B494A2 /* dst_fram.c in Sources */ = {isa = PBXBuildFile; fileRef = BF814F5F1A2079E000B494A2 /* dst_fram.c */; };
+		BF814F6B1A2079E000B494A2 /* dst_init.c in Sources */ = {isa = PBXBuildFile; fileRef = BF814F611A2079E000B494A2 /* dst_init.c */; };
+		BF814F6C1A2079E000B494A2 /* unpack_dst.c in Sources */ = {isa = PBXBuildFile; fileRef = BF814F641A2079E000B494A2 /* unpack_dst.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +41,25 @@
 		BF5737071920FCDF00050D54 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/XLDDSDDecoder.xib; sourceTree = "<group>"; };
 		BF5737171920FCFB00050D54 /* XLDDSDDecoderConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDSDDecoderConfig.h; sourceTree = "<group>"; };
 		BF5737181920FCFB00050D54 /* XLDDSDDecoderConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDDSDDecoderConfig.m; sourceTree = "<group>"; };
+		BF814F391A20797C00B494A2 /* XLDSACDISOReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDSACDISOReader.h; sourceTree = "<group>"; };
+		BF814F3A1A20797C00B494A2 /* XLDSACDISOReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDSACDISOReader.m; sourceTree = "<group>"; };
+		BF814F3C1A20798300B494A2 /* XLDTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDTrack.h; sourceTree = "<group>"; };
+		BF814F561A2079E000B494A2 /* ccp_calc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ccp_calc.c; sourceTree = "<group>"; };
+		BF814F571A2079E000B494A2 /* ccp_calc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccp_calc.h; sourceTree = "<group>"; };
+		BF814F581A2079E000B494A2 /* conststr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = conststr.h; sourceTree = "<group>"; };
+		BF814F591A2079E000B494A2 /* dst_ac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dst_ac.c; sourceTree = "<group>"; };
+		BF814F5A1A2079E000B494A2 /* dst_ac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dst_ac.h; sourceTree = "<group>"; };
+		BF814F5B1A2079E000B494A2 /* dst_data.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dst_data.c; sourceTree = "<group>"; };
+		BF814F5C1A2079E000B494A2 /* dst_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dst_data.h; sourceTree = "<group>"; };
+		BF814F5D1A2079E000B494A2 /* dst_decoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dst_decoder.c; sourceTree = "<group>"; };
+		BF814F5E1A2079E000B494A2 /* dst_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dst_decoder.h; sourceTree = "<group>"; };
+		BF814F5F1A2079E000B494A2 /* dst_fram.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dst_fram.c; sourceTree = "<group>"; };
+		BF814F601A2079E000B494A2 /* dst_fram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dst_fram.h; sourceTree = "<group>"; };
+		BF814F611A2079E000B494A2 /* dst_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dst_init.c; sourceTree = "<group>"; };
+		BF814F621A2079E000B494A2 /* dst_init.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dst_init.h; sourceTree = "<group>"; };
+		BF814F631A2079E000B494A2 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		BF814F641A2079E000B494A2 /* unpack_dst.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unpack_dst.c; sourceTree = "<group>"; };
+		BF814F651A2079E000B494A2 /* unpack_dst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unpack_dst.h; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -86,6 +113,9 @@
 				BF573152191E2DFB00050D54 /* XLDDSDDecoder.m */,
 				BF5737171920FCFB00050D54 /* XLDDSDDecoderConfig.h */,
 				BF5737181920FCFB00050D54 /* XLDDSDDecoderConfig.m */,
+				BF814F391A20797C00B494A2 /* XLDSACDISOReader.h */,
+				BF814F3A1A20797C00B494A2 /* XLDSACDISOReader.m */,
+				BF814F3C1A20798300B494A2 /* XLDTrack.h */,
 				BF57315A191E2E0700050D54 /* XLDDecoder.h */,
 			);
 			name = Classes;
@@ -121,6 +151,7 @@
 		32C88E010371C26100C91783 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				BF814F551A2079E000B494A2 /* DST */,
 				BF573146191E2D7700050D54 /* dsd2pcm.h */,
 				BF573145191E2D7700050D54 /* dsd2pcm.c */,
 				BF5736DF1920FA1E00050D54 /* filters.h */,
@@ -128,6 +159,29 @@
 				32DBCF630370AF2F00C91783 /* XLDDSDDecoder_Prefix.pch */,
 			);
 			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		BF814F551A2079E000B494A2 /* DST */ = {
+			isa = PBXGroup;
+			children = (
+				BF814F561A2079E000B494A2 /* ccp_calc.c */,
+				BF814F571A2079E000B494A2 /* ccp_calc.h */,
+				BF814F581A2079E000B494A2 /* conststr.h */,
+				BF814F591A2079E000B494A2 /* dst_ac.c */,
+				BF814F5A1A2079E000B494A2 /* dst_ac.h */,
+				BF814F5B1A2079E000B494A2 /* dst_data.c */,
+				BF814F5C1A2079E000B494A2 /* dst_data.h */,
+				BF814F5D1A2079E000B494A2 /* dst_decoder.c */,
+				BF814F5E1A2079E000B494A2 /* dst_decoder.h */,
+				BF814F5F1A2079E000B494A2 /* dst_fram.c */,
+				BF814F601A2079E000B494A2 /* dst_fram.h */,
+				BF814F611A2079E000B494A2 /* dst_init.c */,
+				BF814F621A2079E000B494A2 /* dst_init.h */,
+				BF814F631A2079E000B494A2 /* types.h */,
+				BF814F641A2079E000B494A2 /* unpack_dst.c */,
+				BF814F651A2079E000B494A2 /* unpack_dst.h */,
+			);
+			path = DST;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -194,6 +248,14 @@
 				BF573147191E2D7700050D54 /* dsd2pcm.c in Sources */,
 				BF573153191E2DFB00050D54 /* XLDDSDDecoder.m in Sources */,
 				BF5737191920FCFB00050D54 /* XLDDSDDecoderConfig.m in Sources */,
+				BF814F3B1A20797C00B494A2 /* XLDSACDISOReader.m in Sources */,
+				BF814F661A2079E000B494A2 /* ccp_calc.c in Sources */,
+				BF814F671A2079E000B494A2 /* dst_ac.c in Sources */,
+				BF814F681A2079E000B494A2 /* dst_data.c in Sources */,
+				BF814F691A2079E000B494A2 /* dst_decoder.c in Sources */,
+				BF814F6A1A2079E000B494A2 /* dst_fram.c in Sources */,
+				BF814F6B1A2079E000B494A2 /* dst_init.c in Sources */,
+				BF814F6C1A2079E000B494A2 /* unpack_dst.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

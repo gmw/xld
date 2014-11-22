@@ -8,6 +8,7 @@
 
 #import "XLDDSDDecoder.h"
 #import "id3lib.h"
+#import "XLDTrack.h"
 
 static inline void convertSamples(void *dst, float *src, int numSamples, float gain, int isFloat)
 {
@@ -161,7 +162,19 @@ static inline void convertSamples(void *dst, float *src, int numSamples, float g
 			if(fseeko(fp,tmp2,SEEK_CUR) != 0) goto fail;
 		}
 	}
-	else goto fail;
+	else {
+		if(fseeko(fp,2048*510,SEEK_SET)) goto fail;
+		char header[8];
+		if(fread(header,1,8,fp) != 8) goto fail;
+		if(memcmp(header,"SACDMTOC",8)) goto fail;
+		XLDSACDISOReader *reader = [[XLDSACDISOReader alloc] init];
+		if(![reader openFile:[NSString stringWithUTF8String:path]]) {
+			[reader release];
+			goto fail;
+		}
+		[reader closeFile];
+		[reader release];
+	}
 	fclose(fp);
 	return YES;
 fail:
@@ -179,6 +192,8 @@ fail:
 	if(srcPath) [srcPath release];
 	if(configurations) [configurations release];
 	if(metadataDic) [metadataDic release];
+	if(sacdReader) [sacdReader release];
+	if(trackList) [trackList release];
 	[super dealloc];
 }
 
@@ -343,7 +358,24 @@ fail:
 		
 		dsdFormat = XLDDSDFormatDFF;
 	}
-	else goto fail;
+	else {
+		sacdReader = [[XLDSACDISOReader alloc] init];
+		if(![sacdReader openFile:[NSString stringWithUTF8String:path]]) {
+			[sacdReader release];
+			sacdReader = nil;
+			goto fail;
+		}
+		channels = 2;
+		samplerate = 2822400;
+		blockSize = 16384 * channels;
+		totalDSDSamples = [sacdReader totalDSDSamples];
+		totalPCMSamples = totalDSDSamples / 8;
+		DSDSamplesPerBlock = blockSize * 8 / channels;
+		PCMSamplesPerBlock = blockSize / channels;
+		totalBlocks = totalDSDSamples / DSDSamplesPerBlock;
+		lastBlockPCMSampleCount = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
+		dsdFormat = XLDDSDFormatSACDISO;
+	}
 	
 	dsdBuffer = malloc(blockSize);
 	pcmBuffer = malloc(blockSize*sizeof(float));
@@ -421,6 +453,37 @@ fail:
 	}
 	else outSamplerate = samplerate / decimation;
 	
+	if(dsdFormat == XLDDSDFormatSACDISO) {
+		NSArray *list = [sacdReader trackList];
+		if(list) {
+			trackList = [[NSMutableArray alloc] init];
+			double scale = (double)outSamplerate / 75.0;
+			int n = [list count];
+			int i;
+			for(i=0;i<n;i++) {
+				XLDTrack *track = [[objc_getClass("XLDTrack") alloc] init];
+				XLDTrack *origTrack = [list objectAtIndex:i];
+				double index = scale * [origTrack index] + 0.5;
+				double frames = scale * [origTrack frames] + 0.5;
+				double gap = scale * [origTrack gap] + 0.5;
+				[track setIndex:(xldoffset_t)index];
+				[track setFrames:(xldoffset_t)frames];
+				[track setGap:(xldoffset_t)gap];
+				[track setMetadata:[origTrack metadata]];
+				if(i > 0) {
+					XLDTrack *prev = [trackList objectAtIndex:i-1];
+					if([prev gap]) {
+						[track setGap:[track index] - ([prev index] + [prev frames])];
+					}
+					else {
+						[prev setFrames:[track index] - [prev index]];
+					}
+				}
+				[trackList addObject:track];
+			}
+		}
+	}
+	
 	totalPCMSamples = totalPCMSamples / (decimation / 8);
 	PCMSamplesPerBlock = PCMSamplesPerBlock / (decimation / 8);
 	lastBlockPCMSampleCount = lastBlockPCMSampleCount / (decimation / 8);
@@ -491,7 +554,10 @@ fail:
 			}
 		}
 		while(rest && currentBlock < totalBlocks) {
-			fread(dsdBuffer,1,blockSize,dsd_fp);
+			if(dsdFormat == XLDDSDFormatSACDISO)
+				[sacdReader readBytes:dsdBuffer size:blockSize];
+			else
+				fread(dsdBuffer,1,blockSize,dsd_fp);
 			currentBlock++;
 			int currentPCMSamplesPerBlock = PCMSamplesPerBlock;
 			if(currentBlock == totalBlocks) currentPCMSamplesPerBlock = lastBlockPCMSampleCount;
@@ -500,7 +566,7 @@ fail:
 					dsd2pcm_translate(dsdProc[i],currentPCMSamplesPerBlock,dsdBuffer+i*DSDStride,1,pcmBuffer+i,channels);
 				}
 			}
-			else if(dsdFormat == XLDDSDFormatDFF) {
+			else if(dsdFormat == XLDDSDFormatDFF || dsdFormat == XLDDSDFormatSACDISO) {
 				for(i=0;i<channels;i++) {
 					dsd2pcm_translate(dsdProc[i],currentPCMSamplesPerBlock,dsdBuffer+i,channels,pcmBuffer+i,channels);
 				}
@@ -573,6 +639,13 @@ fail:
 	soxr = NULL;
 	if(configurations) [configurations release];
 	configurations = nil;
+	if(sacdReader) {
+		[sacdReader closeFile];
+		[sacdReader release];
+	}
+	sacdReader = nil;
+	if(trackList) [trackList release];
+	trackList = nil;
 }
 
 - (xldoffset_t)seekToFrame:(xldoffset_t)count
@@ -593,18 +666,24 @@ fail:
 	}
 	if(count > totalPCMSamples) count = totalPCMSamples;
 	currentBlock = count / PCMSamplesPerBlock;
-	fseeko(dsd_fp, dataStart+blockSize*currentBlock, SEEK_SET);
+	if(dsdFormat == XLDDSDFormatSACDISO)
+		[sacdReader seekTo:blockSize*currentBlock];
+	else
+		fseeko(dsd_fp, dataStart+blockSize*currentBlock, SEEK_SET);
 	residueSampleCount = 0;
 	if(count == 0) return count;
 	int start = count - currentBlock * PCMSamplesPerBlock;
-	fread(dsdBuffer,1,blockSize,dsd_fp);
+	if(dsdFormat == XLDDSDFormatSACDISO)
+		[sacdReader readBytes:dsdBuffer size:blockSize];
+	else
+		fread(dsdBuffer,1,blockSize,dsd_fp);
 	currentBlock++;
 	if(dsdFormat == XLDDSDFormatDSF) {
 		for(i=0;i<channels;i++) {
 			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i*DSDStride,1,pcmBuffer+i,channels);
 		}
 	}
-	else if(dsdFormat == XLDDSDFormatDFF) {
+	else if(dsdFormat == XLDDSDFormatDFF || dsdFormat == XLDDSDFormatSACDISO) {
 		for(i=0;i<channels;i++) {
 			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i,channels,pcmBuffer+i,channels);
 		}
@@ -645,12 +724,13 @@ fail:
 
 - (XLDEmbeddedCueSheetType)hasCueSheet
 {
+	if(trackList) return XLDTrackTypeCueSheet;
 	return XLDNoCueSheet;
 }
 
 - (id)cueSheet
 {
-	return nil;
+	return trackList;
 }
 
 - (id)metadata
