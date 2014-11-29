@@ -325,6 +325,12 @@ typedef struct {
 		}
 	}
 	
+	if([NSStringFromClass(decoderClass) isEqualToString:@"XLDDSDDecoder"]) {
+		if([[track metadata] objectForKey:@"XLD_METADATA_DSDDecoder_Configurations"]) {
+			[(id)decoder performSelector:@selector(loadConfigurations:) withObject:[[track metadata] objectForKey:@"XLD_METADATA_DSDDecoder_Configurations"]];
+		}
+	}
+	
 	if(![(id <XLDDecoder>)decoder openFile:(char *)[inFile UTF8String]]) {
 		[stopButton removeFromSuperview];
 		[superview setTag:1];

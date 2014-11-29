@@ -454,6 +454,14 @@ static OSStatus MyFileRenderProc(void *inRefCon, AudioUnitRenderActionFlags    *
 	decoder = nil;
 	decoder = [[[delegate decoderCenter] preferredDecoderForFile:path] retain];
 	if(!decoder) return XLDUnknownFormatErr;
+	if(track) {
+		if([[[track objectAtIndex:0] metadata] objectForKey:@"XLD_METADATA_DSDDecoder_Configurations"]) {
+			Class DSDImporter = (Class)objc_lookUpClass("XLDDSDDecoder");
+			if(DSDImporter && [decoder isKindOfClass:DSDImporter]) {
+				[(id)decoder performSelector:@selector(loadConfigurations:) withObject:[[[track objectAtIndex:0] metadata] objectForKey:@"XLD_METADATA_DSDDecoder_Configurations"]];
+			}
+		}
+	}
 	
 	if(![(id <XLDDecoder>)decoder openFile:(char *)[path UTF8String]]) {
 		[decoder closeFile];
