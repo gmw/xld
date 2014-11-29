@@ -19,6 +19,7 @@
 	IBOutlet id o_useCustomApodization;
 	IBOutlet id o_apodization;
 	IBOutlet id o_writeRGTags;
+	IBOutlet id o_versionTxt;
 }
 
 + (NSString *)pluginName;

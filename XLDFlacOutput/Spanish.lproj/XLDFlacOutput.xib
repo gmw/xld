@@ -245,7 +245,7 @@
 						<object class="NSTextFieldCell" key="NSCell" id="215585663">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">138412032</int>
-							<string key="NSContents">Powered by FLAC 1.3.0</string>
+							<string key="NSContents">Powered by FLAC</string>
 							<reference key="NSSupport" ref="26"/>
 							<reference key="NSControlView" ref="15604212"/>
 							<reference key="NSBackgroundColor" ref="183355923"/>
@@ -527,6 +527,14 @@
 						<reference key="destination" ref="31318752"/>
 					</object>
 					<int key="connectionID">60</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">o_versionTxt</string>
+						<reference key="source" ref="898791512"/>
+						<reference key="destination" ref="15604212"/>
+					</object>
+					<int key="connectionID">61</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -853,7 +861,7 @@
 						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAwiwAAA</bytes>
 					</object>
 					<boolean value="YES"/>
-					<string>{{502, 505}, {252, 263}}</string>
+					<string>{{502, 493}, {252, 263}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -891,7 +899,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">60</int>
+			<int key="maxID">61</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -930,10 +938,12 @@
 							<string>o_prefView</string>
 							<string>o_setOggS</string>
 							<string>o_useCustomApodization</string>
+							<string>o_versionTxt</string>
 							<string>o_writeRGTags</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -957,6 +967,7 @@
 							<string>o_prefView</string>
 							<string>o_setOggS</string>
 							<string>o_useCustomApodization</string>
+							<string>o_versionTxt</string>
 							<string>o_writeRGTags</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -991,6 +1002,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">o_useCustomApodization</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">o_versionTxt</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBToOneOutletInfo">

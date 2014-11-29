@@ -28,6 +28,7 @@
 {
 	[super init];
 	[NSBundle loadNibNamed:@"XLDFlacOutput" owner:self];
+	[o_versionTxt setStringValue:[NSString stringWithFormat:@"%@ %s",[o_versionTxt stringValue],FLAC__VERSION_STRING]];
 	srand(time(NULL));
 	return self;
 }
