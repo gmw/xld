@@ -114,7 +114,7 @@ typedef int64_t xldoffset_t;
 	off_t areaTocOffset2;
 	
 	if(fread(&tmp16,2,1,fp) != 1) goto fail;
-	if(OSSwapBigToHostInt16(tmp16) != 0x114) goto fail;
+	//if(OSSwapBigToHostInt16(tmp16) != 0x114) goto fail;
 	if(fseeko(fp,54,SEEK_CUR)) goto fail;
 	if(fread(&tmp32,4,1,fp) != 1) goto fail;
 	areaTocOffset1 = (off_t)OSSwapBigToHostInt32(tmp32) * 2048;
