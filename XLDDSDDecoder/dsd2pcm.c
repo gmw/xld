@@ -100,12 +100,12 @@ extern dsd2pcm_ctx* dsd2pcm_init(int decimation, int lsbf)
 			ptr->decimation = 8;
 		}
 		else if(decimation == 16) {
-			numCoeffs = 120;
+			numCoeffs = 112;
 			htaps = htaps_16to1;
 			ptr->decimation = 16;
 		}
 		else if(decimation == 32) {
-			numCoeffs = 575;
+			numCoeffs = 288;
 			htaps = htaps_32to1;
 			ptr->decimation = 32;
 		}
@@ -181,14 +181,14 @@ extern void dsd2pcm_translate(
 	while (samples > 0) {
 		bite1 = *src & 0xFFu;
 		ptr->fifo[ffp] = bite1; src += src_stride;
-		if(decimation != 32) {
+		if(/*decimation != 32*/1) {
 			p = ptr->fifo + ((ffp-numTables) & FIFOMASK);
 			*p = bitreverse[*p & 0xFF];
 		}
 		bitsRead += 8;
 		if(bitsRead == decimation) {
 			acc = 0;
-			if(decimation == 32) {
+			if(/*decimation == 32*/0) {
 				for (i=0; i<numTables; ++i) {
 					bite1 = ptr->fifo[(ffp              -i) & FIFOMASK] & 0xFF;
 					acc += ptr->ctables[i][bite1];
