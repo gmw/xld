@@ -22,8 +22,8 @@ static inline void convertSamples(void *dst, float *src, int numSamples, float g
 	else {
 		gain *= 8388608.0f;
 		for(i=0;i<numSamples;i++) {
-#ifdef __i386__
 			float value = src[i] * gain;
+#ifdef __i386__
 			int rounded;
 			__asm__ (
 				"cvtss2si	%1, %0\n\t"
@@ -31,8 +31,8 @@ static inline void convertSamples(void *dst, float *src, int numSamples, float g
 				: "x"(value)
 			);
 #else
-			float fix = src[i] >= 0 ? 0.5 : -0.5;
-			int rounded = (int)(src[i] * gain + fix);
+			float fix = value >= 0 ? 0.5 : -0.5;
+			int rounded = (int)(value + fix);
 #endif
 			if(rounded < -8388608) *((int *)dst+i) = -8388608 << 8;
 			else if(rounded > 8388607) *((int *)dst+i) = 8388607 << 8;
@@ -286,6 +286,8 @@ fail:
 		PCMSamplesPerBlock = blockSize / channels;
 		totalBlocks = totalDSDSamples / DSDSamplesPerBlock;
 		lastBlockPCMSampleCount = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
+		if(lastBlockPCMSampleCount) totalBlocks++;
+		else lastBlockPCMSampleCount = PCMSamplesPerBlock;
 		//NSLog(@"%d,%d,%lld,%lld,%d,%d,%lld,%d",blockSize,channels,totalDSDSamples,totalPCMSamples,DSDSamplesPerBlock,PCMSamplesPerBlock,totalBlocks,lastBlockPCMSampleCount);
 		
 		dsdFormat = XLDDSDFormatDSF;
@@ -354,6 +356,8 @@ fail:
 		PCMSamplesPerBlock = blockSize / channels;
 		totalBlocks = totalDSDSamples / DSDSamplesPerBlock;
 		lastBlockPCMSampleCount = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
+		if(lastBlockPCMSampleCount) totalBlocks++;
+		else lastBlockPCMSampleCount = PCMSamplesPerBlock;
 		//NSLog(@"%d,%d,%lld,%lld,%d,%d,%lld,%d",blockSize,channels,totalDSDSamples,totalPCMSamples,DSDSamplesPerBlock,PCMSamplesPerBlock,totalBlocks,lastBlockPCMSampleCount);
 		
 		dsdFormat = XLDDSDFormatDFF;
@@ -374,6 +378,8 @@ fail:
 		PCMSamplesPerBlock = blockSize / channels;
 		totalBlocks = totalDSDSamples / DSDSamplesPerBlock;
 		lastBlockPCMSampleCount = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
+		if(lastBlockPCMSampleCount) totalBlocks++;
+		else lastBlockPCMSampleCount = PCMSamplesPerBlock;
 		dsdFormat = XLDDSDFormatSACDISO;
 	}
 	
@@ -393,14 +399,21 @@ fail:
 		globalGain = pow(10.0f,6.0f/20);
 	}
 #else
-	NSDictionary *cfg = configurations;
-	if(!cfg) {
+	NSMutableDictionary *cfg;
+	if(!configurations) {
 		NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
-		cfg = [NSDictionary dictionaryWithObjectsAndKeys:
+		cfg = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 			   [pref objectForKey:@"XLDDSDDecoderSamplerate"], @"XLDDSDDecoderSamplerate",
 			   [pref objectForKey:@"XLDDSDDecoderSRCAlgorithm"], @"XLDDSDDecoderSRCAlgorithm",
 			   [pref objectForKey:@"XLDDSDDecoderQuantization"], @"XLDDSDDecoderQuantization",
 			   [pref objectForKey:@"XLDDSDDecoderGain"], @"XLDDSDDecoderGain",nil];
+	}
+	else {
+		cfg = [NSMutableDictionary dictionaryWithDictionary:configurations];
+		if(![cfg objectForKey:@"XLDDSDDecoderGain"]) {
+			NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+			[cfg setObject:[pref objectForKey:@"XLDDSDDecoderGain"] forKey:@"XLDDSDDecoderGain"];
+		}
 	}
 	id obj;
 	if(obj=[cfg objectForKey:@"XLDDSDDecoderSamplerate"]) {
@@ -423,6 +436,7 @@ fail:
 	}
 	if(obj=[cfg objectForKey:@"XLDDSDDecoderGain"]) {
 		globalGain = pow(10.0,[obj doubleValue]/20.0);
+		[cfg removeObjectForKey:@"XLDDSDDecoderGain"];
 	}
 	/*if(obj=[pref objectForKey:@"XLDDSDDecoderApplyGain"]) {
 		if([obj boolValue]) globalGain = pow(10.0f,6.0f/20);
@@ -470,6 +484,7 @@ fail:
 				[track setFrames:(xldoffset_t)frames];
 				[track setGap:(xldoffset_t)gap];
 				[track setMetadata:[origTrack metadata]];
+				[[track metadata] setObject:cfg forKey:@"XLD_METADATA_DSDDecoder_Configurations"];
 				if(i > 0) {
 					XLDTrack *prev = [trackList objectAtIndex:i-1];
 					if([prev gap]) {
@@ -521,7 +536,7 @@ fail:
 - (int)decodeToBuffer:(int *)buffer frames:(int)count
 {
 	int i;
-	if(currentBlock == totalBlocks) {
+	if(currentBlock >= totalBlocks) {
 		if(!residueSampleCount) return 0;
 		if(count >= residueSampleCount) {
 			convertSamples(buffer,residueBuffer,residueSampleCount*channels,globalGain,isFloat);
@@ -625,7 +640,7 @@ fail:
 	resampleBuffer = NULL;
 	if(dsdProc) {
 		int i;
-		for(i<0;i<channels;i++) {
+		for(i=0;i<channels;i++) {
 			dsd2pcm_destroy(dsdProc[i]);
 		}
 		free(dsdProc);

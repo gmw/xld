@@ -18,5 +18,6 @@
 }
 
 - (IBAction)statusChanged:(id)sender;
+- (NSDictionary *)configurations;
 
 @end
