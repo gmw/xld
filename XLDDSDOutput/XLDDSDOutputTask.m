@@ -721,7 +721,7 @@ static void setupID3Tag(NSMutableData *tagData, NSDictionary *metadata)
 			for(i=0;i<format.channels;i++) {
 				dsdOut = dsm[i]->modulate(dsm[i],silence,dsfWriteBuffer[i]+dsfBufferBytes,remaining*8,1);
 				fwrite(dsfWriteBuffer[i],1,4096,fpw);
-				fprintf(stderr,"required %d, returned %d\n",remaining,dsdOut);
+				//fprintf(stderr,"required %d, returned %d\n",remaining,dsdOut);
 				dsfBlocksWritten++;
 			}
 			free(silence);

@@ -28,7 +28,8 @@ typedef enum
 {
 	DSMNoiseShaping2nd = 2,
 	DSMNoiseShaping4th = 4,
-	DSMNoiseShaping6th = 6
+	DSMNoiseShaping6th = 6,
+	DSMNoiseShaping8th = 8,
 } DSMNoiseShapingType;
 
 typedef enum
