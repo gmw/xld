@@ -550,12 +550,19 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 	int success = 0;
 	int firstQchannelRead = 1;
 	unsigned char *buffer = malloc(2352+16);
+	unsigned char *QAreaPtr = buffer;
+	int readSize = 16;
 	dk_cd_read_t cdread;
 	memset(&cdread, 0, sizeof(cdread));
 	cdread.sectorArea = kCDSectorAreaUser | kCDSectorAreaSubChannelQ;
 	cdread.sectorType = kCDSectorTypeCDDA;
-	cdread.bufferLength = 2352+16;
+	cdread.bufferLength = 16;
 	cdread.buffer = buffer;
+	if(cdread.sectorArea & kCDSectorAreaUser) {
+		readSize += 2352;
+		QAreaPtr += 2352;
+		cdread.bufferLength += 2352;
+	}
 	
 	/* -------
 	 state
@@ -569,43 +576,44 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 		beginOffset = disc->tracks[track-2].length/588 - 1;
 		firstQchannelRead = 0;
 	}
-	cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*(2352+16);
+	cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*readSize;
 	while(1) {
+		cdread.bufferLength = readSize;
 		int result = ioctl(disc->fd, DKIOCCDREAD, &cdread);
 		if(result != -1) {
-			unsigned int adr = buffer[2352] & 0xf;
-			unsigned int crc = buffer[2362]<<8 | buffer[2363];
+			unsigned int adr = QAreaPtr[0] & 0xf;
+			unsigned int crc = QAreaPtr[10]<<8 | QAreaPtr[11];
 			if(disc->nonBCD && adr == 0x1) {
-				buffer[2352+1] = ((buffer[2352+1]/10)<<4) | (buffer[2352+1]%10);
-				buffer[2352+2] = ((buffer[2352+2]/10)<<4) | (buffer[2352+2]%10);
-				buffer[2352+3] = ((buffer[2352+3]/10)<<4) | (buffer[2352+3]%10);
-				buffer[2352+4] = ((buffer[2352+4]/10)<<4) | (buffer[2352+4]%10);
-				buffer[2352+5] = ((buffer[2352+5]/10)<<4) | (buffer[2352+5]%10);
-				buffer[2352+7] = ((buffer[2352+7]/10)<<4) | (buffer[2352+7]%10);
-				buffer[2352+8] = ((buffer[2352+8]/10)<<4) | (buffer[2352+8]%10);
-				buffer[2352+9] = ((buffer[2352+9]/10)<<4) | (buffer[2352+9]%10);
+				QAreaPtr[1] = ((QAreaPtr[1]/10)<<4) | (QAreaPtr[1]%10);
+				QAreaPtr[2] = ((QAreaPtr[2]/10)<<4) | (QAreaPtr[2]%10);
+				QAreaPtr[3] = ((QAreaPtr[3]/10)<<4) | (QAreaPtr[3]%10);
+				QAreaPtr[4] = ((QAreaPtr[4]/10)<<4) | (QAreaPtr[4]%10);
+				QAreaPtr[5] = ((QAreaPtr[5]/10)<<4) | (QAreaPtr[5]%10);
+				QAreaPtr[7] = ((QAreaPtr[7]/10)<<4) | (QAreaPtr[7]%10);
+				QAreaPtr[8] = ((QAreaPtr[8]/10)<<4) | (QAreaPtr[8]%10);
+				QAreaPtr[9] = ((QAreaPtr[9]/10)<<4) | (QAreaPtr[9]%10);
 			}
-			if(crc && crc == calc_crc(10, buffer+2352)) {
+			if(crc && crc == calc_crc(10, QAreaPtr)) {
 				errorCount = 0;
 				
 				if(adr == 0x1) { // this sector has a pregap info
 					if(firstQchannelRead) {
-						if(buffer[2354] == 0) { // we are already in the pregap area at the 1st read!
+						if(QAreaPtr[2] == 0) { // we are already in the pregap area at the 1st read!
 							beginOffset += 75; // begin with 1 more seconds before the current position
 							if(disc->tracks[track-2].length/588 <= beginOffset) {
 								beginOffset = disc->tracks[track-2].length/588 - 1;
 								firstQchannelRead = 0;
 							}
-							cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*(2352+16);
+							cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*readSize;
 							continue;
 						}
 						else firstQchannelRead = 0;
 					}
 					if(state == 0) {
-						if(buffer[2354] == 0) state = 1;
+						if(QAreaPtr[2] == 0) state = 1;
 					}
 					else if(state == 1) {
-						if(buffer[2354] == 0) state = 2;
+						if(QAreaPtr[2] == 0) state = 2;
 						else state = 0;
 					}
 				}
@@ -613,15 +621,15 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 			}
 			else {
 				if(adr == 1 && crc && !disc->nonBCD) {
-					buffer[2352+1] = ((buffer[2352+1]/10)<<4) | (buffer[2352+1]%10);
-					buffer[2352+2] = ((buffer[2352+2]/10)<<4) | (buffer[2352+2]%10);
-					buffer[2352+3] = ((buffer[2352+3]/10)<<4) | (buffer[2352+3]%10);
-					buffer[2352+4] = ((buffer[2352+4]/10)<<4) | (buffer[2352+4]%10);
-					buffer[2352+5] = ((buffer[2352+5]/10)<<4) | (buffer[2352+5]%10);
-					buffer[2352+7] = ((buffer[2352+7]/10)<<4) | (buffer[2352+7]%10);
-					buffer[2352+8] = ((buffer[2352+8]/10)<<4) | (buffer[2352+8]%10);
-					buffer[2352+9] = ((buffer[2352+9]/10)<<4) | (buffer[2352+9]%10);
-					if(crc == calc_crc(10, buffer+2352)) {
+					QAreaPtr[1] = ((QAreaPtr[1]/10)<<4) | (QAreaPtr[1]%10);
+					QAreaPtr[2] = ((QAreaPtr[2]/10)<<4) | (QAreaPtr[2]%10);
+					QAreaPtr[3] = ((QAreaPtr[3]/10)<<4) | (QAreaPtr[3]%10);
+					QAreaPtr[4] = ((QAreaPtr[4]/10)<<4) | (QAreaPtr[4]%10);
+					QAreaPtr[5] = ((QAreaPtr[5]/10)<<4) | (QAreaPtr[5]%10);
+					QAreaPtr[7] = ((QAreaPtr[7]/10)<<4) | (QAreaPtr[7]%10);
+					QAreaPtr[8] = ((QAreaPtr[8]/10)<<4) | (QAreaPtr[8]%10);
+					QAreaPtr[9] = ((QAreaPtr[9]/10)<<4) | (QAreaPtr[9]%10);
+					if(crc == calc_crc(10, QAreaPtr)) {
 						//fprintf(stderr,"This drive seems to return non-BCD MSF, switching to non-BCD mode...\n");
 						disc->nonBCD = 1;
 						state = 0;
@@ -635,14 +643,14 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 							beginOffset = disc->tracks[track-2].length/588 - 1;
 							firstQchannelRead = 0;
 						}
-						cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*(2352+16);
+						cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*readSize;
 						continue;
 					}
 				}
 				if(!success) {
 					totalErrorCount++;
 					if(totalErrorCount == 100) {
-						//fprintf(stderr,"Too many CRC errors while reading subchannel, giving up.\n");
+						fprintf(stderr,"xld_cdda_read_pregap(): Too many CRC errors while reading subchannel, giving up.\n");
 						goto last;
 					}
 				}
@@ -651,8 +659,11 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 				else errorCount = 0;
 			}
 		}
-		cdread.offset+=2352+16;
-		if(cdread.offset > disc->tracks[track-1].start/588*(2352+16)) {
+		else {
+			perror("xld_cdda_read_pregap(),ioctl");
+		}
+		cdread.offset+=readSize;
+		if(cdread.offset > disc->tracks[track-1].start/588*readSize) {
 			/* reached next track */
 			break;
 		}
@@ -701,59 +712,67 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 	unsigned char *buffer = malloc(2352+16);
 	int preEmphasis = 0;
 	int dcp = 0;
+	unsigned char *QAreaPtr = buffer;
+	int readSize = 16;
 	dk_cd_read_t cdread;
 	memset(&cdread, 0, sizeof(cdread));
 	cdread.sectorArea = kCDSectorAreaUser | kCDSectorAreaSubChannelQ;
 	cdread.sectorType = kCDSectorTypeCDDA;
-	cdread.bufferLength = 2352+16;
+	cdread.bufferLength = 16;
 	cdread.buffer = buffer;
-	cdread.offset = (disc->tracks[track-1].start/588)*(2352+16);
+	if(cdread.sectorArea & kCDSectorAreaUser) {
+		readSize += 2352;
+		QAreaPtr += 2352;
+		cdread.bufferLength += 2352;
+	}
+	cdread.offset = (disc->tracks[track-1].start/588)*readSize;
 	while(1) {
+		cdread.bufferLength = readSize;
 		int result = ioctl(disc->fd, DKIOCCDREAD, &cdread);
 		if(result != -1) {
-			unsigned int adr = buffer[2352] & 0xf;
-			unsigned int crc = buffer[2362]<<8 | buffer[2363];
+			unsigned int adr = QAreaPtr[0] & 0xf;
+			unsigned int crc = QAreaPtr[10]<<8 | QAreaPtr[11];
 			if(adr == 0x1) {
-				int ctrl = (buffer[2352] & 0xf0) >> 4;
+				int ctrl = (QAreaPtr[0] & 0xf0) >> 4;
 				if(ctrl & 0x1) preEmphasis++;
 				else preEmphasis--;
 				if(ctrl & 0x10) dcp++;
 				else dcp--;
 			}
 			if(adr != 0x3 && adr != 0x2) goto nextSector;
-			if(crc && crc == calc_crc(10, buffer+2352)) {
+			if(crc && crc == calc_crc(10, QAreaPtr)) {
 				errorCount = 0;
 				if(adr == 0x3 && !disc->tracks[track-1].isrc[0]) {
-					disc->tracks[track-1].isrc[0]  = isrc2Ascii((buffer[2353] >> 2) & 0x3f);
-					disc->tracks[track-1].isrc[1]  = isrc2Ascii(((buffer[2353] & 0x03) << 4) | ((buffer[2354] >> 4) & 0x0f));
-					disc->tracks[track-1].isrc[2]  = isrc2Ascii(((buffer[2354] & 0x0f) << 2) | ((buffer[2355] >> 6) & 0x03));
-					disc->tracks[track-1].isrc[3]  = isrc2Ascii(buffer[2355] & 0x3f);
-					disc->tracks[track-1].isrc[4]  = isrc2Ascii((buffer[2356] >> 2) & 0x3f);
-					disc->tracks[track-1].isrc[5]  = ((buffer[2357] >> 4) & 0x0f) + '0';
-					disc->tracks[track-1].isrc[6]  = (buffer[2357] & 0x0f) + '0';
-					disc->tracks[track-1].isrc[7]  = ((buffer[2358] >> 4) & 0x0f) + '0';
-					disc->tracks[track-1].isrc[8]  = (buffer[2358] & 0x0f) + '0';
-					disc->tracks[track-1].isrc[9]  = ((buffer[2359] >> 4) & 0x0f) + '0';
-					disc->tracks[track-1].isrc[10] = (buffer[2359] & 0x0f) + '0';
-					disc->tracks[track-1].isrc[11] = ((buffer[2360] >> 4) & 0x0f) + '0';
+					disc->tracks[track-1].isrc[0]  = isrc2Ascii((QAreaPtr[1] >> 2) & 0x3f);
+					disc->tracks[track-1].isrc[1]  = isrc2Ascii(((QAreaPtr[1] & 0x03) << 4) | ((QAreaPtr[2] >> 4) & 0x0f));
+					disc->tracks[track-1].isrc[2]  = isrc2Ascii(((QAreaPtr[2] & 0x0f) << 2) | ((QAreaPtr[3] >> 6) & 0x03));
+					disc->tracks[track-1].isrc[3]  = isrc2Ascii(QAreaPtr[3] & 0x3f);
+					disc->tracks[track-1].isrc[4]  = isrc2Ascii((QAreaPtr[4] >> 2) & 0x3f);
+					disc->tracks[track-1].isrc[5]  = ((QAreaPtr[5] >> 4) & 0x0f) + '0';
+					disc->tracks[track-1].isrc[6]  = (QAreaPtr[5] & 0x0f) + '0';
+					disc->tracks[track-1].isrc[7]  = ((QAreaPtr[6] >> 4) & 0x0f) + '0';
+					disc->tracks[track-1].isrc[8]  = (QAreaPtr[6] & 0x0f) + '0';
+					disc->tracks[track-1].isrc[9]  = ((QAreaPtr[7] >> 4) & 0x0f) + '0';
+					disc->tracks[track-1].isrc[10] = (QAreaPtr[7] & 0x0f) + '0';
+					disc->tracks[track-1].isrc[11] = ((QAreaPtr[8] >> 4) & 0x0f) + '0';
 					disc->tracks[track-1].isrc[12] = 0;
 					//fprintf(stderr,"track %d: found ISRC at offset %lld (%s)\n",track,cdread.offset/(2352+16),disc->tracks[track-1].isrc);
 					if(!strcmp(disc->tracks[track-1].isrc,"000000000000")) disc->tracks[track-1].isrc[0] = 0;
 				}
 				else if(adr == 0x2 && !disc->mcn[0]) {
-					disc->mcn[0]  = ((buffer[2353] >> 4) & 0x0f) + '0';
-					disc->mcn[1]  = (buffer[2353] & 0x0f) + '0';
-					disc->mcn[2]  = ((buffer[2354] >> 4) & 0x0f) + '0';
-					disc->mcn[3]  = (buffer[2354] & 0x0f) + '0';
-					disc->mcn[4]  = ((buffer[2355] >> 4) & 0x0f) + '0';
-					disc->mcn[5]  = (buffer[2355] & 0x0f) + '0';
-					disc->mcn[6]  = ((buffer[2356] >> 4) & 0x0f) + '0';
-					disc->mcn[7]  = (buffer[2356] & 0x0f) + '0';
-					disc->mcn[8]  = ((buffer[2357] >> 4) & 0x0f) + '0';
-					disc->mcn[9]  = (buffer[2357] & 0x0f) + '0';
-					disc->mcn[10] = ((buffer[2358] >> 4) & 0x0f) + '0';
-					disc->mcn[11] = (buffer[2358] & 0x0f) + '0';
-					disc->mcn[12] = ((buffer[2359] >> 4) & 0x0f) + '0';
+					disc->mcn[0]  = ((QAreaPtr[1] >> 4) & 0x0f) + '0';
+					disc->mcn[1]  = (QAreaPtr[1] & 0x0f) + '0';
+					disc->mcn[2]  = ((QAreaPtr[2] >> 4) & 0x0f) + '0';
+					disc->mcn[3]  = (QAreaPtr[2] & 0x0f) + '0';
+					disc->mcn[4]  = ((QAreaPtr[3] >> 4) & 0x0f) + '0';
+					disc->mcn[5]  = (QAreaPtr[3] & 0x0f) + '0';
+					disc->mcn[6]  = ((QAreaPtr[4] >> 4) & 0x0f) + '0';
+					disc->mcn[7]  = (QAreaPtr[4] & 0x0f) + '0';
+					disc->mcn[8]  = ((QAreaPtr[5] >> 4) & 0x0f) + '0';
+					disc->mcn[9]  = (QAreaPtr[5] & 0x0f) + '0';
+					disc->mcn[10] = ((QAreaPtr[6] >> 4) & 0x0f) + '0';
+					disc->mcn[11] = (QAreaPtr[6] & 0x0f) + '0';
+					disc->mcn[12] = ((QAreaPtr[7] >> 4) & 0x0f) + '0';
 					disc->mcn[13] = 0;
 					//fprintf(stderr,"mcn is: %s\n",disc->mcn);
 					if(!strcmp(disc->mcn,"0000000000000")) disc->mcn[0] = 0;
@@ -764,6 +783,7 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 				if(!success) {
 					totalErrorCount++;
 					if(totalErrorCount == 100) {
+						fprintf(stderr,"xld_cdda_read_isrc(): Too many CRC errors while reading subchannel, giving up.\n");
 						goto last;
 					}
 				}
@@ -772,10 +792,13 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 				else errorCount = 0;
 			}
 		}
+		else {
+			perror("xld_cdda_read_isrc(),ioctl");
+		}
 		
 	nextSector:
-		cdread.offset+=2352+16;
-		if(cdread.offset > (disc->tracks[track-1].start/588 + 150)*(2352+16)) {
+		cdread.offset+=readSize;
+		if(cdread.offset > (disc->tracks[track-1].start/588 + 150)*readSize) {
 			/* read 150 sectors */
 			break;
 		}
