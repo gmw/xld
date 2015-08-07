@@ -212,10 +212,19 @@ last:
 
 static NSString *mountNameFromBSDName(const char *bsdName)
 {
-	NSString *volume = nil;
+	NSString *volume;
 	DASessionRef session = DASessionCreate(NULL);
 	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,bsdName);
+	if(!disk) {
+		CFRelease(session);
+		return nil;
+	}
 	CFDictionaryRef dic = DADiskCopyDescription(disk);
+	if(!dic) {
+		CFRelease(disk);
+		CFRelease(session);
+		return nil;
+	}
 	volume = [NSString stringWithString:(NSString *)CFDictionaryGetValue(dic,kDADiskDescriptionVolumeNameKey)];
 	CFRelease(dic);
 	CFRelease(disk);
@@ -1611,7 +1620,12 @@ last:
 	samplerate = [decoder samplerate];
 	totalFrames = [decoder totalFrames];
 	writable = ((samplerate == 44100) && (![decoder isFloat]) && ![file hasPrefix:@"/dev/disk"]);
-	representedFilename = [file hasPrefix:@"/dev/disk"] ? [[[NSString stringWithString:@"/Volumes"] stringByAppendingPathComponent:mountNameFromBSDName([file UTF8String])] retain] : [file retain];
+	if([file hasPrefix:@"/dev/disk"]) {
+		NSString *volume = [[NSString stringWithString:@"/Volumes"] stringByAppendingPathComponent:mountNameFromBSDName([file UTF8String])];
+		if(volume) representedFilename = [volume retain];
+		else representedFilename = [file retain];
+	}
+	else representedFilename = [file retain];
 	
 	fileToDecode = [file retain];
 	title = [[[[file lastPathComponent] stringByDeletingPathExtension] precomposedStringWithCanonicalMapping] retain];

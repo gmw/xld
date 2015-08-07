@@ -94,7 +94,16 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	NSString *volume;
 	DASessionRef session = DASessionCreate(NULL);
 	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,bsdName);
+	if(!disk) {
+		CFRelease(session);
+		return nil;
+	}
 	CFDictionaryRef dic = DADiskCopyDescription(disk);
+	if(!dic) {
+		CFRelease(disk);
+		CFRelease(session);
+		return nil;
+	}
 	volume = [NSString stringWithString:(NSString *)CFDictionaryGetValue(dic,kDADiskDescriptionVolumeNameKey)];
 	CFRelease(dic);
 	CFRelease(disk);
@@ -323,7 +332,8 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		artist = albumartist;
 	}
 	
-	if([[o_filenameFormatRadio selectedCell] tag] == 0) {
+	NSString *formatStr = [o_filenameFormat stringValue];
+	if([[o_filenameFormatRadio selectedCell] tag] == 0 || [formatStr isEqualToString:@""]) {
 		if(name && artist && ![name isEqualToString:@""] && ![artist isEqualToString:@""])
 			str = [NSMutableString stringWithFormat:@"%02d %@ - %@",idx,artist,name];
 		else if(name && ![name isEqualToString:@""])
@@ -1112,9 +1122,9 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		else view = [[outputArr objectAtIndex:[o_formatList indexOfSelectedItem]] prefPane];
 		NSRect frame = [view frame];
 		frame.size.height += 50;
-		[o_pluginPrefPane setContentSize:frame.size];
 		if([[o_pluginOptionContentView subviews] count])
 			[[[o_pluginOptionContentView subviews] objectAtIndex:0] removeFromSuperview];
+		[o_pluginPrefPane setContentSize:frame.size];
 		[o_pluginOptionContentView addSubview:view];
 		[NSApp beginSheet:o_pluginPrefPane
 		   modalForWindow:o_prefPane
@@ -3822,19 +3832,23 @@ end:
 	
 	id cueParser = [[XLDCueParser alloc] initWithDelegate:self];
 	
-	NSString *volumeName2 = [mountNameFromBSDName([path UTF8String]) precomposedStringWithCanonicalMapping];
-	NSString *volumeName = [[[NSFileManager defaultManager] displayNameAtPath:[[NSString stringWithString:@"/Volumes"] stringByAppendingPathComponent:volumeName2]] precomposedStringWithCanonicalMapping];
+	NSString *volumeName2 = nil;
+	NSString *volumeName = nil;
+	NSString *title = nil;
+	
+	volumeName2 = [mountNameFromBSDName([path UTF8String]) precomposedStringWithCanonicalMapping];
+	if(volumeName2) volumeName = [[[NSFileManager defaultManager] displayNameAtPath:[[NSString stringWithString:@"/Volumes"] stringByAppendingPathComponent:volumeName2]] precomposedStringWithCanonicalMapping];
 	//NSString *volumeName = [[[NSFileManager defaultManager] displayNameAtPath:mountNameFromBSDName(statDisc.f_mntfromname)] precomposedStringWithCanonicalMapping];
 	//NSString *volumeName2 = [[[NSMutableString stringWithUTF8String:statDisc.f_mntonname] lastPathComponent] precomposedStringWithCanonicalMapping];
 	//NSLog(@"%@\n%@",volumeName,volumeName2);
-	NSString *title = [self setTrackMetadata:trackArr forDisc:volumeName alternativeName:volumeName2];
+	if(volumeName2 && volumeName) title = [self setTrackMetadata:trackArr forDisc:volumeName alternativeName:volumeName2];
 	
 	[cueParser openFile:path withTrackData:trackArr decoder:decoder];
 	if(title) {
 		[cueParser setTitle:title];
 		[[[[cueParser trackList] objectAtIndex:0] metadata] setObject:[NSNumber numberWithBool:YES] forKey:@"HasMetadata"];
 	}
-	else [cueParser setTitle:volumeName];
+	else if(volumeName) [cueParser setTitle:volumeName];
 	[cueParser setDriveStr:[decoder driveStr]];
 	[cueParser setMediaType:[decoder mediaType]];
 	[decoder closeFile];
