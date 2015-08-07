@@ -1,6 +1,6 @@
 //
 //  main.m
-//  XLD
+//  XLD @ sourceforge
 //
 //  Created by tmkk on 06/06/08.
 //  Copyright tmkk 2006. All rights reserved.
