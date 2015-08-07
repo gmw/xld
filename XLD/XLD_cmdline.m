@@ -18,6 +18,7 @@
 #import "XLDDefaultOutputTask.h"
 #import "XLDProfileManager.h"
 #import "XLDLogChecker.h"
+#import "XLDCustomClasses.h"
 
 /*
 static OSStatus (*_LSSetApplicationInformationItem)(int, CFTypeRef asn, CFStringRef key, CFStringRef value, CFDictionaryRef *info) = NULL;
@@ -241,6 +242,8 @@ static void usage(void)
 	fprintf(stderr,"\t--stdout: write output to stdout (-o option is ignored)\n");
 	fprintf(stderr,"\t--profile <name>: Choose a profile saved as <name> in GUI\n");
 	fprintf(stderr,"\t--logchecker <path>: Check sanity of a logfile in <path>\n");
+	fprintf(stderr,"\t--no-metadata : Do not append any metadata\n");
+	fprintf(stderr,"\t--filename-format <format> : Format output filename as <format>\n");
 }
 
 static int checkLogfile(char *file)
@@ -311,6 +314,8 @@ int cmdline_main(int argc, char *argv[])
 	char infile[512];
 	int error = 0;
 	BOOL logcheckerMode = NO;
+	BOOL addMetadata = YES;
+	NSString *filenameFormat = nil;
 	
 	int		ch;
 	extern char	*optarg;
@@ -330,6 +335,8 @@ int cmdline_main(int argc, char *argv[])
 		{"profile", 1, NULL, 0},
 		{"cmdline", 0, NULL, 0},
 		{"logchecker", 0, NULL, 0},
+		{"no-metadata", 0, NULL, 0},
+		{"filename-format", 1, NULL, 0},
 		{0, 0, 0, 0}
 	};
 	
@@ -344,40 +351,46 @@ int cmdline_main(int argc, char *argv[])
 	while ((ch = getopt_long(argc, argv, "c:et:do:f:", options, &option_index)) != -1){
 		switch (ch){
 			case 0:
-				if(!strncmp(options[option_index].name, "raw", 3)) {
+				if(!strcmp(options[option_index].name, "raw")) {
 					rawMode = 1;
 				}
-				else if(!strncmp(options[option_index].name, "samplerate", 10)) {
+				else if(!strcmp(options[option_index].name, "samplerate")) {
 					outputFormat.samplerate = atoi(optarg);
 				}
-				else if(!strncmp(options[option_index].name, "endian", 6)) {
+				else if(!strcmp(options[option_index].name, "endian")) {
 					if(!strncasecmp(optarg,"little",6)) rawEndian = XLDLittleEndian;
 					else if(!strncasecmp(optarg,"big",3)) rawEndian = XLDBigEndian;
 				}
-				else if(!strncmp(options[option_index].name, "bit", 3)) {
+				else if(!strcmp(options[option_index].name, "bit")) {
 					outputFormat.bps = atoi(optarg) >> 3;
 				}
-				else if(!strncmp(options[option_index].name, "channels", 8)) {
+				else if(!strcmp(options[option_index].name, "channels")) {
 					outputFormat.channels = atoi(optarg);
 				}
-				else if(!strncmp(options[option_index].name, "correct-30samples", 17)) {
+				else if(!strcmp(options[option_index].name, "correct-30samples")) {
 					offset = 30;
 				}
-				else if(!strncmp(options[option_index].name, "ddpms", 5)) {
+				else if(!strcmp(options[option_index].name, "ddpms")) {
 					ddpms = optarg;
 					useDdpms = 1;
 					rawMode = 1;
 				}
-				else if(!strncmp(options[option_index].name, "stdout", 6)) {
+				else if(!strcmp(options[option_index].name, "stdout")) {
 					writeToStdout = 1;
 				}
-				else if(!strncmp(options[option_index].name, "profile", 7)) {
+				else if(!strcmp(options[option_index].name, "profile")) {
 					profileDic = [XLDProfileManager profileForName:[NSString stringWithUTF8String:optarg]];
 				}
-				else if(!strncmp(options[option_index].name, "logchecker", 10)) {
+				else if(!strcmp(options[option_index].name, "logchecker")) {
 					logcheckerMode = YES;
 				}
-				else if(!strncmp(options[option_index].name, "cmdline", 7)) {
+				else if(!strcmp(options[option_index].name, "no-metadata")) {
+					addMetadata = NO;
+				}
+				else if(!strcmp(options[option_index].name, "filename-format")) {
+					filenameFormat = [NSString stringWithUTF8String:optarg];
+				}
+				else if(!strcmp(options[option_index].name, "cmdline")) {
 					//skip
 				}
 				break;
@@ -524,7 +537,7 @@ int cmdline_main(int argc, char *argv[])
 		}
 		else if([profileDic objectForKey:@"XLDPcmBEOutput_BitDepth"]) {
 			sf_format = SF_FORMAT_RAW|SF_ENDIAN_BIG;
-			customOutputClass = (Class)objc_lookUpClass("XLDPCMBEOutput");
+			customOutputClass = (Class)objc_lookUpClass("XLDPcmBEOutput");
 			if(!customOutputClass) {
 				fprintf(stderr,"error: PCM (big endian) output plugin not loaded\n");
 				return -1;
@@ -533,7 +546,7 @@ int cmdline_main(int argc, char *argv[])
 		}
 		else if([profileDic objectForKey:@"XLDPcmLEOutput_BitDepth"]) {
 			sf_format = SF_FORMAT_RAW|SF_ENDIAN_LITTLE;
-			customOutputClass = (Class)objc_lookUpClass("XLDPCMLEOutput");
+			customOutputClass = (Class)objc_lookUpClass("XLDPcmLEOutput");
 			if(!customOutputClass) {
 				fprintf(stderr,"error: PCM (little endian) output plugin not loaded\n");
 				return -1;
@@ -765,16 +778,137 @@ int cmdline_main(int argc, char *argv[])
 		}
 		NSString *outputPathStr;
 		if(useCueSheet || useDdpms || !outfile) {
-			if(!useCueSheet && !useDdpms)
-				outputPathStr = [[[[NSString stringWithUTF8String:infile] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extStr];
-			else if([[trk metadata] objectForKey:XLD_METADATA_TITLE] && [[trk metadata] objectForKey:XLD_METADATA_ARTIST])
-				outputPathStr = [NSString stringWithFormat:@"%02d %@ - %@.%@",track+1,[[trk metadata] objectForKey:XLD_METADATA_ARTIST],[[trk metadata] objectForKey:XLD_METADATA_TITLE],extStr];
-			else if([[trk metadata] objectForKey:XLD_METADATA_TITLE])
-				outputPathStr = [NSString stringWithFormat:@"%02d %@.%@",track+1,[[trk metadata] objectForKey:XLD_METADATA_TITLE],extStr];
-			else if([[trk metadata] objectForKey:XLD_METADATA_ARTIST])
-				outputPathStr = [NSString stringWithFormat:@"%02d %@ - Track %02d.%@",track+1,[[trk metadata] objectForKey:XLD_METADATA_ARTIST],track+1,extStr];
-			else
-				outputPathStr = [NSString stringWithFormat:@"%02d Track %02d.%@",track+1,track+1,extStr];
+			if(!filenameFormat) {
+				if(!useCueSheet && !useDdpms)
+					outputPathStr = [[[[NSString stringWithUTF8String:infile] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extStr];
+				else if([[trk metadata] objectForKey:XLD_METADATA_TITLE] && [[trk metadata] objectForKey:XLD_METADATA_ARTIST])
+					outputPathStr = [NSString stringWithFormat:@"%02d %@ - %@.%@",track+1,[[trk metadata] objectForKey:XLD_METADATA_ARTIST],[[trk metadata] objectForKey:XLD_METADATA_TITLE],extStr];
+				else if([[trk metadata] objectForKey:XLD_METADATA_TITLE])
+					outputPathStr = [NSString stringWithFormat:@"%02d %@.%@",track+1,[[trk metadata] objectForKey:XLD_METADATA_TITLE],extStr];
+				else if([[trk metadata] objectForKey:XLD_METADATA_ARTIST])
+					outputPathStr = [NSString stringWithFormat:@"%02d %@ - Track %02d.%@",track+1,[[trk metadata] objectForKey:XLD_METADATA_ARTIST],track+1,extStr];
+				else
+					outputPathStr = [NSString stringWithFormat:@"%02d Track %02d.%@",track+1,track+1,extStr];
+			}
+			else {
+				NSString *name,*artist,*album,*albumartist,*composer,*genre;
+				int idx = [[trk metadata] objectForKey:XLD_METADATA_TRACK] ? [[[trk metadata] objectForKey:XLD_METADATA_TRACK] intValue] : track+1;
+				name = [[trk metadata] objectForKey:XLD_METADATA_TITLE];
+				artist = [[trk metadata] objectForKey:XLD_METADATA_ARTIST];
+				album = [[trk metadata] objectForKey:XLD_METADATA_ALBUM];
+				composer = [[trk metadata] objectForKey:XLD_METADATA_COMPOSER];
+				genre = [[trk metadata] objectForKey:XLD_METADATA_GENRE];
+				if(!useCueSheet) albumartist = artist;
+				else {
+					NSString *aartist = [cueParser artist];
+					if([[trk metadata] objectForKey:XLD_METADATA_ALBUMARTIST]) aartist = [[trk metadata] objectForKey:XLD_METADATA_ALBUMARTIST];
+					albumartist = [aartist isEqualToString:@""] ? artist : aartist;
+				}
+				if([[trk metadata] objectForKey:XLD_METADATA_COMPILATION] && ![[trk metadata] objectForKey:XLD_METADATA_ALBUMARTIST]) {
+					if([[[trk metadata] objectForKey:XLD_METADATA_COMPILATION] boolValue])
+						albumartist = (NSMutableString *)@"Compilations";
+				}
+				NSString *pattern = [filenameFormat stringByStandardizingPath];
+				if([pattern characterAtIndex:[pattern length]-1] == '/') pattern = [pattern substringToIndex:[pattern length]-2];
+				if([pattern characterAtIndex:0] == '/') pattern = [pattern substringFromIndex:1];
+				NSMutableString *str = [[[NSMutableString alloc] init] autorelease];
+				int j;
+				for(j=0;j<[pattern length]-1;j++) {
+					/* track number */
+					if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%n"]) {
+						[str appendFormat: @"%02d",idx];
+						j++;
+					}
+					/* disc number */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%D"]) {
+						if([[trk metadata] objectForKey:XLD_METADATA_DISC]) {
+							[str appendFormat: @"%02d",[[[trk metadata] objectForKey:XLD_METADATA_DISC] intValue]];
+						}
+						else [str appendString:@"01"];
+						j++;
+					}
+					/* title */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%t"]) {
+						if(name && ![name isEqualToString:@""]) [str appendString: name];
+						else [str appendString: @"Unknown Title"];
+						j++;
+					}
+					/* artist */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%a"]) {
+						if(artist && ![artist isEqualToString:@""]) [str appendString: artist];
+						else [str appendString: @"Unknown Artist"];
+						j++;
+					}
+					/* album title */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%T"]) {
+						if(album && ![album isEqualToString:@""]) [str appendString: album];
+						else [str appendString: @"Unknown Album"];
+						j++;
+					}
+					/* album artist */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%A"]) {
+						if(albumartist && ![albumartist isEqualToString:@""]) [str appendString: albumartist];
+						else [str appendString: @"Unknown Artist"];
+						j++;
+					}
+					/* composer */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%c"]) {
+						if(composer && ![composer isEqualToString:@""]) [str appendString: composer];
+						else [str appendString: @"Unknown Composer"];
+						j++;
+					}
+					/* year */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%y"]) {
+						NSNumber *year = [[trk metadata] objectForKey:XLD_METADATA_YEAR];
+						if(year) [str appendString: [year stringValue]];
+						else [str appendString: @"Unknown Year"];
+						j++;
+					}
+					/* genre */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%g"]) {
+						if(genre && ![genre isEqualToString:@""]) [str appendString: genre];
+						else [str appendString: @"Unknown Genre"];
+						j++;
+					}
+					/* isrc */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%i"]) {
+						NSString *isrc = [[trk metadata] objectForKey:XLD_METADATA_ISRC];
+						if(isrc && ![isrc isEqualToString:@""]) [str appendString: isrc];
+						else [str appendString: @"NO_ISRC"];
+						j++;
+					}
+					/* mcn */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%m"]) {
+						NSString *mcn = [[trk metadata] objectForKey:XLD_METADATA_CATALOG];
+						if(mcn && ![mcn isEqualToString:@""]) [str appendString: mcn];
+						else [str appendString: @"NO_MCN"];
+						j++;
+					}
+					/* discid */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%I"]) {
+						NSNumber *discid = [[trk metadata] objectForKey:XLD_METADATA_FREEDBDISCID];
+						if(discid) [str appendString: [NSString stringWithFormat:@"%08X", [discid unsignedIntValue]]];
+						else [str appendString: @"NO_DISCID"];
+						j++;
+					}
+					/* format */
+					else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%f"]) {
+						[str appendString: [[encoder class] pluginName]];
+						j++;
+					}
+					else if([[pattern substringWithRange:NSMakeRange(j,1)] isEqualToString:@"/"]) {
+						[str appendString: @"[[[XLD_DIRECTORY_SEPARATOR]]]"];
+					}
+					else {
+						[str appendString: [pattern substringWithRange:NSMakeRange(j,1)]];
+					}
+				}
+				if(j==[pattern length]-1) [str appendString: [pattern substringWithRange:NSMakeRange(j,1)]];
+				[str replaceOccurrencesOfString:@"/" withString:@"／" options:0 range:NSMakeRange(0, [str length])];
+				[str replaceOccurrencesOfString:@":" withString:@"：" options:0 range:NSMakeRange(0, [str length])];
+				[str replaceOccurrencesOfString:@"[[[XLD_DIRECTORY_SEPARATOR]]]" withString:@"/" options:0 range:NSMakeRange(0, [str length])];
+				outputPathStr = [NSString stringWithFormat:@"%@.%@",str,extStr];
+			}
 			outfile = [[[NSString stringWithUTF8String:outdir] stringByAppendingPathComponent:outputPathStr] UTF8String];
 		}
 		
@@ -807,7 +941,8 @@ int cmdline_main(int argc, char *argv[])
 			else {
 				outputTask = [[XLDDefaultOutputTask alloc] initWithConfigurations:configDic];
 			}
-			[outputTask setEnableAddTag:YES];
+			[outputTask setEnableAddTag:addMetadata];
+			[[NSFileManager defaultManager] createDirectoryWithIntermediateDirectoryInPath:[[NSString stringWithUTF8String:outfile] stringByDeletingLastPathComponent]];
 			if(![outputTask setOutputFormat:outputFormat]) {
 				fprintf(stderr,"error: incompatible format (unsupported bitdepth or something)\n");
 				error = -1;
