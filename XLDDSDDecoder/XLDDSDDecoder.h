@@ -30,7 +30,6 @@ typedef enum {
 	int samplerate;
 	int outSamplerate;
 	int blockSize;
-	int DSDStride;
 	unsigned char *dsdBuffer;
 	float *pcmBuffer;
 	float *residueBuffer;
@@ -42,7 +41,8 @@ typedef enum {
 	xldoffset_t totalPCMSamples;
 	int DSDSamplesPerBlock;
 	int PCMSamplesPerBlock;
-	int lastBlockPCMSampleCount;
+	int DSDBytesPerBlock;
+	int lastBlockDSDBytes;
 	dsd2pcm_ctx **dsdProc;
 	off_t dataStart;
 	NSString *srcPath;

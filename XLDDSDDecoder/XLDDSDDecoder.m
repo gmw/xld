@@ -246,8 +246,8 @@ fail:
 		totalDSDSamples = OSSwapLittleToHostInt64(tmp2);
 		totalPCMSamples = totalDSDSamples / 8;
 		if(fread(&tmp, 4, 1, dsd_fp) < 1) goto fail;
-		DSDStride = OSSwapLittleToHostInt32(tmp);
-		blockSize = DSDStride * channels;
+		DSDBytesPerBlock = OSSwapLittleToHostInt32(tmp);
+		blockSize = DSDBytesPerBlock * channels;
 		if(fseeko(dsd_fp, pos, SEEK_SET) != 0) goto fail;
 		
 		while(1) { //skip until data;
@@ -283,11 +283,11 @@ fail:
 		if(fseeko(dsd_fp, dataStart, SEEK_SET) != 0) goto fail;
 		
 		DSDSamplesPerBlock = blockSize * 8 / channels;
-		PCMSamplesPerBlock = blockSize / channels;
+		PCMSamplesPerBlock = DSDBytesPerBlock;
 		totalBlocks = totalDSDSamples / DSDSamplesPerBlock;
-		lastBlockPCMSampleCount = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
-		if(lastBlockPCMSampleCount) totalBlocks++;
-		else lastBlockPCMSampleCount = PCMSamplesPerBlock;
+		lastBlockDSDBytes = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
+		if(lastBlockDSDBytes) totalBlocks++;
+		else lastBlockDSDBytes = DSDBytesPerBlock;
 		//NSLog(@"%d,%d,%lld,%lld,%d,%d,%lld,%d",blockSize,channels,totalDSDSamples,totalPCMSamples,DSDSamplesPerBlock,PCMSamplesPerBlock,totalBlocks,lastBlockPCMSampleCount);
 		
 		dsdFormat = XLDDSDFormatDSF;
@@ -353,11 +353,12 @@ fail:
 		totalDSDSamples = tmp2 * 8 / channels;
 		totalPCMSamples = tmp2 / channels;
 		DSDSamplesPerBlock = blockSize * 8 / channels;
-		PCMSamplesPerBlock = blockSize / channels;
+		DSDBytesPerBlock = blockSize / channels;
+		PCMSamplesPerBlock = DSDBytesPerBlock;
 		totalBlocks = totalDSDSamples / DSDSamplesPerBlock;
-		lastBlockPCMSampleCount = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
-		if(lastBlockPCMSampleCount) totalBlocks++;
-		else lastBlockPCMSampleCount = PCMSamplesPerBlock;
+		lastBlockDSDBytes = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
+		if(lastBlockDSDBytes) totalBlocks++;
+		else lastBlockDSDBytes = DSDBytesPerBlock;
 		//NSLog(@"%d,%d,%lld,%lld,%d,%d,%lld,%d",blockSize,channels,totalDSDSamples,totalPCMSamples,DSDSamplesPerBlock,PCMSamplesPerBlock,totalBlocks,lastBlockPCMSampleCount);
 		
 		dsdFormat = XLDDSDFormatDFF;
@@ -375,17 +376,18 @@ fail:
 		totalDSDSamples = [sacdReader totalDSDSamples];
 		totalPCMSamples = totalDSDSamples / 8;
 		DSDSamplesPerBlock = blockSize * 8 / channels;
-		PCMSamplesPerBlock = blockSize / channels;
+		DSDBytesPerBlock = blockSize / channels;
+		PCMSamplesPerBlock = DSDBytesPerBlock;
 		totalBlocks = totalDSDSamples / DSDSamplesPerBlock;
-		lastBlockPCMSampleCount = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
-		if(lastBlockPCMSampleCount) totalBlocks++;
-		else lastBlockPCMSampleCount = PCMSamplesPerBlock;
+		lastBlockDSDBytes = (totalDSDSamples - totalBlocks * DSDSamplesPerBlock) / 8;
+		if(lastBlockDSDBytes) totalBlocks++;
+		else lastBlockDSDBytes = DSDBytesPerBlock;
 		dsdFormat = XLDDSDFormatSACDISO;
 	}
 	
 	dsdBuffer = malloc(blockSize);
-	pcmBuffer = malloc(blockSize*sizeof(float));
-	residueBuffer = malloc(blockSize*sizeof(float));
+	pcmBuffer = malloc((blockSize+64)*sizeof(float));
+	residueBuffer = malloc((blockSize+64)*sizeof(float));
 	dsdProc = malloc(sizeof(dsd2pcm_ctx*) * channels);
 	
 	isFloat = 0;
@@ -501,7 +503,6 @@ fail:
 	
 	totalPCMSamples = totalPCMSamples / (decimation / 8);
 	PCMSamplesPerBlock = PCMSamplesPerBlock / (decimation / 8);
-	lastBlockPCMSampleCount = lastBlockPCMSampleCount / (decimation / 8);
 	
 	int i;
 	for(i=0;i<channels;i++) {
@@ -574,22 +575,30 @@ fail:
 			else
 				fread(dsdBuffer,1,blockSize,dsd_fp);
 			currentBlock++;
-			int currentPCMSamplesPerBlock = PCMSamplesPerBlock;
-			if(currentBlock == totalBlocks) currentPCMSamplesPerBlock = lastBlockPCMSampleCount;
+			int currentDSDBytesPerBlock = DSDBytesPerBlock;
+			int translated = 0;
+			if(currentBlock == totalBlocks) currentDSDBytesPerBlock = lastBlockDSDBytes;
 			if(dsdFormat == XLDDSDFormatDSF) {
 				for(i=0;i<channels;i++) {
-					dsd2pcm_translate(dsdProc[i],currentPCMSamplesPerBlock,dsdBuffer+i*DSDStride,1,pcmBuffer+i,channels);
+					translated = (dsdProc[i])->translate(dsdProc[i],currentDSDBytesPerBlock,dsdBuffer+i*DSDBytesPerBlock,1,pcmBuffer+i,channels);
 				}
 			}
 			else if(dsdFormat == XLDDSDFormatDFF || dsdFormat == XLDDSDFormatSACDISO) {
 				for(i=0;i<channels;i++) {
-					dsd2pcm_translate(dsdProc[i],currentPCMSamplesPerBlock,dsdBuffer+i,channels,pcmBuffer+i,channels);
+					translated = dsdProc[i]->translate(dsdProc[i],currentDSDBytesPerBlock,dsdBuffer+i,channels,pcmBuffer+i,channels);
 				}
+			}
+			if(currentBlock == totalBlocks) {
+				int flushed = 0;
+				for(i=0;i<channels;i++) {
+					flushed = dsd2pcm_finalize(dsdProc[i],pcmBuffer+channels*translated+i,channels);
+				}
+				translated += flushed;
 			}
 			if(soxr) {
 				size_t done = 0;
 				//NSLog(@"%d,%d\n",currentPCMSamplesPerBlock,blockSize/channels);
-				soxr_process(soxr,pcmBuffer,currentPCMSamplesPerBlock,NULL,resampleBuffer,blockSize/channels,&done);
+				soxr_process(soxr,pcmBuffer,translated,NULL,resampleBuffer,blockSize/channels,&done);
 				if(currentBlock == totalBlocks) {
 					size_t done2 = 0;
 					soxr_process(soxr,NULL,0,NULL,resampleBuffer+done*channels,blockSize/channels,&done2);
@@ -608,15 +617,15 @@ fail:
 				}
 			}
 			else {
-				if(rest >= currentPCMSamplesPerBlock) {
-					convertSamples(buffer+offset,pcmBuffer,currentPCMSamplesPerBlock*channels,globalGain,isFloat);
-					rest -= currentPCMSamplesPerBlock;
-					offset += currentPCMSamplesPerBlock * channels;
+				if(rest >= translated) {
+					convertSamples(buffer+offset,pcmBuffer,translated*channels,globalGain,isFloat);
+					rest -= translated;
+					offset += translated * channels;
 				}
 				else {
 					convertSamples(buffer+offset,pcmBuffer,rest*channels,globalGain,isFloat);
-					memcpy(residueBuffer, pcmBuffer+rest*channels, sizeof(float)*(currentPCMSamplesPerBlock - rest)*channels);
-					residueSampleCount = currentPCMSamplesPerBlock - rest;
+					memcpy(residueBuffer, pcmBuffer+rest*channels, sizeof(float)*(translated - rest)*channels);
+					residueSampleCount = translated - rest;
 					rest = 0;
 				}
 			}
@@ -687,31 +696,47 @@ fail:
 		fseeko(dsd_fp, dataStart+blockSize*currentBlock, SEEK_SET);
 	residueSampleCount = 0;
 	if(count == 0) return count;
-	int start = count - currentBlock * PCMSamplesPerBlock;
-	if(dsdFormat == XLDDSDFormatSACDISO)
-		[sacdReader readBytes:dsdBuffer size:blockSize];
-	else
-		fread(dsdBuffer,1,blockSize,dsd_fp);
-	currentBlock++;
-	if(dsdFormat == XLDDSDFormatDSF) {
-		for(i=0;i<channels;i++) {
-			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i*DSDStride,1,pcmBuffer+i,channels);
+	int truncated = count - currentBlock * PCMSamplesPerBlock;
+	while(truncated) {
+		if(dsdFormat == XLDDSDFormatSACDISO)
+			[sacdReader readBytes:dsdBuffer size:blockSize];
+		else
+			fread(dsdBuffer,1,blockSize,dsd_fp);
+		currentBlock++;
+		int currentDSDBytesPerBlock = DSDBytesPerBlock;
+		int translated = 0;
+		if(currentBlock == totalBlocks) currentDSDBytesPerBlock = lastBlockDSDBytes;
+		if(dsdFormat == XLDDSDFormatDSF) {
+			for(i=0;i<channels;i++) {
+				translated = dsdProc[i]->translate(dsdProc[i],currentDSDBytesPerBlock,dsdBuffer+i*DSDBytesPerBlock,1,pcmBuffer+i,channels);
+			}
 		}
-	}
-	else if(dsdFormat == XLDDSDFormatDFF || dsdFormat == XLDDSDFormatSACDISO) {
-		for(i=0;i<channels;i++) {
-			dsd2pcm_translate(dsdProc[i],PCMSamplesPerBlock,dsdBuffer+i,channels,pcmBuffer+i,channels);
+		else if(dsdFormat == XLDDSDFormatDFF || dsdFormat == XLDDSDFormatSACDISO) {
+			for(i=0;i<channels;i++) {
+				translated = dsdProc[i]->translate(dsdProc[i],currentDSDBytesPerBlock,dsdBuffer+i,channels,pcmBuffer+i,channels);
+			}
 		}
-	}
-	if(soxr) {
-		size_t done = 0;
-		soxr_process(soxr,pcmBuffer+start*channels,PCMSamplesPerBlock - start,NULL,resampleBuffer,blockSize/channels,&done);
-		memcpy(residueBuffer,resampleBuffer,sizeof(float)*channels*done);
-		residueSampleCount = done;
-	}
-	else {
-		memcpy(residueBuffer,pcmBuffer+start*channels,sizeof(float)*channels*(PCMSamplesPerBlock - start));
-		residueSampleCount = PCMSamplesPerBlock - start;
+		if(currentBlock == totalBlocks) {
+			int flushed = 0;
+			for(i=0;i<channels;i++) {
+				flushed = dsd2pcm_finalize(dsdProc[i],pcmBuffer+channels*translated+i,channels);
+			}
+			translated += flushed;
+		}
+		if(truncated < translated) {
+			truncated = 0;
+			if(soxr) {
+				size_t done = 0;
+				soxr_process(soxr,pcmBuffer+truncated*channels,translated - truncated,NULL,resampleBuffer,blockSize/channels,&done);
+				memcpy(residueBuffer,resampleBuffer,sizeof(float)*channels*done);
+				residueSampleCount = done;
+			}
+			else {
+				memcpy(residueBuffer,pcmBuffer+truncated*channels,sizeof(float)*channels*(translated - truncated));
+				residueSampleCount = translated - truncated;
+			}
+		}
+		else truncated -= translated;
 	}
 	
 	return count;

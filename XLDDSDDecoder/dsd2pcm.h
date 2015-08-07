@@ -38,7 +38,26 @@ or implied, of Sebastian Gesemann.
 extern "C" {
 #endif
 
-struct dsd2pcm_ctx_s;
+#define FIFOSIZE 128             /* must be a power of two */
+#define FIFOMASK (FIFOSIZE-1)   /* bit mask for FIFO offsets */
+
+struct dsd2pcm_ctx_s
+{
+	unsigned char fifo[FIFOSIZE];
+	unsigned fifopos;
+	double fifo2[112];
+	unsigned int fifo2pos;
+	double fifo3[32];
+	unsigned int fifo3pos;
+	unsigned int numTables;
+	float **ctables;
+	int decimation;
+	int lsbfirst;
+	int delay;
+	int delay2;
+	int (*translate)(struct dsd2pcm_ctx_s*, size_t, const unsigned char *, ptrdiff_t, float *, ptrdiff_t);
+	int (*finalize)(struct dsd2pcm_ctx_s*, float *, ptrdiff_t);
+};
 
 typedef struct dsd2pcm_ctx_s dsd2pcm_ctx;
 
@@ -71,19 +90,19 @@ extern void dsd2pcm_reset(dsd2pcm_ctx *ctx);
 
 /**
  * "translates" a stream of octets to a stream of floats
- * (8:1 decimation)
  * @param ctx -- pointer to abstract context (buffers)
- * @param samples -- number of octets/samples to "translate"
+ * @param dsd_bytes -- number of dsd bytes (octet) to "translate"
  * @param src -- pointer to first octet (input)
  * @param src_stride -- src pointer increment
- * @param lsbitfirst -- bitorder, 0=msb first, 1=lsbfirst
  * @param dst -- pointer to first float (output)
  * @param dst_stride -- dst pointer increment
  */
-extern void dsd2pcm_translate(dsd2pcm_ctx *ctx,
-	size_t samples,
+extern int dsd2pcm_translate(dsd2pcm_ctx *ctx,
+	size_t dsd_bytes,
 	const unsigned char *src, ptrdiff_t src_stride,
 	float *dst, ptrdiff_t dst_stride);
+
+int dsd2pcm_finalize(dsd2pcm_ctx* ptr, float *dst, ptrdiff_t dst_stride);
 
 #ifdef __cplusplus
 } /* extern "C" */

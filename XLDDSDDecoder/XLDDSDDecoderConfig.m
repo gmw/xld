@@ -15,7 +15,7 @@
 {
 	[super init];
 	NSDictionary *defaultValues = [NSDictionary dictionaryWithObjectsAndKeys:
-								   [NSNumber numberWithInt:0], @"XLDDSDDecoderSamplerate",
+								   [NSNumber numberWithInt:88200], @"XLDDSDDecoderSamplerate",
 								   [NSNumber numberWithInt:4], @"XLDDSDDecoderSRCAlgorithm",
 								   [NSNumber numberWithInt:0], @"XLDDSDDecoderQuantization",
 								   [NSNumber numberWithInt:0], @"XLDDSDDecoderGain",nil];

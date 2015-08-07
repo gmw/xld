@@ -30,11 +30,9 @@ or implied, of Sebastian Gesemann.
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "dsd2pcm.h"
-
-#define FIFOSIZE 128             /* must be a power of two */
-#define FIFOMASK (FIFOSIZE-1)   /* bit mask for FIFO offsets */
 
 static const unsigned char bitreverse[] = 
 {
@@ -58,16 +56,6 @@ static const unsigned char bitreverse[] =
 
 #include "filters.h"
 
-struct dsd2pcm_ctx_s
-{
-	unsigned char fifo[FIFOSIZE];
-	unsigned fifopos;
-	unsigned int numTables;
-	float **ctables;
-	int decimation;
-	int lsbfirst;
-};
-
 static void precalc(dsd2pcm_ctx *ctx, const double *htaps, int numCoeffs, int lsbf)
 {
 	int t, e, m, k;
@@ -86,6 +74,128 @@ static void precalc(dsd2pcm_ctx *ctx, const double *htaps, int numCoeffs, int ls
 	}
 }
 
+static int dsd2pcm_translate_8to1(
+	 dsd2pcm_ctx* ptr,
+	 size_t dsd_bytes,
+	 const unsigned char *src, ptrdiff_t src_stride,
+	 float *dst, ptrdiff_t dst_stride)
+{
+	unsigned ffp;
+	unsigned i;
+	unsigned bite1, bite2;
+	unsigned char* p;
+	double acc;
+	int numTables;
+	int written = 0;
+	ffp = ptr->fifopos;
+	numTables = ptr->numTables;
+	
+	for(;dsd_bytes;dsd_bytes--) {
+		bite1 = *src & 0xFFu;
+		ptr->fifo[ffp] = bite1; src += src_stride;
+		p = ptr->fifo + ((ffp-numTables) & FIFOMASK);
+		*p = bitreverse[*p & 0xFF];
+		acc = 0;
+		for (i=0; i<numTables; ++i) {
+			bite1 = ptr->fifo[(ffp              -i) & FIFOMASK] & 0xFF;
+			bite2 = ptr->fifo[(ffp-(numTables*2-1)+i) & FIFOMASK] & 0xFF;
+			acc += ptr->ctables[i][bite1] + ptr->ctables[i][bite2];
+		}
+		if(ptr->delay2) ptr->delay2--;
+		else {
+			*dst = (float)acc; dst += dst_stride;
+			written++;
+		}
+		ffp = (ffp + 1) & FIFOMASK;
+	}
+	ptr->fifopos = ffp;
+	return written;
+}
+
+static int dsd2pcm_translate_16to1(
+	  dsd2pcm_ctx* ptr,
+	  size_t dsd_bytes,
+	  const unsigned char *src, ptrdiff_t src_stride,
+	  float *dst, ptrdiff_t dst_stride)
+{
+	unsigned ffp;
+	unsigned i;
+	unsigned bite1, bite2;
+	unsigned char* p;
+	double acc;
+	int numTables;
+	int written = 0;
+	unsigned int out = 2;
+	ffp = ptr->fifopos;
+	numTables = ptr->numTables;
+	
+	for(;dsd_bytes;dsd_bytes--) {
+		bite1 = *src & 0xFFu;
+		ptr->fifo[ffp] = bite1; src += src_stride;
+		p = ptr->fifo + ((ffp-numTables) & FIFOMASK);
+		*p = bitreverse[*p & 0xFF];
+		if(!--out) {
+			out = 2;
+			acc = 0;
+			for (i=0; i<numTables; ++i) {
+				bite1 = ptr->fifo[(ffp              -i) & FIFOMASK] & 0xFF;
+				bite2 = ptr->fifo[(ffp-(numTables*2-1)+i) & FIFOMASK] & 0xFF;
+				acc += ptr->ctables[i][bite1] + ptr->ctables[i][bite2];
+			}
+			if(ptr->delay2) ptr->delay2--;
+			else {
+				*dst = (float)acc; dst += dst_stride;
+				written++;
+			}
+		}
+		ffp = (ffp + 1) & FIFOMASK;
+	}
+	ptr->fifopos = ffp;
+	return written;
+}
+
+static int dsd2pcm_translate_32to1(
+	   dsd2pcm_ctx* ptr,
+	   size_t dsd_bytes,
+	   const unsigned char *src, ptrdiff_t src_stride,
+	   float *dst, ptrdiff_t dst_stride)
+{
+	unsigned ffp;
+	unsigned i;
+	unsigned bite1, bite2;
+	unsigned char* p;
+	double acc;
+	int numTables;
+	int written = 0;
+	unsigned int out = 4;
+	ffp = ptr->fifopos;
+	numTables = ptr->numTables;
+	
+	for(;dsd_bytes;dsd_bytes--) {
+		bite1 = *src & 0xFFu;
+		ptr->fifo[ffp] = bite1; src += src_stride;
+		p = ptr->fifo + ((ffp-numTables) & FIFOMASK);
+		*p = bitreverse[*p & 0xFF];
+		if(!--out) {
+			out = 4;
+			acc = 0;
+			for (i=0; i<numTables; ++i) {
+				bite1 = ptr->fifo[(ffp              -i) & FIFOMASK] & 0xFF;
+				bite2 = ptr->fifo[(ffp-(numTables*2-1)+i) & FIFOMASK] & 0xFF;
+				acc += ptr->ctables[i][bite1] + ptr->ctables[i][bite2];
+			}
+			if(ptr->delay2) ptr->delay2--;
+			else {
+				*dst = (float)acc; dst += dst_stride;
+				written++;
+			}
+		}
+		ffp = (ffp + 1) & FIFOMASK;
+	}
+	ptr->fifopos = ffp;
+	return written;
+}
+
 extern dsd2pcm_ctx* dsd2pcm_init(int decimation, int lsbf)
 {
 	dsd2pcm_ctx* ptr;
@@ -95,24 +205,32 @@ extern dsd2pcm_ctx* dsd2pcm_init(int decimation, int lsbf)
 		int numCoeffs;
 		const double *htaps;
 		if(decimation == 8) {
-			numCoeffs = 48;
+			numCoeffs = 56;
 			htaps = htaps_8to1;
 			ptr->decimation = 8;
+			ptr->delay = 6;
+			ptr->translate = dsd2pcm_translate_8to1;
 		}
 		else if(decimation == 16) {
 			numCoeffs = 112;
 			htaps = htaps_16to1;
 			ptr->decimation = 16;
+			ptr->delay = 6;
+			ptr->translate = dsd2pcm_translate_16to1;
 		}
 		else if(decimation == 32) {
 			numCoeffs = 288;
 			htaps = htaps_32to1;
 			ptr->decimation = 32;
+			ptr->delay = 8;
+			ptr->translate = dsd2pcm_translate_32to1;
 		}
 		else {
-			numCoeffs = 48;
-			htaps = htaps_8to1;
-			ptr->decimation = 8;
+			numCoeffs = 128;
+			htaps = htaps_16to1_2;
+			ptr->decimation = 32;
+			ptr->delay = 30;
+			ptr->translate = dsd2pcm_translate;
 		}
 		
 		ptr->lsbfirst = lsbf;
@@ -158,15 +276,22 @@ extern void dsd2pcm_reset(dsd2pcm_ctx* ptr)
 	 * and a high energy 1.0584 MHz tone which should be filtered
 	 * out completely by any playback system --> silence
 	 */
+	for (i=0; i<112; ++i)
+		ptr->fifo2[i] = 0;
+	ptr->fifo2pos = 0;
+	for (i=0; i<32; ++i)
+		ptr->fifo3[i] = 0;
+	ptr->fifo3pos = 0;
+	ptr->delay2 = ptr->delay;
 }
 
-extern void dsd2pcm_translate(
+extern int dsd2pcm_translate(
 	dsd2pcm_ctx* ptr,
-	size_t samples,
+	size_t dsd_bytes,
 	const unsigned char *src, ptrdiff_t src_stride,
 	float *dst, ptrdiff_t dst_stride)
 {
-	unsigned ffp;
+	unsigned ffp, ffp2, ffp3;
 	unsigned i;
 	unsigned bite1, bite2;
 	unsigned char* p;
@@ -175,10 +300,13 @@ extern void dsd2pcm_translate(
 	int bitsRead = 0;
 	int decimation = ptr->decimation;
 	int lsbf;
+	int written = 0;
 	ffp = ptr->fifopos;
+	ffp2 = ptr->fifo2pos;
+	ffp3 = ptr->fifo3pos;
 	numTables = ptr->numTables;
 	lsbf = ptr->lsbfirst ? 1 : 0;
-	while (samples > 0) {
+	for(;dsd_bytes>0;dsd_bytes--) {
 		bite1 = *src & 0xFFu;
 		ptr->fifo[ffp] = bite1; src += src_stride;
 		if(/*decimation != 32*/1) {
@@ -186,27 +314,68 @@ extern void dsd2pcm_translate(
 			*p = bitreverse[*p & 0xFF];
 		}
 		bitsRead += 8;
-		if(bitsRead == decimation) {
-			acc = 0;
-			if(/*decimation == 32*/0) {
-				for (i=0; i<numTables; ++i) {
-					bite1 = ptr->fifo[(ffp              -i) & FIFOMASK] & 0xFF;
-					acc += ptr->ctables[i][bite1];
+		if(decimation != 32) {
+			if(bitsRead == decimation) {
+				acc = 0;
+				if(/*decimation == 32*/0) {
+					for (i=0; i<numTables; ++i) {
+						bite1 = ptr->fifo[(ffp              -i) & FIFOMASK] & 0xFF;
+						acc += ptr->ctables[i][bite1];
+					}
+				}
+				else {
+					for (i=0; i<numTables; ++i) {
+						bite1 = ptr->fifo[(ffp              -i) & FIFOMASK] & 0xFF;
+						bite2 = ptr->fifo[(ffp-(numTables*2-1)+i) & FIFOMASK] & 0xFF;
+						acc += ptr->ctables[i][bite1] + ptr->ctables[i][bite2];
+					}
+				}
+				bitsRead = 0;
+				if(ptr->delay2) ptr->delay2--;
+				else {
+					*dst = (float)acc; dst += dst_stride;
+					written++;
 				}
 			}
-			else {
+		}
+		else {
+			if((bitsRead & 15) == 0) {
+				acc = 0;
 				for (i=0; i<numTables; ++i) {
 					bite1 = ptr->fifo[(ffp              -i) & FIFOMASK] & 0xFF;
 					bite2 = ptr->fifo[(ffp-(numTables*2-1)+i) & FIFOMASK] & 0xFF;
 					acc += ptr->ctables[i][bite1] + ptr->ctables[i][bite2];
 				}
+				ptr->fifo2[ffp2&127] = acc;
+				if(bitsRead == 32) {
+					acc = 0;
+					for(i=0;i<56;i++) {
+						acc += (ptr->fifo2[(ffp2-i)&127] + ptr->fifo2[(ffp2-111+i)&127]) * htaps_2to1[i];
+					}
+					bitsRead = 0;
+					if(ptr->delay2) ptr->delay2--;
+					else {
+						*dst = (float)acc; dst += dst_stride;
+						written++;
+					}
+				}
+				ffp2 = (ffp2 + 1) & 127;
 			}
-			*dst = (float)acc; dst += dst_stride;
-			bitsRead = 0;
-			samples--;
 		}
 		ffp = (ffp + 1) & FIFOMASK;
 	}
 	ptr->fifopos = ffp;
+	ptr->fifo2pos = ffp2;
+	ptr->fifo3pos = ffp3;
+	return written;
 }
 
+int dsd2pcm_finalize(dsd2pcm_ctx* ptr, float *dst, ptrdiff_t dst_stride)
+{
+	int size = (ptr->delay)*ptr->decimation/8;
+	unsigned char *dsd = malloc(size);
+	memset(dsd, 0x69, size);
+	ptr->translate(ptr,size,dsd,1,dst,dst_stride);
+	free(dsd);
+	return ptr->delay;
+}
