@@ -625,17 +625,18 @@ int cmdline_main(int argc, char *argv[])
 		struct stat sb;
 		i = stat(outfile,&sb);
 		if(!i && S_ISDIR(sb.st_mode)) {
-			char *tmp = malloc(512);
+			char *tmp = malloc(1024);
 			outdir = realpath(outfile, tmp);
 			outfile = NULL;
 		}
 		else {
-			char *tmp = malloc(512);
+			[[NSFileManager defaultManager] createDirectoryWithIntermediateDirectoryInPath:[[NSString stringWithUTF8String:outfile] stringByDeletingLastPathComponent]];
+			char *tmp = malloc(1024);
 			outfile = realpath(outfile, tmp);
 		}
 	}
 	if(!outdir) {
-		char *tmp = malloc(512);
+		char *tmp = malloc(1024);
 		outdir = realpath("./", tmp);
 	}
 	realpath(argv[optind], infile);

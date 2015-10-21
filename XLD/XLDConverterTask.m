@@ -235,7 +235,7 @@ typedef struct {
 			afterX = scaleSize;
 		}
 	}
-	else {
+	else if((scaleType&0xf) == XLDLongSideScale) {
 		if(beforeX > beforeY) {
 			if(!(scaleType&0x10) && (beforeX <= scaleSize)) return;
 			afterY = round((double)beforeY * scaleSize/beforeX);
@@ -247,13 +247,40 @@ typedef struct {
 			afterY = scaleSize;
 		}
 	}
-	
+	else {
+		if(beforeX > beforeY) {
+			if(!(scaleType&0x10) && (beforeY <= scaleSize)) return;
+			afterX = scaleSize;
+			afterY = scaleSize;
+		}
+		else {
+			if(!(scaleType&0x10) && (beforeX <= scaleSize)) return;
+			afterX = scaleSize;
+			afterY = scaleSize;
+		}
+	}
 	
 	NSRect targetImageFrame = NSMakeRect(0,0,afterX,afterY);
 	NSImage *targetImage = [[NSImage alloc] initWithSize:targetImageFrame.size];
 	[targetImage lockFocus];
 	[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-	[rep drawInRect: targetImageFrame];
+	if((scaleType&0xf) == XLDCropToSquareScale) {
+		NSImage *srcImg = [NSImage imageWithDataConsideringOrientation:dat];
+		NSRect srcImageFrame;
+		if(beforeX > beforeY) {
+			srcImageFrame = NSMakeRect(([srcImg size].width-[srcImg size].height)*0.5,0,[srcImg size].height,[srcImg size].height);
+		}
+		else {
+			srcImageFrame = NSMakeRect(0,([srcImg size].height-[srcImg size].width)*0.5,[srcImg size].width,[srcImg size].width);
+		}
+		[srcImg drawInRect:targetImageFrame
+				  fromRect:srcImageFrame
+				 operation:NSCompositeCopy
+				  fraction:1.0];
+	}
+	else {
+		[rep drawInRect:targetImageFrame];
+	}
 	[targetImage unlockFocus];
 	NSBitmapImageRep *newRep = [NSBitmapImageRep imageRepWithData:[targetImage TIFFRepresentation]];
 	NSDictionary *dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:compressionQuality] forKey:NSImageCompressionFactor];

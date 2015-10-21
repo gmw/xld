@@ -47,6 +47,7 @@ typedef enum {
 	XLDHeightScale = 2,
 	XLDShortSideScale = 3,
 	XLDLongSideScale = 4,
+	XLDCropToSquareScale = 5,
 	XLDExpansionScale = 0x10
 } XLDScaleType;
 

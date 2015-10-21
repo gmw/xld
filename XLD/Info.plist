@@ -158,10 +158,10 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>http://xld.googlecode.com/svn/appcast/xld-appcast_e.xml</string>
+	<string>https://svn.code.sf.net/p/xld/code/appcast/xld-appcast_e.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>SUScheduledCheckInterval</key>
-	<integer>43200</integer>
+	<integer>86400</integer>
 </dict>
 </plist>
