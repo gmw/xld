@@ -1329,63 +1329,36 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	BOOL automount = NO;
 	NSMenuItem *discToMount = nil;
 	if(device && !driveIsBusy && !openingFiles && ([o_autoMountDisc state] == NSOnState)) automount = YES;
-	OSErr	result = noErr;
-    ItemCount	volumeIndex;
-    long	systemVersion;
 	
 	int i,n=0;
 	for(i=[o_openCDDA numberOfItems]-3;i>=0;i--) {
 		[o_openCDDA removeItemAtIndex:i];
 	}
-	
-    if (Gestalt(gestaltSystemVersion, &systemVersion) != noErr)
-        systemVersion = 0;
     
-    for (volumeIndex = 1; result == noErr || result != nsvErr; volumeIndex++)
-	{
-        FSVolumeRefNum	actualVolume;
-        HFSUniStr255	volumeName;
-        FSVolumeInfo	volumeInfo;
-        
-        bzero((void *) &volumeInfo, sizeof(volumeInfo));
-        
-        result = FSGetVolumeInfo(kFSInvalidVolumeRefNum,
-                                 volumeIndex,
-                                 &actualVolume,
-                                 kFSVolInfoFSInfo,
-                                 &volumeInfo,
-                                 &volumeName,
-                                 NULL); 
-		
-        if (result == noErr)
+	struct statfs *mountedDisks = malloc(sizeof(struct statfs) * 256);
+	int numVolumes = getfsstat(mountedDisks, sizeof(struct statfs) * 256, MNT_NOWAIT);
+	for(i=0;i<numVolumes;i++) {
+		if(!strcmp(mountedDisks[i].f_fstypename,"cddafs")) // It's an audio CD
 		{
-            if ((systemVersion >= 0x00001000 && systemVersion < 0x00001010 &&
-				 volumeInfo.signature == kAudioCDFilesystemID) ||
-                volumeInfo.filesystemID == kAudioCDFilesystemID) // It's an audio CD
-            {
-				NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:[NSString stringWithCharacters:volumeName.unicode length:volumeName.length] action:@selector(readCDDA:) keyEquivalent:@""];
-				[item setTarget:self];
-				if(n==0) [item setKeyEquivalent:@"O"];
-				[o_openCDDA insertItem:item atIndex:n++];
-				if(automount) {
-					const char *devicePath = [[NSString stringWithFormat:@"/dev/%@",device] UTF8String];
-					//NSLog(@"%s",devicePath);
-					struct statfs fsstat;
-					NSMutableString *tmpStr = [NSMutableString stringWithString:[item title]];
-					[tmpStr replaceOccurrencesOfString:@"/" withString:@":" options:0 range:NSMakeRange(0, [tmpStr length])];
-					statfs([[@"/Volumes" stringByAppendingPathComponent:tmpStr] UTF8String], &fsstat);
-					if(!strcmp(devicePath, fsstat.f_mntfromname)) {
-						struct stat st;
-						stat([[@"/Volumes" stringByAppendingPathComponent:tmpStr] UTF8String], &st);
-						//NSLog(@"%f",st.st_mtimespec.tv_sec - launchDate);
-						if((st.st_mtimespec.tv_sec - launchDate) > -30) discToMount = item;
-					}
-					//NSLog(@"%s",fsstat.f_mntfromname);
+			NSString *mntPath = [NSString stringWithUTF8String:mountedDisks[i].f_mntonname];
+			NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:[[NSFileManager defaultManager] displayNameAtPath:mntPath] action:@selector(readCDDA:) keyEquivalent:@""];
+			[item setTarget:self];
+			if(n==0) [item setKeyEquivalent:@"O"];
+			[o_openCDDA insertItem:item atIndex:n++];
+			if(automount) {
+				const char *devicePath = [[NSString stringWithFormat:@"/dev/%@",device] UTF8String];
+				if(!strcmp(devicePath, mountedDisks[i].f_mntfromname)) {
+					struct stat st;
+					stat(mountedDisks[i].f_mntonname, &st);
+					//NSLog(@"%f",st.st_mtimespec.tv_sec - launchDate);
+					if((st.st_mtimespec.tv_sec - launchDate) > -30) discToMount = item;
 				}
-				[item release];
 			}
-        }
-    }
+			[item release];
+		}
+	}
+	free(mountedDisks);
+	
 	if(n==0) {
 		NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:LS(@"Audio CD Not Found") action:nil keyEquivalent:@""];
 		[item setEnabled:NO];
