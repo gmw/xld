@@ -3192,7 +3192,7 @@ end:
 	
 	if(xld_cdda_open(&cdread, statDisc.f_mntfromname) == 0) {
 		driveIsBusy = YES;
-		if([o_autoSetOffsetValue state] == NSOnState) {
+		if([o_autoSetOffsetValue state] == NSOnState && cdread.product) {
 			NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"offsetlist" ofType:@"plist"]];
 			NSString *product = [NSString stringWithUTF8String:cdread.product];
 			if([dic objectForKey:product]) {
