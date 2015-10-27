@@ -2297,11 +2297,6 @@ end:
 
 - (void)loadPrefs
 {
-	BOOL initialLaunch = NO;
-	NSFileManager *fm = [NSFileManager defaultManager];
-	if(![fm fileExistsAtPath:[@"~/Library/Preferences/jp.tmkk.XLD.plist" stringByExpandingTildeInPath]]) {
-		initialLaunch = YES;
-	}
 	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
 	[self loadPrefsFromDictionary:pref];
 	id obj;
@@ -2325,11 +2320,9 @@ end:
 		if([obj boolValue]) [o_prefPane makeKeyAndOrderFront:nil];
 	}
 	else {
-		if(initialLaunch) {
-			[o_prefPane center];
-			[o_prefPane makeKeyAndOrderFront:nil];
-			[o_formatList performClick:nil];
-		}
+		[o_prefPane center];
+		[o_prefPane makeKeyAndOrderFront:nil];
+		[o_formatList performClick:nil];
 	}
 }
 
