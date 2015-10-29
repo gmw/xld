@@ -264,6 +264,16 @@ static int write_block (void *id, void *data, int32_t length)
 			WavpackAppendTagItem(wpc,"MEDIA_FPS",tag,strlen(tag));
 			tagAdded = YES;
 		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTISTSORT]) {
+			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ARTISTSORT] UTF8String];
+			WavpackAppendTagItem(wpc,"ARTISTSORT",tag,strlen(tag));
+			tagAdded = YES;
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ALBUMARTISTSORT]) {
+			const char *tag = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ALBUMARTISTSORT] UTF8String];
+			WavpackAppendTagItem(wpc,"ALBUMARTISTSORT",tag,strlen(tag));
+			tagAdded = YES;
+		}
 		if(!(config.flags & CONFIG_HYBRID_FLAG)) {
 			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN]) {
 				const char *tag = [[NSString stringWithFormat:@"%+.2f dB",[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_REPLAYGAIN_TRACK_GAIN] floatValue]] UTF8String];
