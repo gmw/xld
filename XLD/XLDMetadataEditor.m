@@ -77,6 +77,8 @@ static const char* ID3v1GenreList[] = {
 	[o_picture setTag:11];
 	[o_singleComment setTag:12];
 	[o_singleCompilation setTag:13];
+	[o_singleArtistSort setTag:14];
+	[o_singleAlbumArtistSort setTag:15];
 	[o_title setTag:100];
 	[o_artist setTag:101];
 	[o_album setTag:102];
@@ -88,6 +90,8 @@ static const char* ID3v1GenreList[] = {
 	[o_totalDisc setTag:110];
 	[o_comment setTag:112];
 	[o_compilation setTag:113];
+	[o_artistSort setTag:114];
+	[o_albumArtistSort setTag:115];
 	
 	NSMenu *menu = [[NSMenu alloc] init];
 	NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for All Files") action:@selector(applyForAll:) keyEquivalent:@""];
@@ -186,6 +190,14 @@ static const char* ID3v1GenreList[] = {
 		else [o_compilation setState:NSOffState];
 	}
 	else [o_compilation setState:NSOffState];
+	if(obj=[[track metadata] objectForKey:XLD_METADATA_ARTISTSORT]) {
+		[o_artistSort setStringValue:obj];
+	}
+	else [o_artistSort setStringValue:@""];
+	if(obj=[[track metadata] objectForKey:XLD_METADATA_ALBUMARTISTSORT]) {
+		[o_albumArtistSort setStringValue:obj];
+	}
+	else [o_albumArtistSort setStringValue:@""];
 }
 
 - (void)setMetadataForIndex:(int)index
@@ -261,6 +273,18 @@ static const char* ID3v1GenreList[] = {
 	}
 	else {
 		[[track metadata] setObject:[NSNumber numberWithBool:YES] forKey:XLD_METADATA_COMPILATION];
+	}
+	if([[o_artistSort stringValue] isEqualToString:@""]) {
+		[[track metadata] removeObjectForKey:XLD_METADATA_ARTISTSORT];
+	}
+	else {
+		[[track metadata] setObject:[o_artistSort stringValue] forKey:XLD_METADATA_ARTISTSORT];
+	}
+	if([[o_albumArtistSort stringValue] isEqualToString:@""]) {
+		[[track metadata] removeObjectForKey:XLD_METADATA_ALBUMARTISTSORT];
+	}
+	else {
+		[[track metadata] setObject:[o_albumArtistSort stringValue] forKey:XLD_METADATA_ALBUMARTISTSORT];
 	}
 }
 
@@ -343,6 +367,20 @@ static const char* ID3v1GenreList[] = {
 		key = XLD_METADATA_COMPILATION;
 		obj = [NSNumber numberWithBool:YES];
 		if([o_compilation state] == NSOffState) {
+			remove = YES;
+		}
+	}
+	else if(tag==114) {
+		key = XLD_METADATA_ARTISTSORT;
+		obj = [o_artistSort stringValue];
+		if([[o_artistSort stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==115) {
+		key = XLD_METADATA_ARTISTSORT;
+		obj = [o_albumArtistSort stringValue];
+		if([[o_albumArtistSort stringValue] isEqualToString:@""]) {
 			remove = YES;
 		}
 	}
@@ -441,6 +479,14 @@ static const char* ID3v1GenreList[] = {
 		else [o_singleCompilation setState:NSOffState];
 	}
 	else [o_singleCompilation setState:NSOffState];
+	if(obj=[[track metadata] objectForKey:XLD_METADATA_ARTISTSORT]) {
+		[o_singleArtistSort setStringValue:obj];
+	}
+	else [o_singleArtistSort setStringValue:@""];
+	if(obj=[[track metadata] objectForKey:XLD_METADATA_ALBUMARTISTSORT]) {
+		[o_singleAlbumArtistSort setStringValue:obj];
+	}
+	else [o_singleAlbumArtistSort setStringValue:@""];
 }
 
 - (void)setSingleMetadataForAllTracksWithTag:(int)tag album:(BOOL)albumFlag
@@ -553,6 +599,20 @@ static const char* ID3v1GenreList[] = {
 		key = XLD_METADATA_COMPILATION;
 		obj = [NSNumber numberWithBool:YES];
 		if([o_singleCompilation state] == NSOffState) {
+			remove = YES;
+		}
+	}
+	else if(tag==14) {
+		key = XLD_METADATA_ARTISTSORT;
+		obj = [o_singleArtistSort stringValue];
+		if([[o_singleArtistSort stringValue] isEqualToString:@""]) {
+			remove = YES;
+		}
+	}
+	else if(tag==15) {
+		key = XLD_METADATA_ALBUMARTISTSORT;
+		obj = [o_singleAlbumArtistSort stringValue];
+		if([[o_singleAlbumArtistSort stringValue] isEqualToString:@""]) {
 			remove = YES;
 		}
 	}
@@ -670,6 +730,18 @@ static const char* ID3v1GenreList[] = {
 	else {
 		[[track metadata] setObject:[NSNumber numberWithBool:YES] forKey:XLD_METADATA_COMPILATION];
 	}
+	if([[o_singleArtistSort stringValue] isEqualToString:@""]) {
+		[[track metadata] removeObjectForKey:XLD_METADATA_ARTISTSORT];
+	}
+	else {
+		[[track metadata] setObject:[o_singleArtistSort stringValue] forKey:XLD_METADATA_ARTISTSORT];
+	}
+	if([[o_singleAlbumArtistSort stringValue] isEqualToString:@""]) {
+		[[track metadata] removeObjectForKey:XLD_METADATA_ALBUMARTISTSORT];
+	}
+	else {
+		[[track metadata] setObject:[o_singleAlbumArtistSort stringValue] forKey:XLD_METADATA_ALBUMARTISTSORT];
+	}
 }
 
 - (NSString *)stringForMetadata:(NSString *)key
@@ -743,6 +815,8 @@ static const char* ID3v1GenreList[] = {
 	[o_allDisc setStringValue:[self stringForMetadata:XLD_METADATA_DISC]];
 	[o_allTotalDisc setStringValue:[self stringForMetadata:XLD_METADATA_TOTALDISCS]];
 	[o_allComment setStringValue:[self stringForMetadata:XLD_METADATA_COMMENT]];
+	[o_allArtistSort setStringValue:[self stringForMetadata:XLD_METADATA_ARTISTSORT]];
+	[o_allAlbumArtistSort setStringValue:[self stringForMetadata:XLD_METADATA_ALBUMARTISTSORT]];
 	[o_allEditor makeFirstResponder:o_allTitle];
 	[o_checkArray deselectAllCells];
 	[o_totalDiscCheck setState:NSOffState];
@@ -852,6 +926,22 @@ static const char* ID3v1GenreList[] = {
 		}
 		else {
 			for(i=0;i<[currentTracks count];i++) [[[currentTracks objectAtIndex:i] metadata] setObject:[NSNumber numberWithBool:YES] forKey:XLD_METADATA_COMPILATION];
+		}
+	}
+	if([[o_checkArray cellWithTag:10] state] == NSOnState) {
+		if([[o_allArtistSort stringValue] isEqualToString:@""]) {
+			for(i=0;i<[currentTracks count];i++) [[[currentTracks objectAtIndex:i] metadata] removeObjectForKey:XLD_METADATA_ARTISTSORT];
+		}
+		else {
+			for(i=0;i<[currentTracks count];i++) [[[currentTracks objectAtIndex:i] metadata] setObject:[o_allArtistSort stringValue] forKey:XLD_METADATA_ARTISTSORT];
+		}
+	}
+	if([[o_checkArray cellWithTag:11] state] == NSOnState) {
+		if([[o_allAlbumArtistSort stringValue] isEqualToString:@""]) {
+			for(i=0;i<[currentTracks count];i++) [[[currentTracks objectAtIndex:i] metadata] removeObjectForKey:XLD_METADATA_ALBUMARTISTSORT];
+		}
+		else {
+			for(i=0;i<[currentTracks count];i++) [[[currentTracks objectAtIndex:i] metadata] setObject:[o_allAlbumArtistSort stringValue] forKey:XLD_METADATA_ALBUMARTISTSORT];
 		}
 	}
 	
@@ -1090,15 +1180,15 @@ static const char* ID3v1GenreList[] = {
 - (void)controlTextDidChange:(NSNotification *)aNotification
 {
 	id sender = [aNotification object];
-	if([sender tag] < 9) [o_checkArray selectCellWithTag:[sender tag]];
-	else if([sender tag] == 9) [o_totalDiscCheck setState:NSOnState];
+	if([sender tag] == 9) [o_totalDiscCheck setState:NSOnState];
+	else [o_checkArray selectCellWithTag:[sender tag]];
 }
 
 - (void)comboBoxSelectionDidChange:(NSNotification *)aNotification
 {
 	id sender = [aNotification object];
-	if([sender tag] < 9) [o_checkArray selectCellWithTag:[sender tag]];
-	else if([sender tag] == 9) [o_totalDiscCheck setState:NSOnState];
+	if([sender tag] == 9) [o_totalDiscCheck setState:NSOnState];
+	else [o_checkArray selectCellWithTag:[sender tag]];
 }
 
 - (IBAction)selectionChanged:(id)sender

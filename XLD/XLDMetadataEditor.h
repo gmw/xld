@@ -30,6 +30,8 @@
 	IBOutlet id o_totalDisc;
 	IBOutlet id o_comment;
 	IBOutlet id o_compilation;
+	IBOutlet id o_artistSort;
+	IBOutlet id o_albumArtistSort;
 	IBOutlet id o_allTitle;
 	IBOutlet id o_allArtist;
 	IBOutlet id o_allAlbum;
@@ -41,6 +43,8 @@
 	IBOutlet id o_allTotalDisc;
 	IBOutlet id o_allComment;
 	IBOutlet id o_allCompilation;
+	IBOutlet id o_allArtistSort;
+	IBOutlet id o_allAlbumArtistSort;
 	IBOutlet id o_singleTitle;
 	IBOutlet id o_singleArtist;
 	IBOutlet id o_singleAlbum;
@@ -52,6 +56,8 @@
 	IBOutlet id o_singleTotalDisc;
 	IBOutlet id o_singleComment;
 	IBOutlet id o_singleCompilation;
+	IBOutlet id o_singleArtistSort;
+	IBOutlet id o_singleAlbumArtistSort;
 	IBOutlet id o_picture;
 	IBOutlet id o_track;
 	IBOutlet id o_totalTrack;
