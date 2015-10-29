@@ -440,6 +440,28 @@ int WavpackGetTagItemIndexed (WavpackContext *wpc, int index, char *item, int si
 			}
 			free(buf);
 		}
+		else if(!strcasecmp(tagIdx,"artistsort")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:str forKey:XLD_METADATA_ARTISTSORT];
+				[str release];
+			}
+			free(buf);
+		}
+		else if(!strcasecmp(tagIdx,"albumartistsort")) {
+			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
+			char *buf = (char *)malloc(size+10);
+			WavpackGetTagItem(wc, tagIdx, buf, size+10);
+			NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:size] encoding:NSUTF8StringEncoding];
+			if(str) {
+				[metadataDic setObject:str forKey:XLD_METADATA_ALBUMARTISTSORT];
+				[str release];
+			}
+			free(buf);
+		}
 		else { //unknown text metadata
 			int size = WavpackGetTagItem(wc, tagIdx, NULL, 0);
 			char *buf = (char *)malloc(size+10);
