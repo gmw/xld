@@ -286,16 +286,19 @@ static void read_hw_info(xld_cdread_t *disc)
 			disc->vendor = malloc(length);
 			CFStringGetCString(vendor,disc->vendor,length,kCFStringEncodingUTF8);
 		}
+		else disc->vendor = strdup("Unknown vendor");
 		if(product) {
 			int length = CFStringGetLength(product)+1;
 			disc->product = malloc(length);
 			CFStringGetCString(product,disc->product,length,kCFStringEncodingUTF8);
 		}
+		else disc->product = strdup("Unknown drive");
 		if(revision) {
 			int length = CFStringGetLength(revision)+1;
 			disc->revision = malloc(length);
 			CFStringGetCString(revision,disc->revision,length,kCFStringEncodingUTF8);
 		}
+		else disc->revision = strdup("Unknown revision");
 		CFRelease(properties);
 		IOObjectRelease(service);
 		break;
