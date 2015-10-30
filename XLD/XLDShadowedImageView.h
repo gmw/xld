@@ -46,5 +46,7 @@
 - (void)setTag:(int)t;
 - (int)tag;
 - (void)setBadge:(NSString *)str;
+- (void)copy:(id)sender;
+- (void)paste:(id)sender;
 
 @end

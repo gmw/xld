@@ -458,4 +458,34 @@ last:
 	if(delegate && [delegate respondsToSelector:@selector(imageLoaded)]) [delegate imageLoaded];
 }
 
+- (void)copy:(id)sender
+{
+	if(!imageData) return;
+	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:imageData];
+	NSData *tiff = [rep TIFFRepresentation];
+	[[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:nil];
+	[[NSPasteboard generalPasteboard] setData:tiff forType:NSTIFFPboardType];
+}
+
+- (void)paste:(id)sender
+{
+	NSData *dat = [[NSPasteboard generalPasteboard] dataForType:NSTIFFPboardType];
+	if(dat) {
+		NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:dat];
+		NSData *png = [rep representationUsingType:NSPNGFileType properties:nil];
+		[self setImageData:png];
+	}
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+	if([menuItem action] == @selector(copy:)) {
+		return (imageData != nil);
+	}
+	else if([menuItem action] == @selector(paste:)) {
+		return ([[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObject:NSTIFFPboardType]] != nil);
+	}
+	return NO;
+}
+
 @end

@@ -12,10 +12,10 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="16"/>
-			<integer value="4"/>
-			<integer value="1"/>
 			<integer value="3"/>
+			<integer value="16"/>
+			<integer value="1"/>
+			<integer value="4"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -66,6 +66,32 @@
 					<object class="NSMenuItem" id="716344450">
 						<reference key="NSMenu" ref="576251711"/>
 						<string key="NSTitle">Image entfernen</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="446688384"/>
+						<reference key="NSMixedImage" ref="1070497929"/>
+					</object>
+					<object class="NSMenuItem" id="881726697">
+						<reference key="NSMenu" ref="576251711"/>
+						<bool key="NSIsDisabled">YES</bool>
+						<bool key="NSIsSeparator">YES</bool>
+						<string key="NSTitle"/>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="446688384"/>
+						<reference key="NSMixedImage" ref="1070497929"/>
+					</object>
+					<object class="NSMenuItem" id="873363319">
+						<reference key="NSMenu" ref="576251711"/>
+						<string key="NSTitle">Copy Image</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="446688384"/>
+						<reference key="NSMixedImage" ref="1070497929"/>
+					</object>
+					<object class="NSMenuItem" id="857878682">
+						<reference key="NSMenu" ref="576251711"/>
+						<string key="NSTitle">Paste Image</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="446688384"/>
@@ -1074,6 +1100,22 @@
 					</object>
 					<int key="connectionID">92</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">paste:</string>
+						<reference key="source" ref="891034231"/>
+						<reference key="destination" ref="857878682"/>
+					</object>
+					<int key="connectionID">94</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">copy:</string>
+						<reference key="source" ref="891034231"/>
+						<reference key="destination" ref="881726697"/>
+					</object>
+					<int key="connectionID">97</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1112,6 +1154,9 @@
 							<reference ref="610744598"/>
 							<reference ref="950971240"/>
 							<reference ref="716344450"/>
+							<reference ref="857878682"/>
+							<reference ref="881726697"/>
+							<reference ref="873363319"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -1535,6 +1580,21 @@
 						<reference key="object" ref="106049116"/>
 						<reference key="parent" ref="91925826"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">93</int>
+						<reference key="object" ref="857878682"/>
+						<reference key="parent" ref="576251711"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">95</int>
+						<reference key="object" ref="881726697"/>
+						<reference key="parent" ref="576251711"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">96</int>
+						<reference key="object" ref="873363319"/>
+						<reference key="parent" ref="576251711"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1633,11 +1693,14 @@
 					<string>90.IBPluginDependency</string>
 					<string>90.IBViewBoundsToFrameTransform</string>
 					<string>91.IBPluginDependency</string>
+					<string>93.IBPluginDependency</string>
+					<string>95.IBPluginDependency</string>
+					<string>96.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{42, 905}, {260, 63}}</string>
+					<string>{{129, 474}, {260, 113}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1661,9 +1724,9 @@
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABBsAAAwZgAAA</bytes>
 					</object>
-					<string>{{242, 412}, {709, 475}}</string>
+					<string>{{76, 281}, {709, 475}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{242, 412}, {709, 475}}</string>
+					<string>{{76, 281}, {709, 475}}</string>
 					<boolean value="NO"/>
 					<boolean value="YES"/>
 					<string>{640, 400}</string>
@@ -1700,7 +1763,7 @@
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{0, 824}, {364, 123}}</string>
+					<string>{{421, 633}, {364, 123}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1713,7 +1776,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{548, 221}, {514, 83}}</string>
+					<string>{{280, 221}, {514, 83}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1750,6 +1813,9 @@
 						<bytes key="NSTransformStruct">P4AAAL+AAABD0wAAwVAAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -1768,17 +1834,29 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">92</int>
+			<int key="maxID">97</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
-					<string key="className">NSTableView</string>
+					<string key="className">NSCell</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="356794664">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">XLDCustomClasses.h</string>
 					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSScrollView</string>
+					<reference key="sourceIdentifier" ref="356794664"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSTableView</string>
+					<reference key="sourceIdentifier" ref="356794664"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
+					<reference key="sourceIdentifier" ref="356794664"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">XLDDiscView</string>
@@ -1981,6 +2059,38 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">XLDShadowedImageView</string>
 					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>copy:</string>
+							<string>paste:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>copy:</string>
+							<string>paste:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">copy:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">paste:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -2418,14 +2528,7 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Sparkle.framework/Headers/SUAppcast.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Sparkle.framework/Headers/SUUpdater.h</string>
+						<string key="minorKey">Print.framework/Headers/PDEPluginInterface.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

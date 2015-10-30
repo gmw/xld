@@ -12,11 +12,11 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="346"/>
-			<integer value="205"/>
-			<integer value="8"/>
-			<integer value="37"/>
 			<integer value="153"/>
+			<integer value="37"/>
+			<integer value="346"/>
+			<integer value="8"/>
+			<integer value="205"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2649,6 +2649,42 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 						<reference key="NSMixedImage" ref="429815536"/>
 						<reference key="NSFont" ref="58147800"/>
 					</object>
+					<object class="NSMenuItem" id="713369844">
+						<reference key="NSMenu" ref="208133755"/>
+						<bool key="NSIsDisabled">YES</bool>
+						<bool key="NSIsSeparator">YES</bool>
+						<string key="NSTitle"/>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="14717492"/>
+						<reference key="NSMixedImage" ref="429815536"/>
+					</object>
+					<object class="NSMenuItem" id="764151723">
+						<reference key="NSMenu" ref="208133755"/>
+						<string key="NSTitle">画像をコピー</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="14717492"/>
+						<reference key="NSMixedImage" ref="429815536"/>
+					</object>
+					<object class="NSMenuItem" id="224817220">
+						<reference key="NSMenu" ref="208133755"/>
+						<string key="NSTitle">画像をペースト</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="14717492"/>
+						<reference key="NSMixedImage" ref="429815536"/>
+					</object>
+					<object class="NSMenuItem" id="204466907">
+						<reference key="NSMenu" ref="208133755"/>
+						<bool key="NSIsDisabled">YES</bool>
+						<bool key="NSIsSeparator">YES</bool>
+						<string key="NSTitle"/>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="14717492"/>
+						<reference key="NSMixedImage" ref="429815536"/>
+					</object>
 					<object class="NSMenuItem" id="799093339">
 						<reference key="NSMenu" ref="208133755"/>
 						<string key="NSTitle">この項目を全てのファイルに適用</string>
@@ -4076,6 +4112,22 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 					</object>
 					<int key="connectionID">455</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">paste:</string>
+						<reference key="source" ref="740702854"/>
+						<reference key="destination" ref="224817220"/>
+					</object>
+					<int key="connectionID">457</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">copy:</string>
+						<reference key="source" ref="740702854"/>
+						<reference key="destination" ref="764151723"/>
+					</object>
+					<int key="connectionID">461</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -4948,6 +5000,10 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 							<reference ref="799093339"/>
 							<reference ref="837224646"/>
 							<reference ref="41949250"/>
+							<reference ref="224817220"/>
+							<reference ref="713369844"/>
+							<reference ref="204466907"/>
+							<reference ref="764151723"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -5976,6 +6032,26 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 						<reference key="object" ref="256128280"/>
 						<reference key="parent" ref="568011954"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">456</int>
+						<reference key="object" ref="224817220"/>
+						<reference key="parent" ref="208133755"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">458</int>
+						<reference key="object" ref="713369844"/>
+						<reference key="parent" ref="208133755"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">459</int>
+						<reference key="object" ref="204466907"/>
+						<reference key="parent" ref="208133755"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">460</int>
+						<reference key="object" ref="764151723"/>
+						<reference key="parent" ref="208133755"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -6325,6 +6401,10 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 					<string>452.IBPluginDependency</string>
 					<string>452.IBViewBoundsToFrameTransform</string>
 					<string>453.IBPluginDependency</string>
+					<string>456.IBPluginDependency</string>
+					<string>458.IBPluginDependency</string>
+					<string>459.IBPluginDependency</string>
+					<string>460.IBPluginDependency</string>
 					<string>48.IBPluginDependency</string>
 					<string>48.ImportedFromIB2</string>
 					<string>52.IBPluginDependency</string>
@@ -6489,7 +6569,7 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{458, 264}, {276, 83}}</string>
+					<string>{{458, 204}, {276, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -6738,6 +6818,10 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
@@ -6799,7 +6883,7 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">455</int>
+			<int key="maxID">461</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -7386,6 +7470,38 @@ b2QAAAAAAAAGEAAAnGcAAAAAwbTFAAAAAAAAAAAAAAAAAAAAAAA</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">XLDShadowedImageView</string>
 					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>copy:</string>
+							<string>paste:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>copy:</string>
+							<string>paste:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">copy:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">paste:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
