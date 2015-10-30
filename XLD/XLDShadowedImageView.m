@@ -475,6 +475,7 @@ last:
 		NSData *png = [rep representationUsingType:NSPNGFileType properties:nil];
 		[self setImageData:png];
 	}
+	if(delegate && [delegate respondsToSelector:@selector(imageLoaded)]) [delegate imageLoaded];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
