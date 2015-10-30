@@ -504,6 +504,34 @@ int getApeTag(CAPETag *tag, wchar_t *field, char *buf, int *length)
 		free(buf);
 	}
 	len = 1;
+	getApeTag(tag, L"artistsort", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"artistsort", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			[metadataDic setObject:str forKey:XLD_METADATA_ARTISTSORT];
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
+	getApeTag(tag, L"albumartistsort", buf_tmp, &len);
+	if(len) {
+		char *buf = (char *)malloc(len+10);
+		getApeTag(tag, L"albumartistsort", buf, &len);
+		if(buf[len-1]==0) len--;
+		NSString *str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSUTF8StringEncoding];
+		if(!str) str = [[NSString alloc] initWithData:[NSData dataWithBytes:buf length:len] encoding:NSISOLatin1StringEncoding];
+		if(str) {
+			[metadataDic setObject:str forKey:XLD_METADATA_ALBUMARTISTSORT];
+			[str release];
+		}
+		free(buf);
+	}
+	len = 1;
 	getApeTag(tag, L"Cover Art (front)", buf_tmp, &len);
 	if(len) {
 		char *buf = (char *)malloc(len+10);
