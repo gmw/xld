@@ -38,6 +38,7 @@
 #import "XLDRenamer.h"
 #import "XLDLMAXMLLoader.h"
 #import "XLDCCDLoader.h"
+#import "XLDOpticalDriveManager.h"
 
 #define NSAppKitVersionNumber10_5 949
 
@@ -48,12 +49,6 @@ static NSString*    MetadataIdentifier = @"Metadata";
 static NSString*    CDRipIdentifier = @"CD Rip";
 static NSString*    BurnIdentifier = @"Burn";
 static NSString*    FilenameIdentifier = @"Filename";
-
-static void DADoneCallback(DADiskRef DiskRef, DADissenterRef DissenterRef, void *context) 
-{
-	//NSLog(@"done");
-    CFRunLoopStop(CFRunLoopGetCurrent());
-}
 
 static void diskAppeared(DADiskRef disk, void *context)
 {
@@ -111,17 +106,6 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	
 	return volume;
 }
-	
-
-#define kAudioCDFilesystemID			(UInt16)(('J' << 8) | 'H' ) // 'JH'; this avoids compiler warning
-
-#ifdef _BIG_ENDIAN
-#define SWAP32(n) (n)
-#define SWAP16(n) (n)
-#else
-#define SWAP32(n) (((n>>24)&0xff) | ((n>>8)&0xff00) | ((n<<8)&0xff0000) | ((n<<24)&0xff000000))
-#define SWAP16(n) (((n>>8)&0xff) | ((n<<8)&0xff00))
-#endif
 
 #define MAX_SERVICE_NAME 1000
 
@@ -757,7 +741,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	}
 	
 	if([[cueParser fileToDecode] hasPrefix:@"/dev/disk"]) {
-		if(!ejected) {
+		if([opticalDriveManager isMounted:[cueParser fileToDecode]]) {
 			tempOutputDir = [outputDir retain];
 			[o_detectPregapPane setTitle:LS(@"Waiting")];
 			[o_detectPregapMessage setStringValue:LS(@"Waiting for Drive...")];
@@ -766,13 +750,8 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			[o_detectPregapPaneButton setHidden:YES];
 			[o_detectPregapPane center];
 			[o_detectPregapPane makeKeyAndOrderFront:nil];
-			[NSThread detachNewThreadSelector:@selector(unmountDisc:) toTarget:self withObject:[cueParser fileToDecode]];
+			[NSThread detachNewThreadSelector:@selector(unmountDiscAndNotify:) toTarget:opticalDriveManager withObject:[cueParser fileToDecode]];
 			return;
-		}
-		else {
-			ejected = NO;
-			//[o_detectPregapProgress stopAnimation:self];
-			//[o_detectPregapPane close];
 		}
 	}
 	
@@ -1334,6 +1313,9 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	for(i=[o_openCDDA numberOfItems]-3;i>=0;i--) {
 		[o_openCDDA removeItemAtIndex:i];
 	}
+	for(i=[o_ejectDiscMenu numberOfItems]-1;i>=0;i--) {
+		[o_ejectDiscMenu removeItemAtIndex:i];
+	}
     
 	struct statfs *mountedDisks = malloc(sizeof(struct statfs) * 256);
 	int numVolumes = getfsstat(mountedDisks, sizeof(struct statfs) * 256, MNT_NOWAIT);
@@ -1342,9 +1324,12 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 		{
 			NSString *mntPath = [NSString stringWithUTF8String:mountedDisks[i].f_mntonname];
 			NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:[[NSFileManager defaultManager] displayNameAtPath:mntPath] action:@selector(readCDDA:) keyEquivalent:@""];
+			NSMenuItem *item2 = [[NSMenuItem alloc]initWithTitle:[[NSFileManager defaultManager] displayNameAtPath:mntPath] action:@selector(ejectDisc:) keyEquivalent:@""];
 			[item setTarget:self];
 			if(n==0) [item setKeyEquivalent:@"O"];
-			[o_openCDDA insertItem:item atIndex:n++];
+			[o_openCDDA insertItem:item atIndex:n];
+			[o_ejectDiscMenu insertItem:item2 atIndex:n];
+			n++;
 			if(automount) {
 				const char *devicePath = [[NSString stringWithFormat:@"/dev/%@",device] UTF8String];
 				if(!strcmp(devicePath, mountedDisks[i].f_mntfromname)) {
@@ -1362,8 +1347,11 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	if(n==0) {
 		NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:LS(@"Audio CD Not Found") action:nil keyEquivalent:@""];
 		[item setEnabled:NO];
+		NSMenuItem *item2 = [item copy];
 		[o_openCDDA insertItem:item atIndex:0];
+		[o_ejectDiscMenu insertItem:item2 atIndex:0];
 		[item release];
+		[item2 release];
 	}
 	if(discToMount) [self readCDDA:discToMount];
 }
@@ -1725,6 +1713,15 @@ end:
 		NSRunAlertPanel(LS(@"Making priority higher than the current value"), LS(@"Please restart XLD to take effect."), @"OK", nil, nil);
 }
 
+- (IBAction)ejectDisc:(id)sender
+{
+	NSMutableString *tmpStr = [NSMutableString stringWithString:[sender title]];
+	[tmpStr replaceOccurrencesOfString:@"/" withString:@":" options:0 range:NSMakeRange(0, [tmpStr length])];
+	struct statfs statDisc;
+	statfs([[@"/Volumes" stringByAppendingPathComponent:tmpStr] UTF8String], &statDisc);
+	[opticalDriveManager ejectDisc:[NSString stringWithUTF8String:statDisc.f_mntfromname]];
+}
+
 #pragma mark Normal Methods
 
 - (id)init
@@ -1779,7 +1776,6 @@ end:
 			}
 		}
 	}
-	ejected = NO;
 	launched = NO;
 	firstDrag = YES;
 	tempOutputDir = nil;
@@ -1799,6 +1795,7 @@ end:
 	profileManager = [[XLDProfileManager alloc] initWithDelegate:self];
 	discView = [[XLDDiscView alloc] initWithDelegate:self];
 	coverArtSearcher = [[XLDCoverArtSearcher alloc] initWithDelegate:self];
+	opticalDriveManager = [[XLDOpticalDriveManager alloc] initWithDelegate:self];
 	
 	DASessionRef daSession = DASessionCreate(kCFAllocatorDefault);
 	DAApprovalSessionRef daASession = DAApprovalSessionCreate(kCFAllocatorDefault);
@@ -3175,16 +3172,7 @@ end:
 	statfs([[@"/Volumes" stringByAppendingPathComponent:tmpStr] UTF8String], &statDisc);
 	//NSLog(@"%s",stat.f_mntfromname);
 	
-	DASessionRef session = DASessionCreate(NULL);
-	DASessionScheduleWithRunLoop(session, CFRunLoopGetCurrent(), MY_RUN_LOOP_MODE);
-	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,statDisc.f_mntfromname);
-	DADiskUnmount(disk,kDADiskUnmountOptionDefault,DADoneCallback,NULL);
-	int ret = CFRunLoopRunInMode(MY_RUN_LOOP_MODE, 120.0, false);
-	if (ret == kCFRunLoopRunStopped) {
-		DASessionUnscheduleFromRunLoop(session, CFRunLoopGetCurrent(), MY_RUN_LOOP_MODE);
-	}
-	CFRelease(disk);
-	CFRelease(session);
+	[opticalDriveManager unmountDisc:[NSString stringWithUTF8String:statDisc.f_mntfromname]];
 	
 	int i;
 	
@@ -3262,11 +3250,7 @@ end:
 			[ripper closeFile];
 			[ripper release];
 			driveIsBusy = NO;
-			session = DASessionCreate(NULL);
-			disk = DADiskCreateFromBSDName(NULL,session,statDisc.f_mntfromname);
-			DADiskMount(disk,NULL,kDADiskMountOptionDefault,NULL,NULL);
-			CFRelease(disk);
-			CFRelease(session);
+			[opticalDriveManager mountDisc:[NSString stringWithUTF8String:statDisc.f_mntfromname]];
 			[self performSelectorOnMainThread:@selector(delayedRefleshList) withObject:nil waitUntilDone:NO];
 		}
 		else {
@@ -3287,78 +3271,18 @@ end:
 	[pool release];
 }
 
-- (void)unmountDisc:(NSString *)dev
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	DASessionRef session = DASessionCreate(NULL);
-	DASessionScheduleWithRunLoop(session, CFRunLoopGetCurrent(), MY_RUN_LOOP_MODE);
-	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,[dev UTF8String]);
-	DADiskUnmount(disk,kDADiskUnmountOptionDefault,DADoneCallback,NULL);
-	int ret = CFRunLoopRunInMode(MY_RUN_LOOP_MODE, 120.0, false);
-	if (ret == kCFRunLoopRunStopped) {
-		DASessionUnscheduleFromRunLoop(session, CFRunLoopGetCurrent(), MY_RUN_LOOP_MODE);
-	}
-	CFRelease(disk);
-	CFRelease(session);
-	
-	ejected = YES;
-	[self performSelectorOnMainThread:@selector(beginDecode:) withObject:nil waitUntilDone:NO];
-	[pool release];
-}
-
-- (void)mountDisc:(NSString *)dev
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[dev retain];
-	
-	DASessionRef session = DASessionCreate(NULL);
-	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,[dev UTF8String]);
-	DADiskMount(disk,NULL,kDADiskMountOptionDefault,NULL,NULL);
-	CFRelease(disk);
-	CFRelease(session);
-	
-	[dev release];
-	[pool release];
-}
-
-- (void)ejectDisc:(NSString *)dev
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[dev retain];
-	
-	DASessionRef session = DASessionCreate(NULL);
-	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,[dev UTF8String]);
-	DADiskUnmount(disk,kDADiskUnmountOptionWhole,NULL,NULL);
-	DADiskEject(disk,kDADiskEjectOptionDefault,NULL,NULL);
-	CFRelease(disk);
-	CFRelease(session);
-	
-	[dev release];
-	[pool release];
-}
-
 - (void)analyzeCacheForDrive:(NSString *)dev
 {
 	driveIsBusy = YES;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	id cueParser = [discView cueParser];
 	
-	DASessionRef session = DASessionCreate(NULL);
-	DASessionScheduleWithRunLoop(session, CFRunLoopGetCurrent(), MY_RUN_LOOP_MODE);
-	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,[dev UTF8String]);
-	DADiskUnmount(disk,kDADiskUnmountOptionDefault,DADoneCallback,NULL);
-	int ret = CFRunLoopRunInMode(MY_RUN_LOOP_MODE, 120.0, false);
-	if (ret == kCFRunLoopRunStopped) {
-		DASessionUnscheduleFromRunLoop(session, CFRunLoopGetCurrent(), MY_RUN_LOOP_MODE);
-	}
-	CFRelease(disk);
-	CFRelease(session);
+	[opticalDriveManager unmountDisc:dev];
 	
 	cache_analysis_t result;
 	result.cache_sector_size = -1;
 	result.backseek_flush_capable = -1;
-	ret = [XLDCDDARipper analyzeCacheForDrive:dev result:&result delegate:self];
+	int ret = [XLDCDDARipper analyzeCacheForDrive:dev result:&result delegate:self];
 	
 	[o_detectPregapProgress stopAnimation:nil];
 	[NSApp endSheet:o_detectPregapPane returnCode:0];
@@ -3406,11 +3330,7 @@ end:
 	
 	[out release];
 	
-	session = DASessionCreate(NULL);
-	disk = DADiskCreateFromBSDName(NULL,session,[dev UTF8String]);
-	DADiskMount(disk,NULL,kDADiskMountOptionDefault,NULL,NULL);
-	CFRelease(disk);
-	CFRelease(session);
+	[opticalDriveManager mountDisc:dev];
 	
 	[pool release];
 	driveIsBusy = NO;
@@ -3444,7 +3364,7 @@ end:
 		while(1) { //skip until albm;
 			if(fread(atom,1,4,fp) < 4) goto end;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"albm",4)) break;
 			else if(!memcmp(atom,"cidb",4)) {
 				if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
@@ -3468,12 +3388,12 @@ end:
 		trakPos = 0;
 		lastTrakPos = 0;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		int rest = tmp-12;
 		while(rest > 0) { //skip until trak;
 			if(fread(atom,1,4,fp) < 4) goto end;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"trak",4)) {
 				if(!trakPos) trakPos = ftell(fp);
 				lastTrakPos = ftell(fp);
@@ -3551,19 +3471,19 @@ end:
 			}
 			else if(!memcmp(atom,"year",4)) {
 				if(fread(&albumYear,4,1,fp) < 1) goto end;
-				albumYear = SWAP32(albumYear);
+				albumYear = OSSwapBigToHostInt32(albumYear);
 			}
 			else if(!memcmp(atom,"dnum",4)) {
 				if(fread(&discNumber,4,1,fp) < 1) goto end;
-				discNumber = SWAP32(discNumber);
+				discNumber = OSSwapBigToHostInt32(discNumber);
 			}
 			else if(!memcmp(atom,"dcnt",4)) {
 				if(fread(&totalDisc,4,1,fp) < 1) goto end;
-				totalDisc = SWAP32(totalDisc);
+				totalDisc = OSSwapBigToHostInt32(totalDisc);
 			}
 			else if(!memcmp(atom,"cmpl",4)) {
 				if(fread(&compilation,4,1,fp) < 1) goto end;
-				compilation = SWAP32(compilation);
+				compilation = OSSwapBigToHostInt32(compilation);
 			}
 			else if(!memcmp(atom,"prog",4)) {
 				totalTrack = (tmp-8)/2;
@@ -3617,7 +3537,7 @@ end:
 				int trackIdx,trackSize,read=12;
 				if(fread(atom,1,4,fp) < 4) goto end;
 				if(fread(&tmp,4,1,fp) < 1) goto end;
-				trackSize = SWAP32(tmp);
+				trackSize = OSSwapBigToHostInt32(tmp);
 				if(memcmp(atom,"trak",4)) {
 					if(ftell(fp) > lastTrakPos) break;
 					else {
@@ -3627,12 +3547,12 @@ end:
 				}
 				
 				if(fread(&tmp,4,1,fp) < 1) goto end;
-				trackIdx = SWAP32(tmp);
+				trackIdx = OSSwapBigToHostInt32(tmp);
 				
 				while(read<trackSize) {
 					if(fread(atom,1,4,fp) < 4) goto end;
 					if(fread(&tmp,4,1,fp) < 1) goto end;
-					tmp = SWAP32(tmp);
+					tmp = OSSwapBigToHostInt32(tmp);
 					if(!memcmp(atom,"tnam",4) && (trackIdx <= actualTotalTrack) && (tmp > 0xa)) {
 						if(fseeko(fp,2,SEEK_CUR) != 0) goto end;
 						buf = malloc(tmp-8);
@@ -3740,7 +3660,7 @@ end:
 					else if(!memcmp(atom,"year",4) && (trackIdx <= actualTotalTrack)) {
 						int year;
 						if(fread(&year,4,1,fp) < 1) goto end;
-						year = SWAP32(year);
+						year = OSSwapBigToHostInt32(year);
 						[[[trackArr objectAtIndex:trackIdx-1] metadata] setObject:[NSNumber numberWithInt:year] forKey:XLD_METADATA_YEAR];
 					}
 					else {
@@ -3945,9 +3865,9 @@ end:
 	[result saveLog];
 	[result saveCuesheetIfNeeded];
 	if([result isGoodRip] && ([o_ejectWhenDone state] == NSOnState))
-		[NSThread detachNewThreadSelector:@selector(ejectDisc:) toTarget:self withObject:[result deviceStr]];
+		[NSThread detachNewThreadSelector:@selector(ejectDisc:) toTarget:opticalDriveManager withObject:[result deviceStr]];
 	else
-		[NSThread detachNewThreadSelector:@selector(mountDisc:) toTarget:self withObject:[result deviceStr]];
+		[NSThread detachNewThreadSelector:@selector(mountDisc:) toTarget:opticalDriveManager withObject:[result deviceStr]];
 	if([result isGoodRip] && ([o_quitWhenDone state] == NSOnState)) {
 		[NSApp terminate:self];
 	}
@@ -4548,6 +4468,7 @@ fail:
 	[o_manageProfileMenu setAction:@selector(showProfileManager:)];
 	[o_manageProfileMenu setTarget:profileManager];
 	[o_openCDDA setAutoenablesItems:YES];
+	[o_ejectDiscMenu setAutoenablesItems:YES];
 	//[self setNextKeyViews];
 	[self statusChanged:nil];
 	[self updateCDDAList:nil];
@@ -4787,6 +4708,11 @@ willBeInsertedIntoToolbar:(BOOL)willBeInserted
 		[o_profileMenu addItem:item];
 		[item release];
 	}
+}
+
+- (void)unmountCompletedForDevice:(NSString *)dev
+{
+	[self beginDecode:nil];
 }
 
 @end

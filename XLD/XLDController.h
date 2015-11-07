@@ -130,6 +130,7 @@
 	IBOutlet id o_priority;
 	IBOutlet id o_autoStartCondition;
 	IBOutlet id o_alignTracks;
+	IBOutlet id o_ejectDiscMenu;
 	id multipleOutputFormatMatrix;
 	//id decoder;
 	id decoderCenter;
@@ -145,7 +146,6 @@
 	//NSString *queuedFile;
 	NSMutableArray *queue;
 	BOOL firstDrag;
-	BOOL ejected;
 	NSString *tempOutputDir;
 	id updater;
 	BOOL driveIsBusy;
@@ -158,6 +158,7 @@
 	id coverArtSearcher;
 	int currentNice;
 	id dsdConfig;
+	id opticalDriveManager;
 }
 - (IBAction)beginDecode:(id)sender;
 - (IBAction)setOutputDir:(id)sender;
@@ -191,6 +192,7 @@
 - (IBAction)getMetadataFromURL:(id)sender;
 - (IBAction)gotoMBReleasePage:(id)sender;
 - (IBAction)renice:(id)sender;
+- (IBAction)ejectDisc:(id)sender;
 //- (void)finishedDecoding;
 //- (void)updateProgress:(double)val restTracks:(int)n;
 //- (BOOL)ignoreGap;
