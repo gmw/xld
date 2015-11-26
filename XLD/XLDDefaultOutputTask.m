@@ -6,6 +6,7 @@
 //  Copyright 2006 tmkk. All rights reserved.
 //
 
+#import <regex.h>
 #import "XLDDefaultOutputTask.h"
 #import "XLDDefaultOutput.h"
 #import "XLDTrack.h"
@@ -238,10 +239,28 @@ static void appendCommentTag(NSMutableData *tagData, char *field, char *lang, NS
 			appendTextTag(tagData, "TPOS", str, 0);
 		}
 		
-		/* TYER */
+		/* TYER + TDAT */
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE]) {
-			added = YES;
-			appendTextTag(tagData, "TYER", [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE], 1);
+			regex_t regex;
+			regmatch_t match[4];
+			regcomp(&regex, "^([0-9]{4})[./-]([0-9]{1,2})[./-]([0-9]{1,2})", REG_EXTENDED);
+			const char *date = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE] UTF8String];
+			if(regexec(&regex, date, 4, match, 0) != REG_NOMATCH) {
+				char mm[3];
+				char dd[3];
+				memcpy(mm,date+match[2].rm_so,match[2].rm_eo-match[2].rm_so);
+				mm[match[2].rm_eo-match[2].rm_so] = 0;
+				memcpy(dd,date+match[3].rm_so,match[3].rm_eo-match[3].rm_so);
+				dd[match[3].rm_eo-match[3].rm_so] = 0;
+				appendTextTag(tagData, "TDAT", [NSString stringWithFormat:@"%02d%02d",atoi(dd),atoi(mm)], 0);
+				added = YES;
+			}
+			regfree(&regex);
+			int year = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE] intValue];
+			if(year >= 1000 && year < 3000) {
+				added = YES;
+				appendTextTag(tagData, "TYER", [NSString stringWithFormat:@"%d",year], 0);
+			}
 		}
 		else if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR]) {
 			added = YES;
