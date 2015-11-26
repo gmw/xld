@@ -599,6 +599,32 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 						if(year > 1000 && year < 3000) [metadata setObject:[NSNumber numberWithInt:year] forKey:XLD_METADATA_YEAR];
 					}
 				}
+				else if(!strncmp(name,"TDAT",4)) {
+					if(version == 3) {
+						NSString *str = getTextFrame23(dat,&pos);
+						if(str && [str length] == 4) {
+							const char *ddmm = [str UTF8String];
+							char mm_dd[6];
+							memcpy(mm_dd,ddmm+2,2);
+							memcpy(mm_dd+3,ddmm,2);
+							mm_dd[2] = '-';
+							mm_dd[5] = 0;
+							[metadata setObject:[NSString stringWithUTF8String:mm_dd] forKey:@"TDAT_MM_DD"];
+						}
+					}
+					else skipFrame24(dat,&pos);
+				}
+				else if(!strncmp(name,"TDRC",4)) {
+					if(version == 4) {
+						NSString *str = getTextFrame24(dat,&pos);
+						if(str) {
+							[metadata setObject:str forKey:XLD_METADATA_DATE];
+							int year = [str intValue];
+							if(year > 1000 && year < 3000) [metadata setObject:[NSNumber numberWithInt:year] forKey:XLD_METADATA_YEAR];
+						}
+					}
+					else skipFrame23(dat,&pos);
+				}
 				else if(!strncmp(name,"TSOT",4)) {
 					NSString *str = (version == 3) ? getTextFrame23(dat,&pos) : getTextFrame24(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_TITLESORT];
@@ -796,6 +822,18 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 						if(year > 1000 && year < 3000) [metadata setObject:[NSNumber numberWithInt:year] forKey:XLD_METADATA_YEAR];
 					}
 				}
+				else if(!strncmp(name,"TDA",3)) {
+					NSString *str = getTextFrame22(dat,&pos);
+					if(str && [str length] == 4) {
+						const char *ddmm = [str UTF8String];
+						char mm_dd[6];
+						memcpy(mm_dd,ddmm+2,2);
+						memcpy(mm_dd+3,ddmm,2);
+						mm_dd[2] = '-';
+						mm_dd[5] = 0;
+						[metadata setObject:[NSString stringWithUTF8String:mm_dd] forKey:@"TDAT_MM_DD"];
+					}
+				}
 				else if(!strncmp(name,"TST",3)) {
 					NSString *str = getTextFrame22(dat,&pos);
 					if(str) [metadata setObject:str forKey:XLD_METADATA_TITLESORT];
@@ -911,6 +949,14 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 	}
 	@catch (NSException *exception) {
 		NSLog(@"%@ in parseID3(): %@",[exception name], [exception reason]);
+	}
+	if([metadata objectForKey:@"TDAT_MM_DD"]) {
+		if([metadata objectForKey:XLD_METADATA_YEAR]) {
+			NSString *mmdd = [metadata objectForKey:@"TDAT_MM_DD"];
+			NSString *date = [NSString stringWithFormat:@"%d-%@",[[metadata objectForKey:XLD_METADATA_YEAR] intValue],mmdd];
+			[metadata setObject:date forKey:XLD_METADATA_DATE];
+		}
+		[metadata removeObjectForKey:@"TDAT_MM_DD"];
 	}
 }
 
