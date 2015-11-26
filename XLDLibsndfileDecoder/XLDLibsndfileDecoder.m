@@ -168,7 +168,7 @@ last:
 	if(memcmp(chunk,"FORM",4)) goto end;
 	if(fseeko(fp,4,SEEK_CUR)) goto end;
 	if(fread(chunk,1,4,fp) != 4) goto end;
-	if(memcmp(chunk,"AIFF",4)) goto end;
+	if(memcmp(chunk,"AIFF",4) && memcmp(chunk,"AIFC",4)) goto end;
 	while(1) {
 		if(fread(chunk,1,4,fp) != 4) goto end;
 		if(fread(&length,4,1,fp) != 1) goto end;
