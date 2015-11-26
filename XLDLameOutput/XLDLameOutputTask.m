@@ -6,6 +6,7 @@
 //  Copyright 2006 tmkk. All rights reserved.
 //
 
+#import <regex.h>
 #import "XLDLameOutputTask.h"
 #import "XLDLameOutput.h"
 
@@ -188,6 +189,24 @@ void swap_utf16(unsigned short *str)
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR]) {
 			id3tag_set_year(gfp,[[[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_YEAR] stringValue] UTF8String]);
+		}
+		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE]) {
+			regex_t regex;
+			regmatch_t match[4];
+			regcomp(&regex, "^([0-9]{4})[./-]([0-9]{1,2})[./-]([0-9]{1,2})", REG_EXTENDED);
+			const char *date = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DATE] UTF8String];
+			if(regexec(&regex, date, 4, match, 0) != REG_NOMATCH) {
+				char mm[3];
+				char dd[3];
+				char TDAT[10];
+				memcpy(mm,date+match[2].rm_so,match[2].rm_eo-match[2].rm_so);
+				mm[match[2].rm_eo-match[2].rm_so] = 0;
+				memcpy(dd,date+match[3].rm_so,match[3].rm_eo-match[3].rm_so);
+				dd[match[3].rm_eo-match[3].rm_so] = 0;
+				sprintf(TDAT,"TDAT=%02d%02d",atoi(dd),atoi(mm));
+				id3tag_set_fieldvalue(gfp,TDAT);
+			}
+			regfree(&regex);
 		}
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ALBUMARTIST]) {
 			NSData *dat = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_ALBUMARTIST] dataUsingEncoding:NSUnicodeStringEncoding];
