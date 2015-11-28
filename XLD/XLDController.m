@@ -1691,7 +1691,7 @@ end:
 - (IBAction)reportBug:(id)sender
 {
 	NSWorkspace* ws = [NSWorkspace sharedWorkspace];
-	[ws openURL:[NSURL URLWithString:@"http://code.google.com/p/xld/issues/list"]];
+	[ws openURL:[NSURL URLWithString:@"https://sourceforge.net/p/xld/tickets/"]];
 }
 
 - (IBAction)getMetadataFromURL:(id)sender

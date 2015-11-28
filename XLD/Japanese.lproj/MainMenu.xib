@@ -12,19 +12,19 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="605"/>
-			<integer value="301"/>
-			<integer value="364"/>
-			<integer value="519"/>
-			<integer value="593"/>
-			<integer value="400"/>
-			<integer value="269"/>
-			<integer value="1217"/>
-			<integer value="546"/>
-			<integer value="616"/>
 			<integer value="1115"/>
-			<integer value="347"/>
+			<integer value="616"/>
+			<integer value="593"/>
+			<integer value="301"/>
+			<integer value="519"/>
 			<integer value="1079"/>
+			<integer value="347"/>
+			<integer value="269"/>
+			<integer value="546"/>
+			<integer value="106"/>
+			<integer value="364"/>
+			<integer value="605"/>
+			<integer value="400"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1089,7 +1089,7 @@
 								</object>
 								<object class="NSMenuItem" id="209052717">
 									<reference key="NSMenu" ref="913091276"/>
-									<string key="NSTitle">バグを報告... (Google Code)</string>
+									<string key="NSTitle">バグを報告... (SourceForge)</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="14560692"/>
@@ -15112,7 +15112,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<bytes key="NSTransformStruct">P4AAAL+AAABC5gAAwigAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1035, 703}, {255, 43}}</string>
+					<string>{{516, 692}, {252, 43}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>{{411, 217}, {104, 156}}</string>

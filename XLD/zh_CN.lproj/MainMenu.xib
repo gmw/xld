@@ -12,18 +12,18 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="404"/>
-			<integer value="537"/>
-			<integer value="552"/>
-			<integer value="1291"/>
-			<integer value="592"/>
-			<integer value="278"/>
-			<integer value="355"/>
 			<integer value="602"/>
+			<integer value="278"/>
+			<integer value="592"/>
 			<integer value="1165"/>
+			<integer value="552"/>
+			<integer value="537"/>
+			<integer value="355"/>
+			<integer value="106"/>
+			<integer value="317"/>
+			<integer value="404"/>
 			<integer value="1132"/>
 			<integer value="614"/>
-			<integer value="317"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1088,7 +1088,7 @@
 								</object>
 								<object class="NSMenuItem" id="670813892">
 									<reference key="NSMenu" ref="330217422"/>
-									<string key="NSTitle">Report Bugs... (Google Code)</string>
+									<string key="NSTitle">Report Bugs... (SourceForge)</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="89761417"/>
@@ -15014,7 +15014,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAwugAAA</bytes>
 					</object>
-					<string>{{875, 717}, {267, 43}}</string>
+					<string>{{422, 693}, {264, 43}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15391,7 +15391,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{993, 777}, {162, 143}}</string>
+					<string>{{376, 593}, {162, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>{{234, 179}, {500, 577}}</string>

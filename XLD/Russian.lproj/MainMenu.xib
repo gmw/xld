@@ -12,11 +12,11 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1081"/>
 			<integer value="317"/>
 			<integer value="552"/>
 			<integer value="1048"/>
-			<integer value="1212"/>
+			<integer value="106"/>
+			<integer value="1081"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1081,7 +1081,7 @@
 								</object>
 								<object class="NSMenuItem" id="677757880">
 									<reference key="NSMenu" ref="914944777"/>
-									<string key="NSTitle">Report Bugs... (Google Code)</string>
+									<string key="NSTitle">Report Bugs... (SourceForge)</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="852702500"/>
@@ -14936,7 +14936,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<integer value="1000"/>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{793, 756}, {267, 43}}</string>
+					<string>{{473, 693}, {264, 43}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

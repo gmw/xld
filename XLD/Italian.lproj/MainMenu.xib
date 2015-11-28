@@ -12,19 +12,19 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="594"/>
-			<integer value="1205"/>
 			<integer value="1080"/>
-			<integer value="375"/>
-			<integer value="551"/>
-			<integer value="616"/>
-			<integer value="356"/>
 			<integer value="1047"/>
-			<integer value="278"/>
-			<integer value="317"/>
-			<integer value="536"/>
+			<integer value="375"/>
+			<integer value="594"/>
 			<integer value="604"/>
 			<integer value="404"/>
+			<integer value="317"/>
+			<integer value="278"/>
+			<integer value="551"/>
+			<integer value="106"/>
+			<integer value="536"/>
+			<integer value="616"/>
+			<integer value="356"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1089,7 +1089,7 @@
 								</object>
 								<object class="NSMenuItem" id="1036303555">
 									<reference key="NSMenu" ref="379572277"/>
-									<string key="NSTitle">Segnala bug... (Google Code)</string>
+									<string key="NSTitle">Segnala bug... (SourceForge)</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="423253037"/>
@@ -15070,7 +15070,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{468, 914}, {268, 43}}</string>
+					<string>{{667, 693}, {265, 43}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
