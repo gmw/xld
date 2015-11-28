@@ -56,6 +56,50 @@ struct ddppq_s
 
 typedef struct ddppq_s ddppq_t;
 
+struct cdtext_s
+{
+	unsigned char type;
+	unsigned char track;
+	unsigned char packet_no;
+	unsigned char flags;
+	unsigned char text[12];
+	unsigned short crc16;
+} __attribute__ ((packed));
+
+typedef struct cdtext_s cdtext_t;
+
+static const char *cdtext_genres[] =
+{
+	"Not Used",
+	"Not Defined",
+	"Adult Contemporary",
+	"Alternative Rock",
+	"Childrens' Music",
+	"Classical",
+	"Contemporary Christian",
+	"Country",
+	"Dance",
+	"Easy Listening",
+	"Erotic",
+	"Folk",
+	"Gospel",
+	"Hip Hop",
+	"Jazz",
+	"Latin",
+	"Musical",
+	"New Age",
+	"Opera",
+	"Operetta",
+	"Pop Music",
+	"Rap",
+	"Reggae",
+	"Rock Music",
+	"Rhythm & Blues",
+	"Sound Effects",
+	"Spoken Word",
+	"World Music",
+};
+
 static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 {
 	xldoffset_t ret;
@@ -63,6 +107,48 @@ static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 	ret += (xldoffset_t)sec*samplerate;
 	ret += (xldoffset_t)sector*samplerate/75;
 	return ret;
+}
+
+static void appendCDText(int track, int type, const char *data, int length, NSStringEncoding encoding, NSArray *tracks)
+{
+	if(track < 0 || track > [tracks count]) return;
+	if(length <= 0) return;
+	NSString *key;
+	if(type == 0x80) key = XLD_METADATA_TITLE;
+	else if(type == 0x81) key = XLD_METADATA_ARTIST;
+	else if(type == 0x83) key = XLD_METADATA_COMPOSER;
+	else if(type == 0x8e) {
+		if(length != 12 || !memcmp(data, "000000000000", 12)) return;
+		key = XLD_METADATA_ISRC;
+		encoding = NSISOLatin1StringEncoding;
+	}
+	else return;
+	if(track == 0) {
+		if(type == 0x80) key = XLD_METADATA_ALBUM;
+		else if(type == 0x81) key = XLD_METADATA_ALBUMARTIST;
+		else if(type == 0x83) key = XLD_METADATA_COMPOSER;
+		else return;
+	}
+	NSString *str = nil;
+	if((length == 1 && data[0] == '\t') || (length == 2 && data[0] == '\t' && data[1] == '\t')) {
+		if(track > 1) str = [[[[tracks objectAtIndex:track-2] metadata] objectForKey:key] copy];
+		else if(track == 1) {
+			if(type == 0x80) str = [[[[tracks objectAtIndex:0] metadata] objectForKey:XLD_METADATA_ALBUM] copy];
+			else if(type == 0x81) str = [[[[tracks objectAtIndex:0] metadata] objectForKey:XLD_METADATA_ALBUMARTIST] copy];
+		}
+	}
+	else str = [[NSString alloc] initWithBytes:data length:length encoding:encoding];
+	if(!str) return;
+	if(track != 0) {
+		[[[tracks objectAtIndex:track-1] metadata] setObject:str forKey:key];
+	}
+	else {
+		int i;
+		for(i=0;i<[tracks count];i++) {
+			[[[tracks objectAtIndex:i] metadata] setObject:str forKey:key];
+		}
+	}
+	[str release];
 }
 
 @implementation XLDDDPParser
@@ -77,6 +163,7 @@ static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 {
 	if(dataFile) [dataFile release];
 	if(pqDescrFile) [pqDescrFile release];
+	if(cdtextFile) [cdtextFile release];
 	[super dealloc];
 }
 
@@ -194,6 +281,77 @@ static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 	}
 	fclose(fp);
 	
+	if(cdtextFile) {
+		fp = fopen([cdtextFile UTF8String], "rb");
+		if(fp) {
+			NSStringEncoding currentEncoding = 0;
+			cdtext_t text;
+			while(1) {
+				int ret = fread(&text,1,18,fp);
+				if(ret < 18) break;
+				if(text.type == 0x8f && text.track == 0 && (text.flags & 0x70) == 0) {
+					if(text.text[0] == 0) currentEncoding = NSISOLatin1StringEncoding;
+					else if(text.text[0] == 1) currentEncoding = NSASCIIStringEncoding;
+					else if(text.text[0] == 0x80) currentEncoding = NSShiftJISStringEncoding;
+					break;
+				}
+			}
+			if(!currentEncoding) goto end;
+			
+			rewind(fp);
+			int currentType = -1;
+			int currentTrack = -1;
+			char buffer[256];
+			int pos = 0;
+			while(1) {
+				int ret = fread(&text,1,18,fp);
+				if(ret < 18) break;
+				if((text.flags & 0x70) != 0) continue;
+				if((currentType > 0 && currentType != text.type) || (currentTrack > 0 && currentTrack != text.track)) {
+					appendCDText(currentTrack, currentType, buffer, pos, currentEncoding, trackList);
+					pos = 0;
+				}
+				currentType = text.type;
+				currentTrack = text.track;
+				if((currentType >= 0x80 && currentType < 0x86) || currentType == 0x8e) {
+					int i;
+					if(text.flags & 0x80) {
+						for(i=0;i<12;i+=2) {
+							buffer[pos++] = text.text[i];
+							buffer[pos++] = text.text[i+1];
+							if(!text.text[i] && !text.text[i+1]) {
+								appendCDText(currentTrack, currentType, buffer, pos-2, currentEncoding, trackList);
+								pos = 0;
+								currentTrack++;
+							}
+						}
+					}
+					else {
+						for(i=0;i<12;i++) {
+							buffer[pos++] = text.text[i];
+							if(!text.text[i]) {
+								appendCDText(currentTrack, currentType, buffer, pos-1, currentEncoding, trackList);
+								pos = 0;
+								currentTrack++;
+							}
+						}
+					}
+				}
+				else if(currentType == 0x87) {
+					unsigned short genre = (text.text[0] << 8) | text.text[1];
+					if(genre > 0x01 && genre <= 0x1b) {
+						appendCDText(currentTrack, currentType, cdtext_genres[genre], strlen(cdtext_genres[genre]), NSASCIIStringEncoding, trackList);
+					}
+					/*else if(genre == 0x01) {
+						appendCDText(currentTrack, currentType, (char *)text.text+2, strlen((char *)text.text+2), NSISOLatin1StringEncoding, trackList);
+					}*/
+				}
+			}
+end:
+			fclose(fp);
+		}
+	}
+	
 	return [trackList autorelease];
 }
 
@@ -201,8 +359,6 @@ static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 {
 	char buf[32];
 	ddpms_t ddpms;
-	BOOL D0read = NO;
-	BOOL S0read = NO;
 	FILE *fp = fopen([path UTF8String], "rb");
 	if(!fp) return NO;
 	
@@ -213,11 +369,10 @@ static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 		}
 		else if(!memcmp(ddpms.DST, "D0", 2)) {
 			if(memcmp(ddpms.CDM, "DA", 2)) continue;
-			if(D0read) { // multiple D0 (not supported)
+			if(dataFile) { // multiple D0 (not supported)
 				fclose(fp);
 				return NO;
 			}
-			D0read = YES;
 			memcpy(buf, ddpms.DSS, 8);
 			buf[8] = 0;
 			offsetBytes = [self getNumberInStr:buf];
@@ -235,37 +390,49 @@ static xldoffset_t timeToFrame(int min, int sec, int sector, int samplerate)
 			dataFile = [[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:[NSString stringWithUTF8String:buf]] retain];
 		}
 		else if(!memcmp(ddpms.DST, "S0", 2)) {
-			if(memcmp(ddpms.SUB, "PQ DESCR", 8)) continue;
-			if(S0read) { // multiple PQ DESCR (not supported)
+			if(memcmp(ddpms.SUB, "PQ DESCR", 8) && memcmp(ddpms.SUB, "CDTEXT", 6)) continue;
+			if(*ddpms.SUB == 'P' && pqDescrFile) { // multiple PQ DESCR (not supported)
 				fclose(fp);
 				return NO;
 			}
-			S0read = YES;
-			
 			memcpy(buf, ddpms.DSI, 17);
 			buf[17] = 0;
 			//NSLog(@"%s",buf);
 			int i=0;
 			while(*(buf+i) != ' ' && *(buf+i) != 0) i++;
 			*(buf+i) = 0;
-			pqDescrFile = [[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:[NSString stringWithUTF8String:buf]] retain];
+			if(*ddpms.SUB == 'P')
+				pqDescrFile = [[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:[NSString stringWithUTF8String:buf]] retain];
+			else 
+				cdtextFile = [[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:[NSString stringWithUTF8String:buf]] retain];
 		}
 	}
 	fclose(fp);
-	if(!S0read || !D0read) {
+	if(!pqDescrFile || !dataFile) {
 		if(dataFile) [dataFile release];
 		if(pqDescrFile) [pqDescrFile release];
+		if(cdtextFile) [cdtextFile release];
 		dataFile = nil;
 		pqDescrFile = nil;
+		cdtextFile = nil;
 		return NO;
 	}
 	NSFileManager *fm = [NSFileManager defaultManager];
 	if(![fm fileExistsAtPath:dataFile] || ![fm fileExistsAtPath:pqDescrFile]) {
 		if(dataFile) [dataFile release];
 		if(pqDescrFile) [pqDescrFile release];
+		if(cdtextFile) [cdtextFile release];
 		dataFile = nil;
 		pqDescrFile = nil;
+		cdtextFile = nil;
 		return NO;
+	}
+	if(!cdtextFile) {
+		cdtextFile = [[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"CDTEXT.BIN"] retain];
+		if(![fm fileExistsAtPath:cdtextFile]) {
+			[cdtextFile release];
+			cdtextFile = nil;
+		}
 	}
 	//NSLog(dataFile);
 	//NSLog(pqDescrFile);

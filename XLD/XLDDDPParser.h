@@ -13,6 +13,7 @@
 	int offsetBytes;
 	NSString *dataFile;
 	NSString *pqDescrFile;
+	NSString *cdtextFile;
 }
 - (int)offsetBytes;
 - (int)getNumberInStr:(char *)str;
