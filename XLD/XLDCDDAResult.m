@@ -830,7 +830,7 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 {
 	int i,j;
 	if(results[0].enabled && results[0].cancelled) return;
-	else {
+	else if(!results[0].enabled) {
 		int enabled = 0, cancelled = 0;
 		for(i=1;i<trackNumber+1;i++) {
 			if(!results[i].enabled) continue;
