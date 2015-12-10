@@ -660,6 +660,13 @@ FLAC__StreamDecoderWriteStatus write_callback(const FLAC__StreamDecoder *decoder
 		/* do nothing */
 	}
 	
+	if(samplerate == 0) {
+		error = YES;
+		FLAC__stream_decoder_delete(flac);
+		flac = NULL;
+		return NO;
+	}
+	
 	writeCallbackDecodedSample = 0;
 	tempBuffer = (int *)malloc(16384*4*channels);
 	tempBufferPtr = tempBuffer;
