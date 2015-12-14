@@ -552,9 +552,11 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 	int pregapLength = 0;
 	int success = 0;
 	int firstQchannelRead = 1;
-	unsigned char *buffer = malloc(2352+16);
-	unsigned char *QAreaPtr = buffer;
 	int readSize = 16;
+	int sectorsPerRead = 75;
+	int currentSectorIndex = sectorsPerRead;
+	unsigned char *buffer = malloc((2352+16)*sectorsPerRead);
+	unsigned char *QAreaPtr = buffer;
 	dk_cd_read_t cdread;
 	memset(&cdread, 0, sizeof(cdread));
 	cdread.sectorArea = kCDSectorAreaUser | kCDSectorAreaSubChannelQ;
@@ -565,6 +567,7 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 		readSize += 2352;
 		QAreaPtr += 2352;
 		cdread.bufferLength += 2352;
+		cdread.bufferLength *= sectorsPerRead;
 	}
 	
 	/* -------
@@ -580,9 +583,14 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 		firstQchannelRead = 0;
 	}
 	cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*readSize;
+	int result = -1;
 	while(1) {
-		cdread.bufferLength = readSize;
-		int result = ioctl(disc->fd, DKIOCCDREAD, &cdread);
+		if(currentSectorIndex == sectorsPerRead) {
+			cdread.bufferLength = readSize * sectorsPerRead;
+			result = ioctl(disc->fd, DKIOCCDREAD, &cdread);
+			currentSectorIndex = 0;
+			QAreaPtr = buffer + readSize - 16;
+		}
 		if(result != -1) {
 			unsigned int adr = QAreaPtr[0] & 0xf;
 			unsigned int crc = QAreaPtr[10]<<8 | QAreaPtr[11];
@@ -608,6 +616,7 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 								firstQchannelRead = 0;
 							}
 							cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*readSize;
+							currentSectorIndex = sectorsPerRead;
 							continue;
 						}
 						else firstQchannelRead = 0;
@@ -647,6 +656,7 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 							firstQchannelRead = 0;
 						}
 						cdread.offset = (disc->tracks[track-1].start/588-beginOffset)*readSize;
+						currentSectorIndex = sectorsPerRead;
 						continue;
 					}
 				}
@@ -665,6 +675,8 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 		else {
 			perror("xld_cdda_read_pregap(),ioctl");
 		}
+		currentSectorIndex++;
+		QAreaPtr += readSize;
 		cdread.offset+=readSize;
 		if(cdread.offset > disc->tracks[track-1].start/588*readSize) {
 			/* reached next track */
@@ -712,11 +724,13 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 	int errorCount = 0;
 	int totalErrorCount = 0;
 	int success = 0;
-	unsigned char *buffer = malloc(2352+16);
 	int preEmphasis = 0;
 	int dcp = 0;
-	unsigned char *QAreaPtr = buffer;
 	int readSize = 16;
+	int sectorsPerRead = 10;
+	int currentSectorIndex = sectorsPerRead;
+	unsigned char *buffer = malloc((2352+16)*sectorsPerRead);
+	unsigned char *QAreaPtr = buffer;
 	dk_cd_read_t cdread;
 	memset(&cdread, 0, sizeof(cdread));
 	cdread.sectorArea = kCDSectorAreaUser | kCDSectorAreaSubChannelQ;
@@ -727,11 +741,17 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 		readSize += 2352;
 		QAreaPtr += 2352;
 		cdread.bufferLength += 2352;
+		cdread.bufferLength *= sectorsPerRead;
 	}
 	cdread.offset = (disc->tracks[track-1].start/588)*readSize;
+	int result = -1;
 	while(1) {
-		cdread.bufferLength = readSize;
-		int result = ioctl(disc->fd, DKIOCCDREAD, &cdread);
+		if(currentSectorIndex == sectorsPerRead) {
+			cdread.bufferLength = readSize * sectorsPerRead;
+			result = ioctl(disc->fd, DKIOCCDREAD, &cdread);
+			currentSectorIndex = 0;
+			QAreaPtr = buffer + readSize - 16;
+		}
 		if(result != -1) {
 			unsigned int adr = QAreaPtr[0] & 0xf;
 			unsigned int crc = QAreaPtr[10]<<8 | QAreaPtr[11];
@@ -800,6 +820,8 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 		}
 		
 	nextSector:
+		currentSectorIndex++;
+		QAreaPtr += readSize;
 		cdread.offset+=readSize;
 		if(cdread.offset > (disc->tracks[track-1].start/588 + 150)*readSize) {
 			/* read 150 sectors */
