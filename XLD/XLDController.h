@@ -159,6 +159,7 @@
 	int currentNice;
 	id dsdConfig;
 	id opticalDriveManager;
+	BOOL ejected;
 }
 - (IBAction)beginDecode:(id)sender;
 - (IBAction)setOutputDir:(id)sender;

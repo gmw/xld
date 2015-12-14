@@ -107,6 +107,50 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	return volume;
 }
 
+static int fgets_private(char *buf, int size, FILE *fp)
+{
+	int i;
+	char c;
+	
+	for(i=0;i<size-1;) {
+		if(fread(&c,1,1,fp) != 1) break;
+		buf[i++] = c;
+		if(c == '\n' || c == '\r') {
+			break;
+		}
+	}
+	if(i==0) return 0;
+	buf[i] = 0;
+	return i;
+}
+
+static void getFilesFromM3U(NSString *m3u, NSMutableArray *queue, NSStringEncoding encoding)
+{
+	FILE *fp = fopen([m3u UTF8String], "rb");
+	if(!fp) return;
+	char buf[1024];
+	
+	while(1) {
+		int ret = fgets_private(buf,1024,fp);
+		if(!ret) break;
+		if(buf[0] == '#' || buf[0] == '\n' || buf[0] == '\r'|| buf[0] == 0) continue;
+		else {
+			while((buf[ret-1] == '\n' || buf[ret-1] == '\r') && ret > 0) ret--;
+			NSString *path = [[NSString alloc] initWithBytes:buf length:ret encoding:encoding];
+			if(!path) break;
+			if(buf[0] == '/') {
+				[queue addObject:path];
+			}
+			else {
+				[queue addObject:[[m3u stringByDeletingLastPathComponent] stringByAppendingPathComponent:path]];
+			}
+			[path release];
+		}
+	}
+	
+	fclose(fp);
+}
+
 #define MAX_SERVICE_NAME 1000
 
 @implementation XLDController
@@ -741,7 +785,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 	}
 	
 	if([[cueParser fileToDecode] hasPrefix:@"/dev/disk"]) {
-		if([opticalDriveManager isMounted:[cueParser fileToDecode]]) {
+		if(!ejected /*[opticalDriveManager isMounted:[cueParser fileToDecode]]*/) {
 			tempOutputDir = [outputDir retain];
 			[o_detectPregapPane setTitle:LS(@"Waiting")];
 			[o_detectPregapMessage setStringValue:LS(@"Waiting for Drive...")];
@@ -753,6 +797,7 @@ static NSString *mountNameFromBSDName(const char *bsdName)
 			[NSThread detachNewThreadSelector:@selector(unmountDiscAndNotify:) toTarget:opticalDriveManager withObject:[cueParser fileToDecode]];
 			return;
 		}
+		else ejected = NO;
 	}
 	
 	id decoder;
@@ -3081,6 +3126,7 @@ end:
 	for(i=0;i<[arr count];i++) {
 		NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
 		NSString *file = [arr objectAtIndex:i];
+		NSString *ext = [[file pathExtension] lowercaseString];
 		BOOL isDir;
 		[mgr fileExistsAtPath:[dirPath stringByAppendingPathComponent:file] isDirectory:&isDir];
 		if(isDir) {
@@ -3090,14 +3136,21 @@ end:
 			continue;
 		}
 		if(filter) {
-			NSRange formatIndicatorRange = [filter rangeOfString:[[file pathExtension] lowercaseString]];
+			NSRange formatIndicatorRange = [filter rangeOfString:ext];
 			if(formatIndicatorRange.location != NSNotFound) {
-				[queue addObject:[dirPath stringByAppendingPathComponent:file]];
+				if([ext isEqualToString:@"m3u"] || [ext isEqualToString:@"m3u8"]) {
+					getFilesFromM3U([dirPath stringByAppendingPathComponent:file],queue,[ext isEqualToString:@"m3u"]?NSISOLatin1StringEncoding:NSUTF8StringEncoding);
+				}
+				else [queue addObject:[dirPath stringByAppendingPathComponent:file]];
 			}
 		}
 		else {
-			if([file characterAtIndex:0] != '.')
-				[queue addObject:[dirPath stringByAppendingPathComponent:file]];
+			if([file characterAtIndex:0] != '.') {
+				if([ext isEqualToString:@"m3u"] || [ext isEqualToString:@"m3u8"]) {
+					getFilesFromM3U([dirPath stringByAppendingPathComponent:file],queue,[ext isEqualToString:@"m3u"]?NSISOLatin1StringEncoding:NSUTF8StringEncoding);
+				}
+				else [queue addObject:[dirPath stringByAppendingPathComponent:file]];
+			}
 		}
 		[pool2 release];
 	}
@@ -3113,10 +3166,18 @@ end:
 	[mgr fileExistsAtPath:[queue objectAtIndex:0] isDirectory:&isDir];
 	firstDrag = YES;
 	if(([queue count] == 1) && !isDir) {
-		id obj = [[queue objectAtIndex:0] retain];
-		[queue removeAllObjects];
-		[self processSingleFile:obj alwaysOpenAsDisc:NO];
-		[obj release];
+		NSString *file = [[queue objectAtIndex:0] retain];
+		NSString *ext = [[file pathExtension] lowercaseString];
+		if([ext isEqualToString:@"m3u"] || [ext isEqualToString:@"m3u8"]) {
+			[queue removeAllObjects];
+			getFilesFromM3U(file,queue,[ext isEqualToString:@"m3u"]?NSISOLatin1StringEncoding:NSUTF8StringEncoding);
+			[self processMultipleFiles];
+		}
+		else {
+			[queue removeAllObjects];
+			[self processSingleFile:file alwaysOpenAsDisc:NO];
+		}
+		[file release];
 	}
 	else if([queue count] == 1 && isDir && (modifierFlags & cmdKey)) {
 		[self openFolder:[queue objectAtIndex:0] offset:0 prepended:NO];
@@ -3125,13 +3186,26 @@ end:
 	else {
 		int i;
 		int n = [queue count];
+		NSMutableIndexSet *set = [NSMutableIndexSet indexSet];
 		for(i=0;i<n;i++) {
-			[mgr fileExistsAtPath:[queue objectAtIndex:i] isDirectory:&isDir];
+			NSString *file = [queue objectAtIndex:i];
+			NSString *ext = [[file pathExtension] lowercaseString];
+			[mgr fileExistsAtPath:file isDirectory:&isDir];
 			if(isDir) {
-				[queue replaceObjectAtIndex:i withObject:[[queue objectAtIndex:i] stringByAppendingString:@"/"]];
+				[queue replaceObjectAtIndex:i withObject:[file stringByAppendingString:@"/"]];
 				[self scanDirectory:[queue objectAtIndex:i] depth:1 manager:mgr filter:filter];
 			}
+			else if([ext isEqualToString:@"m3u"] || [ext isEqualToString:@"m3u8"]) {
+				NSMutableArray *arr = [[NSMutableArray alloc] init];
+				getFilesFromM3U(file,arr,[ext isEqualToString:@"m3u"]?NSISOLatin1StringEncoding:NSUTF8StringEncoding);
+				if([arr count]) {
+					[queue addObjectsFromArray:arr];
+				}
+				[arr release];
+				[set addIndex:i];
+			}
 		}
+		[queue removeObjectsAtIndexes:set];
 		[self processMultipleFiles];
 	}
 }
@@ -3739,15 +3813,11 @@ end:
 	[cueParser setMediaType:[decoder mediaType]];
 	[decoder closeFile];
 	
+	[opticalDriveManager mountDisc:path];
+	driveIsBusy = NO;
 	[self openParsedDisc:cueParser originalFile:nil];
 	[cueParser release];
 	
-	driveIsBusy = NO;
-	DASessionRef session = DASessionCreate(NULL);
-	DADiskRef disk = DADiskCreateFromBSDName(NULL,session,[path UTF8String]);
-	DADiskMount(disk,NULL,kDADiskMountOptionDefault,NULL,NULL);
-	CFRelease(disk);
-	CFRelease(session);
 	[self delayedRefleshList];
 }
 
@@ -4712,6 +4782,7 @@ willBeInsertedIntoToolbar:(BOOL)willBeInserted
 
 - (void)unmountCompletedForDevice:(NSString *)dev
 {
+	ejected = YES;
 	[self beginDecode:nil];
 }
 
