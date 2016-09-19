@@ -230,6 +230,7 @@ static void usage(void)
 	fprintf(stderr,"\t      alac       : Apple Lossless\n");
 	fprintf(stderr,"\t      vorbis     : Ogg Vorbis\n");
 	fprintf(stderr,"\t      wavpack    : WavPack\n");
+	fprintf(stderr,"\t      opus       : Opus\n");
 	fprintf(stderr,"\t-o: Specify path of decoded file\n\t    (directory or filename; directory only for cue sheet mode)\n");
 	fprintf(stderr,"\t-t: List of tracks you want to decode; ex. -t 1,3,4\n");
 	fprintf(stderr,"\t--raw: Force read input file as Raw PCM\n\t       following 4 options are required\n");
@@ -494,6 +495,14 @@ int cmdline_main(int argc, char *argv[])
 					customOutputClass = (Class)objc_lookUpClass("XLDWavpackOutput");
 					if(!customOutputClass) {
 						fprintf(stderr,"error: WavPack output plugin not loaded\n");
+						return -1;
+					}
+					acceptStdoutWriting = NO;
+				}
+				else if(!strcasecmp(optarg,"opus")) {
+					customOutputClass = (Class)objc_lookUpClass("XLDOpusOutput");
+					if(!customOutputClass) {
+						fprintf(stderr,"error: Opus output plugin not loaded\n");
 						return -1;
 					}
 					acceptStdoutWriting = NO;
