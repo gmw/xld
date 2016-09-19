@@ -633,7 +633,7 @@ typedef struct {
 			size_t bufferSize = strlen([filePath fileSystemRepresentation]) + 1;
 			char *buf = (char *)malloc(bufferSize);
 			[filePath getFileSystemRepresentation:buf maxLength:bufferSize];
-			mkstemps(buf, 6);
+			mkstemps(buf, 4);
 			tmpPathStr = [[NSString alloc] initWithUTF8String:buf];
 			free(buf);
 		}
@@ -674,7 +674,7 @@ typedef struct {
 				size_t bufferSize = strlen([filePath fileSystemRepresentation]) + 1;
 				char *buf = (char *)malloc(bufferSize);
 				[filePath getFileSystemRepresentation:buf maxLength:bufferSize];
-				mkstemps(buf, 6);
+				mkstemps(buf, 4);
 				[tmpPathStrArray addObject:[NSString stringWithUTF8String:buf]];
 				free(buf);
 			}
