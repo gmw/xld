@@ -668,7 +668,10 @@ void xld_cdda_read_pregap(xld_cdread_t *disc, int track)
 					}
 				}
 				errorCount++;
-				if(errorCount < 5) continue;
+				if(errorCount < 5) {
+					currentSectorIndex = sectorsPerRead;
+					continue;
+				}
 				else errorCount = 0;
 			}
 		}
@@ -811,7 +814,10 @@ void xld_cdda_read_isrc(xld_cdread_t *disc, int track)
 					}
 				}
 				errorCount++;
-				if(errorCount < 5) continue;
+				if(errorCount < 5) {
+					currentSectorIndex = sectorsPerRead;
+					continue;
+				}
 				else errorCount = 0;
 			}
 		}
