@@ -1460,7 +1460,8 @@ static void getFilesFromM3U(NSString *m3u, NSMutableArray *queue, NSStringEncodi
 	}
 	else {
 		[sv setAllowedFileTypes:[NSArray arrayWithObject:@"log"]];
-		NSMutableString *str = [NSMutableString stringWithString:[cueParser title]];
+		NSMutableString *str = [NSMutableString stringWithString:@"XLD Logfile"];
+		if(cueParser) str = [NSMutableString stringWithString:[cueParser title]];
 		[o_renamer replaceInvalidCharactersInMutableString:str];
 		NSString *filename = str;
 		if([[[filename pathExtension] lowercaseString] isEqualToString:@"cue"])
