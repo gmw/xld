@@ -134,7 +134,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
-	<string>X Lossless Decoder version 20151214, Copyright 2006-2015 tmkk.</string>
+	<string>X Lossless Decoder version 20160920, Copyright 2006-2016 tmkk.</string>
 	<key>CFBundleIconFile</key>
 	<string>xld</string>
 	<key>CFBundleIdentifier</key>
@@ -146,13 +146,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>20151214</string>
+	<string>20160920</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>149.1</string>
+	<string>149.2</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>© tmkk, 2006-2015</string>
+	<string>© tmkk, 2006-2016</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
