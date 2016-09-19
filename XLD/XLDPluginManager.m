@@ -36,16 +36,19 @@
 		}
 	}
 	
-	bundleArr = [[NSBundle mainBundle] pathsForResourcesOfType:@"bundle" inDirectory:@"../PlugIns"];
-	
+	bundleArr = [fm directoryContentsAt:[[NSBundle mainBundle] builtInPlugInsPath]];
 	for(i=0;i<[bundleArr count];i++) {
-		bundle = [NSBundle bundleWithPath:[bundleArr objectAtIndex:i]];
-		if(bundle) {
-			if(![[bundle infoDictionary] objectForKey:@"NSPrincipalClass"]) continue;
-			if([dic objectForKey:[[bundle infoDictionary] objectForKey:@"NSPrincipalClass"]]) continue;
-			[dic setObject:[bundleArr objectAtIndex:i] forKey:[[bundle infoDictionary] objectForKey:@"NSPrincipalClass"]];
-			//NSLog(@"%@",[[bundle infoDictionary] objectForKey:@"NSPrincipalClass"]);
-			//NSLog(@"loaded:%d",[bundle isLoaded]);
+		BOOL isDir = NO;
+		NSString *bundlePath = [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent:[bundleArr objectAtIndex:i]];
+		if([fm fileExistsAtPath:bundlePath isDirectory:&isDir] && isDir && [[bundlePath pathExtension] isEqualToString:@"bundle"]) {
+			bundle = [NSBundle bundleWithPath:bundlePath];
+			if(bundle) {
+				if(![[bundle infoDictionary] objectForKey:@"NSPrincipalClass"]) continue;
+				if([dic objectForKey:[[bundle infoDictionary] objectForKey:@"NSPrincipalClass"]]) continue;
+				[dic setObject:bundlePath forKey:[[bundle infoDictionary] objectForKey:@"NSPrincipalClass"]];
+				//NSLog(@"%@",[[bundle infoDictionary] objectForKey:@"NSPrincipalClass"]);
+				//NSLog(@"loaded:%d",[bundle isLoaded]);
+			}
 		}
 	}
 	
