@@ -1830,7 +1830,7 @@ end:
 	launchDate = [[NSDate date] timeIntervalSince1970];
 	
 	updater = nil;
-	bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"XLDSparkleUpdater" ofType:@"bundle" inDirectory:@"../PlugIns"]];
+	bundle = [NSBundle bundleWithPath:[[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent:@"XLDSparkleUpdater.bundle"]];
 	if(bundle && [bundle load]) {
 		if([[bundle principalClass] canLoadThisBundle]) {
 			updater = [[[bundle principalClass] alloc] init];
