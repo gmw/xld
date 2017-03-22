@@ -1,0 +1,372 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BF30CABA1E755F7A00127AF0 /* XLDPSFDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BF30CAB91E755F7900127AF0 /* XLDPSFDecoder.m */; };
+		BF30CAD41E7560A500127AF0 /* bios.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CABE1E7560A500127AF0 /* bios.c */; };
+		BF30CAD51E7560A500127AF0 /* iop.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CAC21E7560A500127AF0 /* iop.c */; };
+		BF30CAD61E7560A500127AF0 /* ioptimer.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CAC41E7560A500127AF0 /* ioptimer.c */; };
+		BF30CAD81E7560A500127AF0 /* psf2fs.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CAC71E7560A500127AF0 /* psf2fs.c */; };
+		BF30CAD91E7560A500127AF0 /* psx.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CAC91E7560A500127AF0 /* psx.c */; };
+		BF30CADA1E7560A500127AF0 /* r3000.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CACB1E7560A500127AF0 /* r3000.c */; };
+		BF30CADC1E7560A500127AF0 /* spu.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CACE1E7560A500127AF0 /* spu.c */; };
+		BF30CADD1E7560A500127AF0 /* spucore.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CAD01E7560A500127AF0 /* spucore.c */; };
+		BF30CADE1E7560A500127AF0 /* vfs.c in Sources */ = {isa = PBXBuildFile; fileRef = BF30CAD21E7560A500127AF0 /* vfs.c */; };
+		BFA5B1A91E756D170092CADD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA5B1A81E756D170092CADD /* Cocoa.framework */; };
+		BFA5B1AB1E756D250092CADD /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA5B1AA1E756D250092CADD /* libz.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		BF30CAAE1E755F4700127AF0 /* XLDPSFDecoder.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XLDPSFDecoder.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF30CAB11E755F4700127AF0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF30CAB71E755F7900127AF0 /* XLDDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDDecoder.h; sourceTree = "<group>"; };
+		BF30CAB81E755F7900127AF0 /* XLDPSFDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDPSFDecoder.h; sourceTree = "<group>"; };
+		BF30CAB91E755F7900127AF0 /* XLDPSFDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDPSFDecoder.m; sourceTree = "<group>"; };
+		BF30CABE1E7560A500127AF0 /* bios.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bios.c; sourceTree = "<group>"; };
+		BF30CABF1E7560A500127AF0 /* bios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bios.h; sourceTree = "<group>"; };
+		BF30CAC01E7560A500127AF0 /* emuconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emuconfig.h; sourceTree = "<group>"; };
+		BF30CAC21E7560A500127AF0 /* iop.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iop.c; sourceTree = "<group>"; };
+		BF30CAC31E7560A500127AF0 /* iop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iop.h; sourceTree = "<group>"; };
+		BF30CAC41E7560A500127AF0 /* ioptimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioptimer.c; sourceTree = "<group>"; };
+		BF30CAC51E7560A500127AF0 /* ioptimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioptimer.h; sourceTree = "<group>"; };
+		BF30CAC71E7560A500127AF0 /* psf2fs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = psf2fs.c; sourceTree = "<group>"; };
+		BF30CAC81E7560A500127AF0 /* psf2fs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = psf2fs.h; sourceTree = "<group>"; };
+		BF30CAC91E7560A500127AF0 /* psx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = psx.c; sourceTree = "<group>"; };
+		BF30CACA1E7560A500127AF0 /* psx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = psx.h; sourceTree = "<group>"; };
+		BF30CACB1E7560A500127AF0 /* r3000.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = r3000.c; sourceTree = "<group>"; };
+		BF30CACC1E7560A500127AF0 /* r3000.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = r3000.h; sourceTree = "<group>"; };
+		BF30CACE1E7560A500127AF0 /* spu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = spu.c; sourceTree = "<group>"; };
+		BF30CACF1E7560A500127AF0 /* spu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spu.h; sourceTree = "<group>"; };
+		BF30CAD01E7560A500127AF0 /* spucore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = spucore.c; sourceTree = "<group>"; };
+		BF30CAD11E7560A500127AF0 /* spucore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spucore.h; sourceTree = "<group>"; };
+		BF30CAD21E7560A500127AF0 /* vfs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vfs.c; sourceTree = "<group>"; };
+		BF30CAD31E7560A500127AF0 /* vfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vfs.h; sourceTree = "<group>"; };
+		BFA5B1A81E756D170092CADD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		BFA5B1AA1E756D250092CADD /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BF30CAAB1E755F4700127AF0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFA5B1AB1E756D250092CADD /* libz.dylib in Frameworks */,
+				BFA5B1A91E756D170092CADD /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BF30CAA51E755F4700127AF0 = {
+			isa = PBXGroup;
+			children = (
+				BF30CAB01E755F4700127AF0 /* XLDPSFDecoder */,
+				BF30CABD1E7560A500127AF0 /* Highly Experimental */,
+				BF30CAAF1E755F4700127AF0 /* Products */,
+				BFA5B1A71E756D170092CADD /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		BF30CAAF1E755F4700127AF0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF30CAAE1E755F4700127AF0 /* XLDPSFDecoder.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BF30CAB01E755F4700127AF0 /* XLDPSFDecoder */ = {
+			isa = PBXGroup;
+			children = (
+				BF30CAB11E755F4700127AF0 /* Info.plist */,
+				BF30CAB71E755F7900127AF0 /* XLDDecoder.h */,
+				BF30CAB81E755F7900127AF0 /* XLDPSFDecoder.h */,
+				BF30CAB91E755F7900127AF0 /* XLDPSFDecoder.m */,
+			);
+			path = XLDPSFDecoder;
+			sourceTree = "<group>";
+		};
+		BF30CABD1E7560A500127AF0 /* Highly Experimental */ = {
+			isa = PBXGroup;
+			children = (
+				BF30CABE1E7560A500127AF0 /* bios.c */,
+				BF30CABF1E7560A500127AF0 /* bios.h */,
+				BF30CAC01E7560A500127AF0 /* emuconfig.h */,
+				BF30CAC21E7560A500127AF0 /* iop.c */,
+				BF30CAC31E7560A500127AF0 /* iop.h */,
+				BF30CAC41E7560A500127AF0 /* ioptimer.c */,
+				BF30CAC51E7560A500127AF0 /* ioptimer.h */,
+				BF30CAC71E7560A500127AF0 /* psf2fs.c */,
+				BF30CAC81E7560A500127AF0 /* psf2fs.h */,
+				BF30CAC91E7560A500127AF0 /* psx.c */,
+				BF30CACA1E7560A500127AF0 /* psx.h */,
+				BF30CACB1E7560A500127AF0 /* r3000.c */,
+				BF30CACC1E7560A500127AF0 /* r3000.h */,
+				BF30CACE1E7560A500127AF0 /* spu.c */,
+				BF30CACF1E7560A500127AF0 /* spu.h */,
+				BF30CAD01E7560A500127AF0 /* spucore.c */,
+				BF30CAD11E7560A500127AF0 /* spucore.h */,
+				BF30CAD21E7560A500127AF0 /* vfs.c */,
+				BF30CAD31E7560A500127AF0 /* vfs.h */,
+			);
+			path = "Highly Experimental";
+			sourceTree = "<group>";
+		};
+		BFA5B1A71E756D170092CADD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BFA5B1AA1E756D250092CADD /* libz.dylib */,
+				BFA5B1A81E756D170092CADD /* Cocoa.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BF30CAAD1E755F4700127AF0 /* XLDPSFDecoder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF30CAB41E755F4700127AF0 /* Build configuration list for PBXNativeTarget "XLDPSFDecoder" */;
+			buildPhases = (
+				BF30CAAA1E755F4700127AF0 /* Sources */,
+				BF30CAAB1E755F4700127AF0 /* Frameworks */,
+				BF30CAAC1E755F4700127AF0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XLDPSFDecoder;
+			productName = XLDPSFDecoder;
+			productReference = BF30CAAE1E755F4700127AF0 /* XLDPSFDecoder.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BF30CAA61E755F4700127AF0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = tmkk;
+				TargetAttributes = {
+					BF30CAAD1E755F4700127AF0 = {
+						CreatedOnToolsVersion = 8.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = BF30CAA91E755F4700127AF0 /* Build configuration list for PBXProject "XLDPSFDecoder_export" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BF30CAA51E755F4700127AF0;
+			productRefGroup = BF30CAAF1E755F4700127AF0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BF30CAAD1E755F4700127AF0 /* XLDPSFDecoder */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BF30CAAC1E755F4700127AF0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BF30CAAA1E755F4700127AF0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF30CAD61E7560A500127AF0 /* ioptimer.c in Sources */,
+				BF30CADD1E7560A500127AF0 /* spucore.c in Sources */,
+				BF30CAD51E7560A500127AF0 /* iop.c in Sources */,
+				BF30CADA1E7560A500127AF0 /* r3000.c in Sources */,
+				BF30CAD81E7560A500127AF0 /* psf2fs.c in Sources */,
+				BF30CADE1E7560A500127AF0 /* vfs.c in Sources */,
+				BF30CAD91E7560A500127AF0 /* psx.c in Sources */,
+				BF30CAD41E7560A500127AF0 /* bios.c in Sources */,
+				BF30CADC1E7560A500127AF0 /* spu.c in Sources */,
+				BF30CABA1E755F7A00127AF0 /* XLDPSFDecoder.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BF30CAB21E755F4700127AF0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BF30CAB31E755F4700127AF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BF30CAB51E755F4700127AF0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				INFOPLIST_FILE = XLDPSFDecoder/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				"OTHER_CFLAGS[arch=i386]" = (
+					"-DEMU_COMPILE",
+					"-DEMU_LITTLE_ENDIAN",
+				);
+				"OTHER_CFLAGS[arch=ppc]" = (
+					"-DEMU_COMPILE",
+					"-DEMU_BIG_ENDIAN",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = jp.tmkk.XLDPSFDecoder;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		BF30CAB61E755F4700127AF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				INFOPLIST_FILE = XLDPSFDecoder/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				"OTHER_CFLAGS[arch=i386]" = (
+					"-DEMU_COMPILE",
+					"-DEMU_LITTLE_ENDIAN",
+				);
+				"OTHER_CFLAGS[arch=ppc]" = (
+					"-DEMU_COMPILE",
+					"-DEMU_BIG_ENDIAN",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = jp.tmkk.XLDPSFDecoder;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BF30CAA91E755F4700127AF0 /* Build configuration list for PBXProject "XLDPSFDecoder_export" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF30CAB21E755F4700127AF0 /* Debug */,
+				BF30CAB31E755F4700127AF0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF30CAB41E755F4700127AF0 /* Build configuration list for PBXNativeTarget "XLDPSFDecoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF30CAB51E755F4700127AF0 /* Debug */,
+				BF30CAB61E755F4700127AF0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BF30CAA61E755F4700127AF0 /* Project object */;
+}
