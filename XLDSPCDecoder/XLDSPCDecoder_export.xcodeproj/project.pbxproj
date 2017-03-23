@@ -1,0 +1,305 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BF4393511E792AE500461901 /* snesapudec in Resources */ = {isa = PBXBuildFile; fileRef = BF43933F1E792AE500461901 /* snesapudec */; };
+		BF595C811E656E4F00007DBD /* XLDSPCDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BF595C801E656E4F00007DBD /* XLDSPCDecoder.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		BF43933F1E792AE500461901 /* snesapudec */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = snesapudec; sourceTree = "<group>"; };
+		BF4393401E792AE500461901 /* snesapudec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = snesapudec.c; sourceTree = "<group>"; };
+		BF595C751E65695B00007DBD /* XLDSPCDecoder.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XLDSPCDecoder.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF595C781E65695B00007DBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF595C7E1E656E1A00007DBD /* XLDDecoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XLDDecoder.h; sourceTree = "<group>"; };
+		BF595C7F1E656E4F00007DBD /* XLDSPCDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLDSPCDecoder.h; sourceTree = "<group>"; };
+		BF595C801E656E4F00007DBD /* XLDSPCDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLDSPCDecoder.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BF595C721E65695B00007DBD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BF43932C1E792AE500461901 /* SNESAPU */ = {
+			isa = PBXGroup;
+			children = (
+				BF43933F1E792AE500461901 /* snesapudec */,
+				BF4393401E792AE500461901 /* snesapudec.c */,
+			);
+			path = SNESAPU;
+			sourceTree = "<group>";
+		};
+		BF595C6C1E65695B00007DBD = {
+			isa = PBXGroup;
+			children = (
+				BF595C771E65695B00007DBD /* XLDSPCDecoder */,
+				BF43932C1E792AE500461901 /* SNESAPU */,
+				BF595C761E65695B00007DBD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BF595C761E65695B00007DBD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF595C751E65695B00007DBD /* XLDSPCDecoder.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BF595C771E65695B00007DBD /* XLDSPCDecoder */ = {
+			isa = PBXGroup;
+			children = (
+				BF595C7E1E656E1A00007DBD /* XLDDecoder.h */,
+				BF595C781E65695B00007DBD /* Info.plist */,
+				BF595C7F1E656E4F00007DBD /* XLDSPCDecoder.h */,
+				BF595C801E656E4F00007DBD /* XLDSPCDecoder.m */,
+			);
+			path = XLDSPCDecoder;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BF595C741E65695B00007DBD /* XLDSPCDecoder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF595C7B1E65695B00007DBD /* Build configuration list for PBXNativeTarget "XLDSPCDecoder" */;
+			buildPhases = (
+				BF595C711E65695B00007DBD /* Sources */,
+				BF30CAA21E72F43800127AF0 /* ShellScript */,
+				BF595C721E65695B00007DBD /* Frameworks */,
+				BF595C731E65695B00007DBD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XLDSPCDecoder;
+			productName = XLDSPCDecoder;
+			productReference = BF595C751E65695B00007DBD /* XLDSPCDecoder.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BF595C6D1E65695B00007DBD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = tmkk;
+				TargetAttributes = {
+					BF595C741E65695B00007DBD = {
+						CreatedOnToolsVersion = 8.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = BF595C701E65695B00007DBD /* Build configuration list for PBXProject "XLDSPCDecoder_export" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BF595C6C1E65695B00007DBD;
+			productRefGroup = BF595C761E65695B00007DBD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BF595C741E65695B00007DBD /* XLDSPCDecoder */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BF595C731E65695B00007DBD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF4393511E792AE500461901 /* snesapudec in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BF30CAA21E72F43800127AF0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ${SRCROOT}/SNESAPU\nmake";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BF595C711E65695B00007DBD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF595C811E656E4F00007DBD /* XLDSPCDecoder.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BF595C791E65695B00007DBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BF595C7A1E65695B00007DBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BF595C7C1E65695B00007DBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XLDSPCDecoder/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				PRODUCT_BUNDLE_IDENTIFIER = jp.tmkk.XLDSPCDecoder;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		BF595C7D1E65695B00007DBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = XLDSPCDecoder/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				PRODUCT_BUNDLE_IDENTIFIER = jp.tmkk.XLDSPCDecoder;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BF595C701E65695B00007DBD /* Build configuration list for PBXProject "XLDSPCDecoder_export" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF595C791E65695B00007DBD /* Debug */,
+				BF595C7A1E65695B00007DBD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF595C7B1E65695B00007DBD /* Build configuration list for PBXNativeTarget "XLDSPCDecoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF595C7C1E65695B00007DBD /* Debug */,
+				BF595C7D1E65695B00007DBD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BF595C6D1E65695B00007DBD /* Project object */;
+}
