@@ -28,9 +28,8 @@
    rely on them.  For that reason, we need to empirically determine
    cache size and strategy used for reads. */
 
-/*
 #include <unistd.h>
-#include <string.h>
+/*#include <string.h>
 #include <stdio.h>
 #include <math.h>
 #include "interface/cdda_interface.h"

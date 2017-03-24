@@ -1,5 +1,9 @@
 // Access to AccurateRip is regulated, see  http://www.accuraterip.com/3rdparty-access.htm for details.
 
+#import <stdio.h>
+#import <unistd.h>
+#import <sys/sysctl.h>
+#import <objc/objc-runtime.h>
 #import <sys/stat.h>
 #import <fcntl.h>
 #import <IOKit/scsi/IOSCSIMultimediaCommandsDevice.h>

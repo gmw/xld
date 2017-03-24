@@ -7,6 +7,7 @@
 //
 //  Access to AccurateRip is regulated, see  http://www.accuraterip.com/3rdparty-access.htm for details.
 
+#import <objc/objc-runtime.h>
 #import "XLDCDDAResult.h"
 #import "XLDTrack.h"
 #import "XLDAccurateRipDB.h"

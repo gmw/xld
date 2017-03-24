@@ -6,6 +6,7 @@
 //  Copyright 2011 tmkk. All rights reserved.
 //
 
+#import <objc/objc-runtime.h>
 #import "XLDDiscLayout.h"
 #import "XLDecoderCenter.h"
 #import "XLDSilentDecoder.h"

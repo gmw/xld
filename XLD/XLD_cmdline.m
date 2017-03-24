@@ -2,6 +2,7 @@
 # define FloatToUnsigned(f)	((unsigned long)(((long)((f) - 2147483648.0)) + 2147483647L + 1))
 
 #import <Foundation/Foundation.h>
+#import <objc/objc-runtime.h>
 #import <sndfile.h>
 #import <unistd.h>
 #import <sys/stat.h>
