@@ -6,6 +6,8 @@
 //  Copyright 2006 tmkk. All rights reserved.
 //
 
+#import <objc/objc-runtime.h>
+#import <unistd.h>
 #import "XLDPlayer.h"
 #import "XLDecoderCenter.h"
 #import "XLDDecoder.h"
@@ -377,6 +379,7 @@ static OSStatus MyFileRenderProc(void *inRefCon, AudioUnitRenderActionFlags    *
 	seekpoint = [(XLDTrack *)[currentTrack objectAtIndex:currentIndex] index] + [sender doubleValue]*framesToPlay/100;
 	[lock unlock];
 	[o_positionSlider setMouseDownFlag:NO];
+    [o_positionSlider setEnabled:NO];
 }
 
 - (id)init
@@ -605,6 +608,11 @@ static OSStatus MyFileRenderProc(void *inRefCon, AudioUnitRenderActionFlags    *
 	return [self beginPlayFromFrame:[(XLDTrack *)[currentTrack objectAtIndex:idx] index]];
 }
 
+- (void)enableSeekSlider
+{
+    [o_positionSlider setEnabled:YES];
+}
+
 - (void)play
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -619,6 +627,7 @@ static OSStatus MyFileRenderProc(void *inRefCon, AudioUnitRenderActionFlags    *
 			seekpoint = -1;
 			if(!pause) AudioOutputUnitStart(outputUnit);
 			[self fadein];
+            [self performSelectorOnMainThread:@selector(enableSeekSlider) withObject:nil waitUntilDone:NO];
 		}
 		
 		int ret = [decoder decodeToBuffer:(int *)buffer_decoder frames:blockToDecode];
@@ -738,6 +747,9 @@ static OSStatus MyACComplexInputProc   (AudioConverterRef                       
 	XLDPlayer *player = (XLDPlayer *)inUserData;
 	
 	if(player->lastBuffer) {
+        *ioNumberDataPackets = 0;
+        ioData->mBuffers[0].mDataByteSize = 0;
+        ioData->mBuffers[0].mData = NULL;
 		player->playDone = YES;
 		[pool release];
 		return noErr;
@@ -759,6 +771,7 @@ static OSStatus MyACComplexInputProc   (AudioConverterRef                       
 			return -1;
 		}
 		wanted = sfifo_used(&player->fifo);
+        *ioNumberDataPackets = wanted / (player->channels * 4);
 		player->lastBuffer = YES;
 	}
 	
