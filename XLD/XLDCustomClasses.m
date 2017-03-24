@@ -84,36 +84,43 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 @implementation NSImage (String)
 + (NSImage *)imageWithString:(NSString *)string withFont:(NSFont *)font withColor:(NSColor *)color
 {
-	NSGlyph glyph;
-	NSBezierPath *path = [NSBezierPath bezierPath];
-	[path moveToPoint:NSMakePoint(0, [font pointSize])];
-	int i;
-	for(i=0;i<[string length];i++) {
-		glyph = [font glyphWithName:[string substringWithRange:NSMakeRange(i,1)]];
-		if(glyph == 0xffff || [string characterAtIndex:i] == ' ') [path relativeMoveToPoint:NSMakePoint([font pointSize]/2,0)];
-		else [path appendBezierPathWithGlyph:glyph inFont:font];
-	}
-	NSShadow *shadow = [[NSShadow alloc] init];
-	[shadow setShadowOffset:NSMakeSize(3,-3)];
-	[shadow setShadowBlurRadius:3];
-	[shadow setShadowColor:[NSColor lightGrayColor]];
-	NSImage *img = [[NSImage alloc] initWithSize:NSMakeSize([path currentPoint].x,[font pointSize]*2)];
-	[img lockFocus];
-	[color set];
-	//[shadow set];
-	[path fill];
-	[img unlockFocus];
-	[shadow release];
-	
-	NSRect targetImageFrame = NSMakeRect(0,0,170,170);
-	NSImage *targetImage = [[NSImage alloc] initWithSize:targetImageFrame.size];
-	[targetImage lockFocus];
-	[[NSColor whiteColor] set];
-	NSRectFill(targetImageFrame);
-	[img compositeToPoint:NSMakePoint((170-[img size].width)/2,(170-[img size].height)/2-5) operation:NSCompositeSourceOver];
-	[targetImage unlockFocus];
-	[img release];
-	return [targetImage autorelease];
+    NSLayoutManager *layoutManager = [[[NSLayoutManager alloc] init] autorelease];
+    NSTextContainer *textContainer = [[[NSTextContainer alloc] init] autorelease];
+    NSTextStorage *textStorage = [[[NSTextStorage alloc] initWithString:string attributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName,nil]] autorelease];
+    NSGlyph *glyphs;
+    unsigned int glyphLength;
+    NSRange range;
+    [layoutManager addTextContainer:textContainer];
+    [textStorage addLayoutManager:layoutManager];
+    range = [layoutManager glyphRangeForTextContainer:textContainer];
+    
+    glyphs = (NSGlyph *)malloc(sizeof(NSGlyph)*range.length);
+    glyphLength = [layoutManager getGlyphs:glyphs range:range];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(0, [font pointSize])];
+    [path appendBezierPathWithGlyphs:glyphs count:glyphLength inFont:font];
+    NSShadow *shadow = [[NSShadow alloc] init];
+    [shadow setShadowOffset:NSMakeSize(3,-3)];
+    [shadow setShadowBlurRadius:3];
+    [shadow setShadowColor:[NSColor lightGrayColor]];
+    NSImage *img = [[NSImage alloc] initWithSize:NSMakeSize([path currentPoint].x,[font pointSize]*2)];
+    [img lockFocus];
+    [color set];
+    //[shadow set];
+    [path fill];
+    [img unlockFocus];
+    [shadow release];
+    
+    NSRect targetImageFrame = NSMakeRect(0,0,170,170);
+    NSImage *targetImage = [[NSImage alloc] initWithSize:targetImageFrame.size];
+    [targetImage lockFocus];
+    [[NSColor whiteColor] set];
+    NSRectFill(targetImageFrame);
+    [img compositeToPoint:NSMakePoint((170-[img size].width)/2,(170-[img size].height)/2-5) operation:NSCompositeSourceOver];
+    [targetImage unlockFocus];
+    [img release];
+    free(glyphs);
+    return [targetImage autorelease];
 }
 @end
 
