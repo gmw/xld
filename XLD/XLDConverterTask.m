@@ -6,6 +6,7 @@
 //  Copyright 2007 tmkk. All rights reserved.
 //
 
+#import <unistd.h>
 #import "XLDConverterTask.h"
 #import "XLDQueue.h"
 #import "XLDOutput.h"
@@ -199,14 +200,17 @@ typedef struct {
 {
 	if(scaleType == XLDNoScale) return;
 	
-	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:dat];
-	if(!rep || [NSImage hasOrientationTag:dat]) {
-		NSImage *img = [NSImage imageWithDataConsideringOrientation:dat];
-		if(!img) return;
-		rep = [NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]];
-		//[img release];
-		if(!rep) return;
-	}
+    NSBitmapImageRep *rep = nil;
+    NSImage *srcImg = [[[NSImage alloc] initWithData:dat] autorelease];
+    if(!srcImg || [NSImage hasOrientationTag:dat]) {
+        srcImg = [NSImage imageWithDataConsideringOrientation:dat];
+        if(!srcImg) return;
+        rep = [NSBitmapImageRep imageRepWithData:[srcImg TIFFRepresentation]];
+    }
+    else {
+        rep = [NSBitmapImageRep imageRepWithData:dat];
+    }
+    if(!rep) return;
 	
 	int beforeX = [rep pixelsWide];
 	int beforeY = [rep pixelsHigh];
@@ -261,32 +265,40 @@ typedef struct {
 	}
 	
 	NSRect targetImageFrame = NSMakeRect(0,0,afterX,afterY);
-	NSImage *targetImage = [[NSImage alloc] initWithSize:targetImageFrame.size];
-	[targetImage lockFocus];
-	[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-	if((scaleType&0xf) == XLDCropToSquareScale) {
-		NSImage *srcImg = [NSImage imageWithDataConsideringOrientation:dat];
-		NSRect srcImageFrame;
-		if(beforeX > beforeY) {
-			srcImageFrame = NSMakeRect(([srcImg size].width-[srcImg size].height)*0.5,0,[srcImg size].height,[srcImg size].height);
-		}
-		else {
-			srcImageFrame = NSMakeRect(0,([srcImg size].height-[srcImg size].width)*0.5,[srcImg size].width,[srcImg size].width);
-		}
-		[srcImg drawInRect:targetImageFrame
-				  fromRect:srcImageFrame
-				 operation:NSCompositeCopy
-				  fraction:1.0];
-	}
-	else {
-		[rep drawInRect:targetImageFrame];
-	}
-	[targetImage unlockFocus];
-	NSBitmapImageRep *newRep = [NSBitmapImageRep imageRepWithData:[targetImage TIFFRepresentation]];
-	NSDictionary *dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:compressionQuality] forKey:NSImageCompressionFactor];
-	NSData *data = [newRep representationUsingType: NSJPEGFileType properties: dic];
-	[[track metadata] setObject:data forKey:XLD_METADATA_COVER];
-	[targetImage release];
+    NSRect srcImageFrame;
+    if((scaleType&0xf) == XLDCropToSquareScale) {
+        if(beforeX > beforeY) {
+            srcImageFrame = NSMakeRect(([srcImg size].width-[srcImg size].height)*0.5,0,[srcImg size].height,[srcImg size].height);
+        }
+        else {
+            srcImageFrame = NSMakeRect(0,([srcImg size].height-[srcImg size].width)*0.5,[srcImg size].width,[srcImg size].width);
+        }
+    }
+    else {
+        srcImageFrame = NSMakeRect(0,0,[srcImg size].width,[srcImg size].height);
+    }
+    NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc]
+                                initWithBitmapDataPlanes:NULL
+                                pixelsWide:afterX
+                                pixelsHigh:afterY
+                                bitsPerSample:8
+                                samplesPerPixel:4
+                                hasAlpha:YES
+                                isPlanar:NO
+                                colorSpaceName:NSCalibratedRGBColorSpace
+                                bytesPerRow:0
+                                bitsPerPixel:0];
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:newRep]];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    [srcImg drawInRect:targetImageFrame
+              fromRect:srcImageFrame
+             operation:NSCompositeCopy
+              fraction:1.0];
+    [NSGraphicsContext restoreGraphicsState];
+    NSDictionary *dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:compressionQuality] forKey:NSImageCompressionFactor];
+    NSData *data = [newRep representationUsingType: NSJPEGFileType properties: dic];
+    [[track metadata] setObject:data forKey:XLD_METADATA_COVER];
 }
 
 - (void)hideProgress
