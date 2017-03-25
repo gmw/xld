@@ -13,6 +13,10 @@ typedef int64_t xldoffset_t;
 
 #import "XLDTrack.h"
 
+extern FLAC__bool FLAC__stream_encoder_disable_constant_subframes(FLAC__StreamEncoder *encoder, FLAC__bool value);
+extern FLAC__bool FLAC__stream_encoder_disable_fixed_subframes(FLAC__StreamEncoder *encoder, FLAC__bool value);
+extern FLAC__bool FLAC__stream_encoder_disable_verbatim_subframes(FLAC__StreamEncoder *encoder, FLAC__bool value);
+
 @implementation XLDFlacOutputTask
 
 - (id)init
