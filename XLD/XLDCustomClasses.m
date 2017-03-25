@@ -94,7 +94,7 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
     [textStorage addLayoutManager:layoutManager];
     range = [layoutManager glyphRangeForTextContainer:textContainer];
     
-    glyphs = (NSGlyph *)malloc(sizeof(NSGlyph)*range.length);
+    glyphs = (NSGlyph *)malloc(10*sizeof(NSGlyph)*(range.length+1));
     glyphLength = [layoutManager getGlyphs:glyphs range:range];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(0, [font pointSize])];
