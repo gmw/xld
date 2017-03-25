@@ -49,6 +49,7 @@
 	[pref setInteger:[o_useCustomApodization state] forKey:@"XLDFlacOutput_UseCustomApodization"];
 	[pref setObject:[o_apodization stringValue] forKey:@"XLDFlacOutput_Apodization"];
 	[pref setInteger:[o_writeRGTags state] forKey:@"XLDFlacOutput_WriteRGTags"];
+	[pref setInteger:[o_verifyEncoding state] forKey:@"XLDFlacOutput_VerifyEncoding"];
 	[pref synchronize];
 }
 
@@ -99,6 +100,11 @@
 	return ([o_writeRGTags state] == NSOnState);
 }
 
+- (BOOL)verifyEncoding
+{
+	return ([o_verifyEncoding state] == NSOnState);
+}
+
 - (NSMutableDictionary *)configurations
 {
 	NSMutableDictionary *cfg = [[NSMutableDictionary alloc] init];
@@ -111,6 +117,7 @@
 	[cfg setObject:[NSNumber numberWithInt:[o_useCustomApodization state]] forKey:@"XLDFlacOutput_UseCustomApodization"];
 	[cfg setObject:[o_apodization stringValue] forKey:@"XLDFlacOutput_Apodization"];
 	[cfg setObject:[NSNumber numberWithInt:[o_writeRGTags state]] forKey:@"XLDFlacOutput_WriteRGTags"];
+	[cfg setObject:[NSNumber numberWithInt:[o_verifyEncoding state]] forKey:@"XLDFlacOutput_VerifyEncoding"];
 	/* for task */
 	[cfg setObject:[NSNumber numberWithInt:[self compressionLevel]] forKey:@"CompressionLevel"];
 	[cfg setObject:[NSNumber numberWithBool:[self oggFlac]] forKey:@"OggFlac"];
@@ -119,6 +126,7 @@
 	[cfg setObject:[NSNumber numberWithBool:[self setOggS]] forKey:@"SetOggS"];
 	if([o_useCustomApodization state] == NSOnState) [cfg setObject:[o_apodization stringValue] forKey:@"Apodization"];
 	[cfg setObject:[NSNumber numberWithBool:[self writeRGTags]] forKey:@"WriteRGTags"];
+	[cfg setObject:[NSNumber numberWithBool:[self verifyEncoding]] forKey:@"VerifyEncoding"];
 	/* desc */
 	if([self oggFlac]) {
 		if([self compressionLevel] >= 0) [cfg setObject:[NSString stringWithFormat:@"level %d, ogg wrapped",[self compressionLevel]] forKey:@"ShortDesc"];
@@ -144,10 +152,10 @@
 		[o_padding setIntValue:[obj intValue]];
 	}
 	if(obj=[cfg objectForKey:@"XLDFlacOutput_AllowEmbeddedCueSheet"]) {
-		[o_allowEmbeddedCuesheet setIntValue:[obj intValue]];
+		[o_allowEmbeddedCuesheet setState:[obj intValue]];
 	}
 	if(obj=[cfg objectForKey:@"XLDFlacOutput_SetOggS"]) {
-		[o_setOggS setIntValue:[obj intValue]];
+		[o_setOggS setState:[obj intValue]];
 	}
 	if(obj=[cfg objectForKey:@"XLDFlacOutput_UseCustomApodization"]) {
 		[o_useCustomApodization setState:[obj intValue]];
@@ -156,7 +164,10 @@
 		[o_apodization setStringValue:obj];
 	}
 	if(obj=[cfg objectForKey:@"XLDFlacOutput_WriteRGTags"]) {
-		[o_writeRGTags setIntValue:[obj intValue]];
+		[o_writeRGTags setState:[obj intValue]];
+	}
+	if(obj=[cfg objectForKey:@"XLDFlacOutput_VerifyEncoding"]) {
+		[o_verifyEncoding setState:[obj intValue]];
 	}
 	[self statusChanged:nil];
 }

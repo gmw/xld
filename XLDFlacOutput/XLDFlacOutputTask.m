@@ -389,6 +389,10 @@ typedef int64_t xldoffset_t;
 		FLAC__stream_encoder_set_loose_mid_side_stereo(encoder, false);
 	}
 	
+	if([[configurations objectForKey:@"VerifyEncoding"] boolValue]) {
+		FLAC__stream_encoder_set_verify(encoder,true);
+	}
+	
 	if([[configurations objectForKey:@"OggFlac"] boolValue]) {
 		FLAC__stream_encoder_set_ogg_serial_number(encoder,(long)rand());
 		ret = FLAC__stream_encoder_init_ogg_file(encoder,[str UTF8String],NULL,NULL);

@@ -20,6 +20,7 @@
 	IBOutlet id o_apodization;
 	IBOutlet id o_writeRGTags;
 	IBOutlet id o_versionTxt;
+	IBOutlet id o_verifyEncoding;
 }
 
 + (NSString *)pluginName;
