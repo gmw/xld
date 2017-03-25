@@ -202,7 +202,7 @@ static int numberOfFILELine(NSString *file)
 		int i=0;
 		read += strlen(buf);
 		while(*(buf+i)==' ' || *(buf+i)=='\t') i++;
-		if(!strncasecmp(buf,"FILE",4)) ret++;
+		if(!strncasecmp(buf+i,"FILE",4)) ret++;
 	}
 	
 last:
