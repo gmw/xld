@@ -161,6 +161,8 @@
 	<string>https://svn.code.sf.net/p/xld/code/appcast/xld-appcast_e.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
+	<true/>
 	<key>SUScheduledCheckInterval</key>
 	<integer>86400</integer>
 </dict>
