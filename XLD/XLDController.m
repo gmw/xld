@@ -1372,6 +1372,10 @@ static void getFilesFromM3U(NSString *m3u, NSMutableArray *queue, NSStringEncodi
 		if(!strcmp(mountedDisks[i].f_fstypename,"cddafs")) // It's an audio CD
 		{
 			NSString *mntPath = [NSString stringWithUTF8String:mountedDisks[i].f_mntonname];
+            if(!mntPath) {
+                mntPath = mountNameFromBSDName(mountedDisks[i].f_mntfromname);
+            }
+            if(!mntPath) continue;
 			NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:[[NSFileManager defaultManager] displayNameAtPath:mntPath] action:@selector(readCDDA:) keyEquivalent:@""];
 			NSMenuItem *item2 = [[NSMenuItem alloc]initWithTitle:[[NSFileManager defaultManager] displayNameAtPath:mntPath] action:@selector(ejectDisc:) keyEquivalent:@""];
 			[item setTarget:self];
