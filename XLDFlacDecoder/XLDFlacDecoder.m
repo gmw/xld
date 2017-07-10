@@ -378,9 +378,9 @@ void metadata_callback(const FLAC__StreamDecoder *decoder, const FLAC__StreamMet
 					[dat release];
 				}
 			}
-			else if(!strncasecmp((char *)comment.comments[i].entry,"encoder=",8)) {
+			/*else if(!strncasecmp((char *)comment.comments[i].entry,"encoder=",8)) {
 				// do nothing
-			}
+			}*/
 			else { //unknown text metadata
 				int len = strchr((char *)comment.comments[i].entry,'=') - (char *)comment.comments[i].entry;
 				if(len > 0) {
