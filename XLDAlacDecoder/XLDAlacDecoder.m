@@ -688,7 +688,14 @@ tag:
 	
 tagExist:
 	
-	if(fseeko(fp,12,SEEK_CUR) != 0) goto end; //skip until hdlr;
+	while(1) { //skip until meta;
+		if(fread(&tmp,4,1,fp) < 1) goto end;
+		if(fread(atom,1,4,fp) < 4) goto end;
+		tmp = NSSwapBigIntToHost(tmp);
+		if(!memcmp(atom,"meta",4)) break;
+		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
+	}
+	if(fseeko(fp,4,SEEK_CUR) != 0) goto end; //skip until hdlr;
 	
 	while(1) { //skip until ilst;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
@@ -875,7 +882,7 @@ tagExist:
 			[dat getBytes:&flag range:NSMakeRange(current+16,4)];
 			tmp = NSSwapBigIntToHost(tmp);
 			flag = NSSwapBigIntToHost(flag);
-			if(flag != 0xd && flag != 0xe) goto last;
+			if(flag != 0xd && flag != 0xe && flag != 0x0) goto last;
 			if(tmp <= 16) goto last;
 			tmp = tmp - 16;
 			NSData *imgData = [dat subdataWithRange:NSMakeRange(current+24,tmp)];
