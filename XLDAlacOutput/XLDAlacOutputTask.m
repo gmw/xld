@@ -1360,6 +1360,19 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		appendUserDefinedComment(tagData, @"MEDIA_FPS", [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_MEDIA_FPS]);
 	}
 	
+	/* unknown tags */
+	{
+		int i;
+		NSArray *keyArr = [[(XLDTrack *)track metadata] allKeys];
+		for(i=[keyArr count]-1;i>=0;i--) {
+			NSString *key = [keyArr objectAtIndex:i];
+			NSRange range = [key rangeOfString:@"XLD_UNKNOWN_TEXT_METADATA_"];
+			if(range.location != 0) continue;
+			added = YES;
+			appendUserDefinedComment(tagData, [key substringFromIndex:range.length], [[(XLDTrack *)track metadata] objectForKey:key]);
+		}
+	}
+	
 	/* covr atom */
 	if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER]) {
 		added = YES;
