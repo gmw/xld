@@ -424,13 +424,16 @@ typedef struct {
 					return;
 				}
 			}
-			else if(processOfExistingFiles == 0 || [outputPathStr isEqualToString:inFile]) {
+			else if(processOfExistingFiles == 0 || ([outputPathStr isEqualToString:inFile] && !removeOriginalFile)) {
 				int i=1;
 				while([fm fileExistsAtPath:outputPathStr]) {
 					outputPathStr = [outDir stringByAppendingPathComponent:[[NSString stringWithFormat:@"%@(%d)",desiredFilename,i] stringByAppendingPathExtension:[encoderTask extensionStr]]];
 					i++;
 				}
 			}
+            else if([outputPathStr isEqualToString:inFile] && removeOriginalFile) {
+                moveAfterFinish = YES;
+            }
 		}
 		else {
 			int i,j;
@@ -487,13 +490,16 @@ typedef struct {
 						continue;
 					}
 				}
-				else if(processOfExistingFiles == 0 || [outputPathStr isEqualToString:inFile]) {
+				else if(processOfExistingFiles == 0 || ([outputPathStr isEqualToString:inFile] && !removeOriginalFile)) {
 					j=1;
 					while([fm fileExistsAtPath:outputPathStr]) {
 						outputPathStr = [[NSString stringWithFormat:@"%@(%d)",baseName,j] stringByAppendingPathExtension:[tmpEncoderTask extensionStr]];
 						j++;
 					}
 				}
+                else if([outputPathStr isEqualToString:inFile] && removeOriginalFile) {
+                    moveAfterFinish = YES;
+                }
 				//NSLog(outputPathStr);
 				[outputPathStrArray addObject:outputPathStr];
 			}
@@ -999,81 +1005,6 @@ typedef struct {
 		}
 	}
 	
-	if(!info->error) {
-		NSMutableDictionary *attrDic = nil;
-		id label = [[track metadata] objectForKey:XLD_METADATA_FINDERLABEL];
-		if([[track metadata] objectForKey:XLD_METADATA_CREATIONDATE] || [[track metadata] objectForKey:XLD_METADATA_MODIFICATIONDATE]) {
-			attrDic = [NSMutableDictionary dictionary];
-			if([[track metadata] objectForKey:XLD_METADATA_CREATIONDATE]) {
-				[attrDic setObject:[[track metadata] objectForKey:XLD_METADATA_CREATIONDATE] forKey:NSFileCreationDate];
-			}
-			if([[track metadata] objectForKey:XLD_METADATA_MODIFICATIONDATE]) {
-				[attrDic setObject:[[track metadata] objectForKey:XLD_METADATA_MODIFICATIONDATE] forKey:NSFileModificationDate];
-			}
-		}
-		if(encoder) {
-			if(attrDic) {
-				if(moveAfterFinish) [fm changeFileAttributes:attrDic atPath:tmpPathStr];
-				else [fm changeFileAttributes:attrDic atPath:dstPathStr];
-			}
-			if(label) {
-				if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
-					NSURL *fileURL = moveAfterFinish ? [NSURL fileURLWithPath:tmpPathStr] : [NSURL fileURLWithPath:dstPathStr];
-					NSError *err = nil;
-					[fileURL setResourceValue:label forKey:@"NSURLLabelNumberKey" error:&err];
-				}
-			}
-			if(moveAfterFinish) {
-				[fm createDirectoryWithIntermediateDirectoryInPath:[dstPathStr stringByDeletingLastPathComponent]];
-				[fm moveFileAtPath:tmpPathStr toPath:dstPathStr];
-			}
-			if(cuePathStr) {
-				[[XLDTrackListUtil cueDataForTracks:trackListForCuesheet withFileName:[dstPathStr lastPathComponent] appendBOM:appendBOM samplerate:[decoder samplerate]] writeToFile:cuePathStr atomically:YES];
-			}
-			if(iTunesLib) {
-				NSMutableString *filename = [NSMutableString stringWithString:dstPathStr];
-				[filename replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:0 range:NSMakeRange(0, [filename length])];
-				[filename replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:0 range:NSMakeRange(0, [filename length])];
-				NSAppleScript *as = [[NSAppleScript alloc] initWithSource:[NSString stringWithFormat:iTunesLib,filename]];
-				[as performSelectorOnMainThread:@selector(executeAndReturnError:) withObject:nil waitUntilDone:YES];
-				[as release];
-			}
-		}
-		else {
-			for(i=0;i<[outputPathStrArray count];i++) {
-				if(attrDic) {
-					if(moveAfterFinish) [fm changeFileAttributes:attrDic atPath:[tmpPathStrArray objectAtIndex:i]];
-					else [fm changeFileAttributes:attrDic atPath:[outputPathStrArray objectAtIndex:i]];
-				}
-				if(moveAfterFinish) {
-					[fm createDirectoryWithIntermediateDirectoryInPath:[[outputPathStrArray objectAtIndex:i] stringByDeletingLastPathComponent]];
-					[fm moveFileAtPath:[tmpPathStrArray objectAtIndex:i] toPath:[outputPathStrArray objectAtIndex:i]];
-				}
-				if(cuePathStrArray) {
-					[[XLDTrackListUtil cueDataForTracks:trackListForCuesheet withFileName:[[outputPathStrArray objectAtIndex:i] lastPathComponent] appendBOM:appendBOM samplerate:[decoder samplerate]] writeToFile:[cuePathStrArray objectAtIndex:i] atomically:YES];
-				}
-				if(iTunesLib) {
-					NSRange formatIndicatorRange = [iTunesLib rangeOfString:@"[[[XLD_FORMAT_INDICATOR]]]"];
-					id scpt = iTunesLib;
-					if(formatIndicatorRange.location != NSNotFound) {
-						scpt = [NSMutableString stringWithString:iTunesLib];
-						NSMutableString *formatStr = [NSMutableString stringWithString:configArray ? [[configArray objectAtIndex:i] objectForKey:@"ConfigName"] : [[[encoderArray objectAtIndex:i] class] pluginName]];
-						[formatStr replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:0 range:NSMakeRange(0, [formatStr length])];
-						[formatStr replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:0 range:NSMakeRange(0, [formatStr length])];
-						[formatStr replaceOccurrencesOfString:@"%" withString:@"%%" options:0 range:NSMakeRange(0, [formatStr length])];
-						[scpt replaceOccurrencesOfString:@"[[[XLD_FORMAT_INDICATOR]]]" withString:formatStr options:0 range:NSMakeRange(0, [scpt length])];
-					}
-					NSMutableString *filename = [NSMutableString stringWithString:[outputPathStrArray objectAtIndex:i]];
-					[filename replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:0 range:NSMakeRange(0, [filename length])];
-					[filename replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:0 range:NSMakeRange(0, [filename length])];
-					NSAppleScript *as = [[NSAppleScript alloc] initWithSource:[NSString stringWithFormat:scpt,filename]];
-					[as performSelectorOnMainThread:@selector(executeAndReturnError:) withObject:nil waitUntilDone:YES];
-					[as release];
-				}
-			}
-		}
-	}
-	
 finish:
 	free(info->buffer);
 	[decoder closeFile];
@@ -1117,6 +1048,78 @@ finish:
 	}
 	else {
 		if(removeOriginalFile) [fm removeFileAtPath:inFile handler:nil];
+        NSMutableDictionary *attrDic = nil;
+        id label = [[track metadata] objectForKey:XLD_METADATA_FINDERLABEL];
+        if([[track metadata] objectForKey:XLD_METADATA_CREATIONDATE] || [[track metadata] objectForKey:XLD_METADATA_MODIFICATIONDATE]) {
+            attrDic = [NSMutableDictionary dictionary];
+            if([[track metadata] objectForKey:XLD_METADATA_CREATIONDATE]) {
+                [attrDic setObject:[[track metadata] objectForKey:XLD_METADATA_CREATIONDATE] forKey:NSFileCreationDate];
+            }
+            if([[track metadata] objectForKey:XLD_METADATA_MODIFICATIONDATE]) {
+                [attrDic setObject:[[track metadata] objectForKey:XLD_METADATA_MODIFICATIONDATE] forKey:NSFileModificationDate];
+            }
+        }
+        if(encoder) {
+            if(attrDic) {
+                if(moveAfterFinish) [fm changeFileAttributes:attrDic atPath:tmpPathStr];
+                else [fm changeFileAttributes:attrDic atPath:dstPathStr];
+            }
+            if(label) {
+                if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
+                    NSURL *fileURL = moveAfterFinish ? [NSURL fileURLWithPath:tmpPathStr] : [NSURL fileURLWithPath:dstPathStr];
+                    NSError *err = nil;
+                    [fileURL setResourceValue:label forKey:@"NSURLLabelNumberKey" error:&err];
+                }
+            }
+            if(moveAfterFinish) {
+                [fm createDirectoryWithIntermediateDirectoryInPath:[dstPathStr stringByDeletingLastPathComponent]];
+                [fm moveFileAtPath:tmpPathStr toPath:dstPathStr];
+            }
+            if(cuePathStr) {
+                [[XLDTrackListUtil cueDataForTracks:trackListForCuesheet withFileName:[dstPathStr lastPathComponent] appendBOM:appendBOM samplerate:[decoder samplerate]] writeToFile:cuePathStr atomically:YES];
+            }
+            if(iTunesLib) {
+                NSMutableString *filename = [NSMutableString stringWithString:dstPathStr];
+                [filename replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:0 range:NSMakeRange(0, [filename length])];
+                [filename replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:0 range:NSMakeRange(0, [filename length])];
+                NSAppleScript *as = [[NSAppleScript alloc] initWithSource:[NSString stringWithFormat:iTunesLib,filename]];
+                [as performSelectorOnMainThread:@selector(executeAndReturnError:) withObject:nil waitUntilDone:YES];
+                [as release];
+            }
+        }
+        else {
+            for(i=0;i<[outputPathStrArray count];i++) {
+                if(attrDic) {
+                    if(moveAfterFinish) [fm changeFileAttributes:attrDic atPath:[tmpPathStrArray objectAtIndex:i]];
+                    else [fm changeFileAttributes:attrDic atPath:[outputPathStrArray objectAtIndex:i]];
+                }
+                if(moveAfterFinish) {
+                    [fm createDirectoryWithIntermediateDirectoryInPath:[[outputPathStrArray objectAtIndex:i] stringByDeletingLastPathComponent]];
+                    [fm moveFileAtPath:[tmpPathStrArray objectAtIndex:i] toPath:[outputPathStrArray objectAtIndex:i]];
+                }
+                if(cuePathStrArray) {
+                    [[XLDTrackListUtil cueDataForTracks:trackListForCuesheet withFileName:[[outputPathStrArray objectAtIndex:i] lastPathComponent] appendBOM:appendBOM samplerate:[decoder samplerate]] writeToFile:[cuePathStrArray objectAtIndex:i] atomically:YES];
+                }
+                if(iTunesLib) {
+                    NSRange formatIndicatorRange = [iTunesLib rangeOfString:@"[[[XLD_FORMAT_INDICATOR]]]"];
+                    id scpt = iTunesLib;
+                    if(formatIndicatorRange.location != NSNotFound) {
+                        scpt = [NSMutableString stringWithString:iTunesLib];
+                        NSMutableString *formatStr = [NSMutableString stringWithString:configArray ? [[configArray objectAtIndex:i] objectForKey:@"ConfigName"] : [[[encoderArray objectAtIndex:i] class] pluginName]];
+                        [formatStr replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:0 range:NSMakeRange(0, [formatStr length])];
+                        [formatStr replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:0 range:NSMakeRange(0, [formatStr length])];
+                        [formatStr replaceOccurrencesOfString:@"%" withString:@"%%" options:0 range:NSMakeRange(0, [formatStr length])];
+                        [scpt replaceOccurrencesOfString:@"[[[XLD_FORMAT_INDICATOR]]]" withString:formatStr options:0 range:NSMakeRange(0, [scpt length])];
+                    }
+                    NSMutableString *filename = [NSMutableString stringWithString:[outputPathStrArray objectAtIndex:i]];
+                    [filename replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:0 range:NSMakeRange(0, [filename length])];
+                    [filename replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:0 range:NSMakeRange(0, [filename length])];
+                    NSAppleScript *as = [[NSAppleScript alloc] initWithSource:[NSString stringWithFormat:scpt,filename]];
+                    [as performSelectorOnMainThread:@selector(executeAndReturnError:) withObject:nil waitUntilDone:YES];
+                    [as release];
+                }
+            }
+        }
 		[superview setTag:0];
 		[statusField setTextColor:[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.7 alpha:1]];
 		[statusField setFont:[NSFont boldSystemFontOfSize:[[statusField font] pointSize]]];
