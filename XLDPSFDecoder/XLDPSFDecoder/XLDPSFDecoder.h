@@ -19,6 +19,7 @@
     xldoffset_t currentPos;
     float *decodeBuffer;
     int bufferSize;
+    float volume;
     
     int psfVersion;
     void *psxState;

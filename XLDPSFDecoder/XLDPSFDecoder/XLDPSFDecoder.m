@@ -298,6 +298,7 @@ static int load_psf2(void *vfs, const char *filename)
     psfVersion = buf[3];
     double length = 170;
     double fade = 10;
+    volume = 32768.0f;
     
     {
         int sizeReserved,sizeExe;
@@ -366,6 +367,11 @@ static int load_psf2(void *vfs, const char *filename)
                         ptr = strchr(value, '\n');
                         if(ptr) *ptr = 0;
                         fade = timestr_to_double(value);
+                    }
+                    else if(!strcasecmp(key,"volume")) {
+                        ptr = strchr(value, '\n');
+                        if(ptr) *ptr = 0;
+                        volume = 32768.0f * (float)atof(value);
                     }
                 }
                 if(libPath) {
@@ -452,7 +458,7 @@ static int load_psf2(void *vfs, const char *filename)
         int i;
         int fadeLength = (int)(totalFrames - fadeBeginning);
         for(i=0;i<count;i++) {
-            float gain = 32768.0f;
+            float gain = volume;
             if(currentPos+i > fadeBeginning) {
                 gain *= (1.0f/fadeLength)*(fadeLength-(currentPos+i-fadeBeginning+1));
             }
@@ -482,7 +488,7 @@ static int load_psf2(void *vfs, const char *filename)
         int i=0;
 #if defined(__i386__)
         __m128 v0, v1;
-        v1 = _mm_set1_ps(32768.0f);
+        v1 = _mm_set1_ps(volume);
         for(;i<count-1;i+=2) {
             v0 = _mm_load_ps(decodeBuffer+i*2);
             v0 = _mm_mul_ps(v0, v1);
@@ -494,7 +500,7 @@ static int load_psf2(void *vfs, const char *filename)
         }
 #endif
         for(;i<count*2;i++) {
-            float value = *((float *)decodeBuffer+i)*32768.0f;
+            float value = *((float *)decodeBuffer+i)*volume;
             int rounded;
 #if defined(__i386__)
             __asm__ (
