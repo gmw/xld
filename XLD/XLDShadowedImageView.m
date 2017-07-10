@@ -132,7 +132,7 @@
 		if(autosetTooltip) [self setToolTip:[NSString stringWithFormat:@"%d x %d, %d KiB",beforeX,beforeY,[imageData length]/1024]];
 	}
 	else [self setToolTip:nil];
-	[self display];
+	[self setNeedsDisplay:YES];
 }
 
 - (BOOL)setImageData:(NSData *)data
@@ -207,7 +207,7 @@ last:
 	if(image) [image release];
 	image = nil;
 	[self setToolTip:nil];
-	[self display];
+	[self setNeedsDisplay:YES];
 }
 
 - (void)setDefaultString:(NSString *)str

@@ -43,6 +43,7 @@
 - (IBAction)clearImage:(id)sender;
 - (IBAction)extractionModeChanged:(id)sender;
 - (IBAction)verify:(id)sender;
+- (id)initWithDelegate:(id)del;
 - (void)openCueParser:(id)parser;
 - (void)reloadData;
 - (void)imageLoaded;

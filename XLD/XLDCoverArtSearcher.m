@@ -18,6 +18,9 @@
 
 typedef void * CGSConnection;
 extern OSStatus CGSNewConnection(const void **attributes, CGSConnection * id);
+extern CGError CGSNewCIFilterByName(CGSConnection cid, CFStringRef filterName, unsigned int *outFilter);
+extern CGError CGSAddWindowFilter(CGSConnection cid, unsigned int wid, unsigned int filter, int flags);
+extern CGError CGSSetCIFilterValuesFromDictionary(CGSConnection cid, unsigned int filter, CFDictionaryRef filterValues);
 
 @implementation XLDCoverArtSearcher
 

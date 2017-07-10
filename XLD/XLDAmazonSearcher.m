@@ -144,7 +144,8 @@ static char *base64enc(const unsigned char *input, int length)
 	[arguments setObject:@"AWSECommerceService" forKey:@"Service"];
 	//[arguments setObject:@"2009-01-06" forKey:@"Version"];
 	[arguments setObject:[[NSDate date] descriptionWithCalendarFormat:@"%Y-%m-%dT%H%%3A%M%%3A%SZ" timeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"] locale:nil] forKey:@"Timestamp"];
-	[arguments setObject:@"Small%2CImages" forKey:@"ResponseGroup"];
+	//[arguments setObject:@"Small%2CImages%2CTracks" forKey:@"ResponseGroup"];
+    [arguments setObject:@"Small%2CImages" forKey:@"ResponseGroup"];
 	[arguments setObject:@"tmkk-22" forKey:@"AssociateTag"];
 	if(!strcmp(".it",domain)||!strcmp(".es",domain)||!strcmp(".cn",domain)) {
 		[arguments setObject:@"2011-08-01" forKey:@"Version"];
@@ -208,13 +209,8 @@ static char *base64enc(const unsigned char *input, int length)
 	secretKey = [[skey stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
 }
 
-- (void)doSearch
+- (NSData *)xmlDataWithError:(NSError **)error
 {
-	if(asin) return;
-	if(!secretKey || [secretKey isEqualToString:@""]) return;
-	
-	[itemArray removeAllObjects];
-	
 	int i;
 	NSMutableString *str = [NSMutableString stringWithFormat:@"http://%s%s/onca/xml?",server,domain];
 	NSArray *keys = [[arguments allKeys] sortedArrayUsingSelector:@selector(compare:)];
@@ -226,8 +222,18 @@ static char *base64enc(const unsigned char *input, int length)
 	//NSLog(@"%@",str);
 	
 	NSURL *url = [NSURL URLWithString:str];
+	return [NSData fastDataWithContentsOfURL:url error:error];
+}
+
+- (void)doSearch
+{
+	if(asin) return;
+	if(!secretKey || [secretKey isEqualToString:@""]) return;
+	
+	[itemArray removeAllObjects];
+	
 	NSError *err;
-	NSData *data = [NSData fastDataWithContentsOfURL:url error:&err];
+	NSData *data = [self xmlDataWithError:&err];
 	if(data) {
 		NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
 		[parser setDelegate:self];

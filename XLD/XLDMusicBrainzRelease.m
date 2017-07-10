@@ -114,7 +114,7 @@
 		}
 	}
 	
-	NSLog(@"%@",composer);
+	//NSLog(@"%@",composer);
 	
 	[xml release];
 	return composer;
@@ -189,7 +189,7 @@
 		if(composer) [dic setObject:composer forKey:@"Composer"];
 	}
 	
-	NSLog(@"%@",composer);
+	//NSLog(@"%@",composer);
 	
 	[xml release];
 	
