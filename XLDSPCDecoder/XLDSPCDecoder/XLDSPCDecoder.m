@@ -119,8 +119,11 @@
         fclose(fp);
         return NO;
     }
-    fclose(fp);
-    if(memcmp(buf,"SNES-SPC700 Sound File Data",27)) return NO;
+    
+    if(memcmp(buf,"SNES-SPC700 Sound File Data",27)) {
+        fclose(fp);
+        return NO;
+    }
     
     if(buf[0x23] == 0x1a) {
         NSString *str;
@@ -145,18 +148,73 @@
             if(buf[0xb0] != 0) {
                 memcpy(text,buf+0xb0,32);
                 str = [NSString stringWithUTF8String:text];
-                [metadataDic setObject:str forKey:XLD_METADATA_COMPOSER];
+                [metadataDic setObject:str forKey:XLD_METADATA_ARTIST];
             }
         }
         else {
             if(buf[0xb1] != 0) {
                 memcpy(text,buf+0xb1,32);
                 str = [NSString stringWithUTF8String:text];
-                [metadataDic setObject:str forKey:XLD_METADATA_COMPOSER];
+                [metadataDic setObject:str forKey:XLD_METADATA_ARTIST];
             }
         }
-        
     }
+    
+    if(fseeko(fp, 0x10200, SEEK_SET) == 0) {
+        if(fread(buf,1,4,fp) == 4 && !memcmp(buf, "xid6", 4)) {
+            fseeko(fp, 4, SEEK_CUR);
+            while(1) {
+                char ID, type;
+                unsigned short length;
+                if(fread(&ID, 1, 1, fp) != 1) break;
+                if(fread(&type, 1, 1, fp) != 1) break;
+                if(fread(&length, 2, 1, fp) != 1) break;
+                length = OSSwapLittleToHostInt16(length);
+                if(ID == 0x1) {
+                    if(fread(buf, 1, length, fp) != length) break;
+                    NSString *str = [NSString stringWithUTF8String:buf];
+                    [metadataDic setObject:str forKey:XLD_METADATA_TITLE];
+                }
+                else if(ID == 0x2) {
+                    if(fread(buf, 1, length, fp) != length) break;
+                    NSString *str = [NSString stringWithUTF8String:buf];
+                    [metadataDic setObject:str forKey:XLD_METADATA_ALBUM];
+                }
+                else if(ID == 0x3) {
+                    if(fread(buf, 1, length, fp) != length) break;
+                    NSString *str = [NSString stringWithUTF8String:buf];
+                    [metadataDic setObject:str forKey:XLD_METADATA_ARTIST];
+                }
+                else if(ID == 0x7) {
+                    if(fread(buf, 1, length, fp) != length) break;
+                    NSString *str = [NSString stringWithUTF8String:buf];
+                    [metadataDic setObject:str forKey:XLD_METADATA_COMMENT];
+                }
+                else if(ID == 0x14) {
+                    [metadataDic setObject:[NSNumber numberWithUnsignedShort:length] forKey:XLD_METADATA_YEAR];
+                }
+                /*else if(ID == 0x10) {
+                    if(fread(buf, 1, length, fp) != length) break;
+                    NSString *str = [NSString stringWithUTF8String:buf];
+                    [metadataDic setObject:str forKey:XLD_METADATA_ALBUM];
+                }
+                else if(ID == 0x11) {
+                    length &= 0xff;
+                    [metadataDic setObject:[NSNumber numberWithUnsignedShort:length] forKey:XLD_METADATA_DISC];
+                }
+                else if(ID == 0x12) {
+                    length >>= 8;
+                    [metadataDic setObject:[NSNumber numberWithUnsignedShort:length] forKey:XLD_METADATA_TRACK];
+                }*/
+                else if(type) {
+                    fseeko(fp, length, SEEK_CUR);
+                }
+                if(type && (length & 0x3)) fseeko(fp, 4-(length&0x3), SEEK_CUR);
+            }
+        }
+    }
+    
+    fclose(fp);
     
     task = [[NSTask alloc] init];
     [task setStandardInput:[NSPipe pipe]];

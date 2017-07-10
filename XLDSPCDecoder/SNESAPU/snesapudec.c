@@ -94,6 +94,7 @@ int main(int argc, char *argv[])
 			fread(&int64val,8,1,stdin);
 			if(currentPos > int64val) {
 				LoadSPCFile(spcbuf);
+                SetAPULength((totalSamples-fadeout)*2,fadeout*2);
 				if(int64val) SeekAPU(int64val*2,0);
 			}
 			else if(currentPos < int64val) {
