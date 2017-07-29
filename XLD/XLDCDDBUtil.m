@@ -174,8 +174,7 @@ static char *base64enc(const unsigned  char *input, int length)
 	int matchesMB = -1;
 	XLDMusicBrainzReleaseList *releases = [[XLDMusicBrainzReleaseList alloc] initWithDiscID:[NSString stringWithUTF8String:discid]];
 	NSArray *releaseList = nil;
-	if(!releases) matchesMB = 0;
-	else {
+	if(releases) {
 		releaseList = [releases releaseList];
 		matchesMB = [releaseList count];
 	}
