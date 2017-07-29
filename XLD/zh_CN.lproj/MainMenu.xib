@@ -12,18 +12,18 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="602"/>
-			<integer value="278"/>
-			<integer value="592"/>
-			<integer value="1165"/>
-			<integer value="552"/>
-			<integer value="537"/>
-			<integer value="355"/>
+			<integer value="614"/>
+			<integer value="404"/>
 			<integer value="106"/>
 			<integer value="317"/>
-			<integer value="404"/>
+			<integer value="552"/>
+			<integer value="602"/>
+			<integer value="592"/>
+			<integer value="1165"/>
+			<integer value="278"/>
+			<integer value="537"/>
+			<integer value="355"/>
 			<integer value="1132"/>
-			<integer value="614"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3080,7 +3080,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSBox" id="41476921">
 												<reference key="NSNextResponder" ref="675352524"/>
-												<int key="NSvFlags">12</int>
+												<int key="NSvFlags">268</int>
 												<object class="NSMutableArray" key="NSSubviews">
 													<bool key="EncodedWithXMLCoder">YES</bool>
 													<object class="NSView" id="806643545">
@@ -3358,7 +3358,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<object class="NSBox" id="179625074">
 												<reference key="NSNextResponder" ref="675352524"/>
-												<int key="NSvFlags">12</int>
+												<int key="NSvFlags">268</int>
 												<object class="NSMutableArray" key="NSSubviews">
 													<bool key="EncodedWithXMLCoder">YES</bool>
 													<object class="NSView" id="544574013">
@@ -15160,9 +15160,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{67, 540}, {501, 115}}</string>
+					<string>{{36, 540}, {501, 115}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{67, 540}, {501, 115}}</string>
+					<string>{{36, 540}, {501, 115}}</string>
 					<boolean value="NO"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15394,9 +15394,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{376, 593}, {162, 143}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{234, 179}, {500, 577}}</string>
+					<string>{{37, 179}, {500, 577}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{234, 179}, {500, 577}}</string>
+					<string>{{37, 179}, {500, 577}}</string>
 					<boolean value="YES"/>
 					<boolean value="YES"/>
 					<string>{213, 107}</string>
