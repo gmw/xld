@@ -73,9 +73,6 @@ extern FLAC__bool FLAC__stream_encoder_disable_verbatim_subframes(FLAC__StreamEn
 	FLAC__stream_encoder_set_channels(encoder, (unsigned)format.channels);
 	FLAC__stream_encoder_set_bits_per_sample(encoder, (unsigned)format.bps*8);
 	FLAC__stream_encoder_set_sample_rate(encoder, (unsigned)format.samplerate);
-	if([(XLDTrack *)track frames] > 0)
-		FLAC__stream_encoder_set_total_samples_estimate(encoder, [(XLDTrack *)track frames]);
-	else FLAC__stream_encoder_set_total_samples_estimate(encoder, 0);
 	
 	/* set up metadata */
 	FLAC__StreamMetadata *metadata[5];
@@ -396,6 +393,11 @@ extern FLAC__bool FLAC__stream_encoder_disable_verbatim_subframes(FLAC__StreamEn
 	if([[configurations objectForKey:@"VerifyEncoding"] boolValue]) {
 		FLAC__stream_encoder_set_verify(encoder,true);
 	}
+    else {
+        if([(XLDTrack *)track frames] > 0)
+         FLAC__stream_encoder_set_total_samples_estimate(encoder, [(XLDTrack *)track frames]);
+         else FLAC__stream_encoder_set_total_samples_estimate(encoder, 0);
+    }
 	
 	if([[configurations objectForKey:@"OggFlac"] boolValue]) {
 		FLAC__stream_encoder_set_ogg_serial_number(encoder,(long)rand());
@@ -419,7 +421,10 @@ extern FLAC__bool FLAC__stream_encoder_disable_verbatim_subframes(FLAC__StreamEn
 - (BOOL)writeBuffer:(int *)buffer frames:(int)counts
 {
 	int i;
-	if(internalBufferSize < counts*format.channels*4) internalBuffer = realloc(internalBuffer, counts*format.channels*4);
+    if(internalBufferSize < counts*format.channels*4) {
+        internalBufferSize = counts*format.channels*4;
+        internalBuffer = realloc(internalBuffer, internalBufferSize);
+    }
 	int samples = counts*format.channels;
 	int shamt = 32-format.bps*8;
 	for(i=0;i<samples;i++) {
