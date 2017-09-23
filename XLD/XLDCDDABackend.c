@@ -11,7 +11,6 @@
 #include <IOKit/storage/IOCDTypes.h>
 #include <IOKit/storage/IOCDMediaBSDClient.h>
 #include <IOKit/scsi/IOSCSIMultimediaCommandsDevice.h>
-#include <CoreFoundation/CoreFoundation.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -23,6 +22,38 @@
 
 #define C2READ_PER_LOOP 40
 
+static const char *cdtext_genres[] =
+{
+    "Not Used",
+    "Not Defined",
+    "Adult Contemporary",
+    "Alternative Rock",
+    "Childrens' Music",
+    "Classical",
+    "Contemporary Christian",
+    "Country",
+    "Dance",
+    "Easy Listening",
+    "Erotic",
+    "Folk",
+    "Gospel",
+    "Hip Hop",
+    "Jazz",
+    "Latin",
+    "Musical",
+    "New Age",
+    "Opera",
+    "Operetta",
+    "Pop Music",
+    "Rap",
+    "Reggae",
+    "Rock Music",
+    "Rhythm & Blues",
+    "Sound Effects",
+    "Spoken Word",
+    "World Music",
+};
+
 static char isrc2Ascii(unsigned char c)
 {
 	if (c <= 9)
@@ -32,6 +63,53 @@ static char isrc2Ascii(unsigned char c)
 		return 'A' + (c - 17);
 	
 	return 0;
+}
+
+static void appendCDText(int track, int type, const char *data, int length, CFStringEncoding encoding, xld_cdread_t *disc)
+{
+    if(track < 0 || track > disc->numTracks) return;
+    if(length <= 0) return;
+    CFStringRef key;
+    if(type == 0x80) key = CFSTR("Title");
+    else if(type == 0x81) key = CFSTR("Artist");
+    else if(type == 0x83) key = CFSTR("Composer");
+    else if(type == 0x87) key = CFSTR("Genre");
+    else if(type == 0x8e) {
+        if(length != 12 || !memcmp(data, "000000000000", 12)) return;
+        key = CFSTR("ISRC");
+        encoding = kCFStringEncodingISOLatin1;
+    }
+    else return;
+    if(track == 0) {
+        if(type == 0x80) key = CFSTR("Album");
+        else if(type == 0x81) key = CFSTR("AlbumArtist");
+        else if(type == 0x83) key = CFSTR("Composer");
+        else if(type == 0x87) key = CFSTR("Genre");
+        else return;
+    }
+    CFStringRef str = NULL;
+    if((length == 1 && data[0] == '\t') || (length == 2 && data[0] == '\t' && data[1] == '\t')) {
+        if(track > 1) {
+            str = CFStringCreateCopy(NULL, (CFStringRef)CFDictionaryGetValue(disc->tracks[track-2].metadata, key));
+        }
+        else if(track == 1) {
+            CFMutableDictionaryRef dic = disc->tracks[0].metadata;
+            if(type == 0x80) str = CFStringCreateCopy(NULL, (CFStringRef)CFDictionaryGetValue(dic, CFSTR("Album")));
+            else if(type == 0x81) str = CFStringCreateCopy(NULL, (CFStringRef)CFDictionaryGetValue(dic, CFSTR("AlbumArtist")));
+        }
+    }
+    else str = CFStringCreateWithBytes(NULL, (const UInt8*)data, length, encoding, false);
+    if(!str) return;
+    if(track != 0) {
+        CFDictionarySetValue(disc->tracks[track-1].metadata, key, str);
+    }
+    else {
+        int i;
+        for(i=0;i<disc->numTracks;i++) {
+            CFDictionarySetValue(disc->tracks[i].metadata, key, str);
+        }
+    }
+    CFRelease(str);
 }
 
 static void print_info(xld_cdread_t *disc)
@@ -307,6 +385,103 @@ static void read_hw_info(xld_cdread_t *disc)
 	IOObjectRelease(service_iterator);
 }
 
+static void read_cd_text(xld_cdread_t *disc, int languageNum)
+{
+    dk_cd_read_toc_t tocread;
+    CDTEXT *cdtext = calloc(1,sizeof(CDTEXT));
+    memset(&tocread,0, sizeof(tocread));
+    tocread.format = kCDTOCFormatTEXT;
+    tocread.bufferLength = sizeof(CDTEXT);
+    tocread.buffer = cdtext;
+    int ret = ioctl(disc->fd, DKIOCCDREADTOC, &tocread);
+    if(ret < 0) {
+        perror("read error");
+        return;
+    }
+    
+    int size = OSSwapBigToHostInt16(cdtext->dataLength)+sizeof(cdtext->dataLength);
+    int numDescr = (size-4)/18;
+    if(numDescr <= 0) return;
+    
+    cdtext = realloc(cdtext, size);
+    memset(&tocread,0, sizeof(tocread));
+    tocread.format = kCDTOCFormatTEXT;
+    tocread.bufferLength = size;
+    tocread.buffer = cdtext;
+    ret = ioctl(disc->fd, DKIOCCDREADTOC, &tocread);
+    if(ret < 0) {
+        perror("read error");
+        return;
+    }
+    
+    int i;
+    
+    CFStringEncoding currentEncoding = 0;
+    for(i=0;i<numDescr;i++) {
+        CDTEXTDescriptor *desc = &cdtext->descriptors[i];
+        if(desc->packType == 0x8f && desc->trackNumber == 0 && desc->blockNumber == languageNum) {
+            if(desc->textData[0] == 0) currentEncoding = kCFStringEncodingISOLatin1;
+            else if(desc->textData[0] == 1) currentEncoding = kCFStringEncodingASCII;
+            else if(desc->textData[0] == 0x80) currentEncoding = kCFStringEncodingDOSJapanese;
+            break;
+        }
+    }
+    if(!currentEncoding) return;
+    
+    for(i=0;i<disc->numTracks;i++) {
+        disc->tracks[i].metadata = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    }
+    
+    int currentType = -1;
+    int currentTrack = -1;
+    char buffer[256];
+    int pos = 0;
+    for(i=0;i<numDescr;i++) {
+        CDTEXTDescriptor *desc = &cdtext->descriptors[i];
+        if(desc->blockNumber != languageNum) continue;
+        if((currentType > 0 && currentType != desc->packType) || (currentTrack > 0 && currentTrack != desc->trackNumber)) {
+            appendCDText(currentTrack, currentType, buffer, pos, currentEncoding, disc);
+            pos = 0;
+        }
+        currentType = desc->packType;
+        currentTrack = desc->trackNumber;
+        if((currentType >= 0x80 && currentType < 0x86) || currentType == 0x8e) {
+            int i;
+            if(desc->doubleByteCharacterCode) {
+                for(i=0;i<12;i+=2) {
+                    buffer[pos++] = desc->textData[i];
+                    buffer[pos++] = desc->textData[i+1];
+                    if(!desc->textData[i] && !desc->textData[i+1]) {
+                        appendCDText(currentTrack, currentType, buffer, pos-2, currentEncoding, disc);
+                        pos = 0;
+                        currentTrack++;
+                    }
+                }
+            }
+            else {
+                for(i=0;i<12;i++) {
+                    buffer[pos++] = desc->textData[i];
+                    if(!desc->textData[i]) {
+                        appendCDText(currentTrack, currentType, buffer, pos-1, currentEncoding, disc);
+                        pos = 0;
+                        currentTrack++;
+                    }
+                }
+            }
+        }
+        else if(currentType == 0x87 && currentTrack == 0) {
+            unsigned short genre = (desc->textData[0] << 8) | desc->textData[1];
+            if(genre > 0x01 && genre <= 0x1b && desc->characterPosition == 0) {
+                appendCDText(currentTrack, currentType, cdtext_genres[genre], strlen(cdtext_genres[genre]), kCFStringEncodingASCII, disc);
+            }
+        }
+    }
+    
+    /*for(i=0;i<disc->numTracks;i++) {
+        CFShow(disc->tracks[i].metadata);
+    }*/
+}
+
 int xld_cdda_open(xld_cdread_t *disc, char *device)
 {
 	memset(disc, 0, sizeof(xld_cdread_t));
@@ -330,6 +505,7 @@ int xld_cdda_open(xld_cdread_t *disc, char *device)
 	disc->opened = 1;
 	disc->nsectors = 8;
 	read_hw_info(disc);
+    read_cd_text(disc, 0);
 	xld_cdda_speed_set(disc,-1);
 	//read_disc_info(disc);
 	read_media_type(disc);
@@ -342,7 +518,13 @@ void xld_cdda_close(xld_cdread_t *disc)
 	if(!disc->opened) return;
 	xld_cdda_set_max_speed(disc, -1);
 	if(disc->device) free(disc->device);
-	if(disc->tracks) free(disc->tracks);
+    if(disc->tracks) {
+        int i;
+        for(i=0;i<disc->numTracks;i++) {
+            if(disc->tracks[i].metadata) CFRelease(disc->tracks[i].metadata);
+        }
+        free(disc->tracks);
+    }
 	if(disc->vendor) free(disc->vendor);
 	if(disc->product) free(disc->product);
 	if(disc->revision) free(disc->revision);

@@ -3295,6 +3295,7 @@ end:
 					[[track metadata] setObject:[NSNumber numberWithBool:YES] forKey:XLD_METADATA_DCP];
 				}
 			}
+            if(cdread.tracks[i-1].metadata) [[track metadata] addEntriesFromDictionary:(NSDictionary *)cdread.tracks[i-1].metadata];
 			[trackArr addObject:track];
 			[track release];
 		}

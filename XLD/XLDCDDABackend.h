@@ -9,6 +9,8 @@
 #ifndef XLD_CDDA_BACKEND_H
 #define XLD_CDDA_BACKEND_H
 
+#include <CoreFoundation/CoreFoundation.h>
+
 typedef enum
 {
 	kTrackTypeAudio,
@@ -25,6 +27,7 @@ typedef struct
 	int preEmphasis;
 	int dcp;
 	char isrc[13];
+    CFMutableDictionaryRef metadata;
 } xld_track_t;
 
 typedef struct
