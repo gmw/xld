@@ -3249,7 +3249,7 @@ end:
 	BOOL isDir;
 	NSFileManager *mgr = [NSFileManager defaultManager];
 	NSString *filter = ([o_limitExtension state] == NSOnState) ? [[o_extensionFilter stringValue] lowercaseString] : nil;
-	unsigned int modifierFlags = GetCurrentKeyModifiers();
+	unsigned long modifierFlags = [NSEvent modifierFlags];
 	[mgr fileExistsAtPath:[queue objectAtIndex:0] isDirectory:&isDir];
 	firstDrag = YES;
 	if(([queue count] == 1) && !isDir) {
@@ -3266,7 +3266,7 @@ end:
 		}
 		[file release];
 	}
-	else if([queue count] == 1 && isDir && (modifierFlags & cmdKey)) {
+	else if([queue count] == 1 && isDir && (modifierFlags & NSCommandKeyMask)) {
 		[self openFolder:[queue objectAtIndex:0] offset:0 prepended:NO];
 		[queue removeAllObjects];
 	}
