@@ -377,101 +377,179 @@ static void getFilesFromM3U(NSString *m3u, NSMutableArray *queue, NSStringEncodi
 	}
 	else {
 		NSString *pattern = [[o_filenameFormat stringValue] stringByStandardizingPath];
+        NSMutableString *inBracketStr = nil;
+        BOOL bracketHasTag = NO;
 		if([pattern characterAtIndex:[pattern length]-1] == '/') pattern = [pattern substringToIndex:[pattern length]-2];
 		if([pattern characterAtIndex:0] == '/') pattern = [pattern substringFromIndex:1];
 		str = [[[NSMutableString alloc] init] autorelease];
 		for(j=0;j<[pattern length]-1;j++) {
+            NSString *stringToAdd = nil;
 			/* track number */
 			if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%n"]) {
-				[str appendFormat: @"%02d",idx];
+				stringToAdd = [NSString stringWithFormat: @"%02d",idx];
+                if([[trk metadata] objectForKey:XLD_METADATA_TRACK]) bracketHasTag = YES;
 				j++;
 			}
 			/* disc number */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%D"]) {
 				if([[trk metadata] objectForKey:XLD_METADATA_DISC]) {
-					[str appendFormat: @"%02d",[[[trk metadata] objectForKey:XLD_METADATA_DISC] intValue]];
+					stringToAdd = [NSString stringWithFormat: @"%d",[[[trk metadata] objectForKey:XLD_METADATA_DISC] intValue]];
+                    bracketHasTag = YES;
 				}
-				else [str appendString:@"01"];
+                else {
+                    stringToAdd = @"1";
+                }
 				j++;
 			}
 			/* title */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%t"]) {
-				if(name && ![name isEqualToString:@""]) [str appendString: name];
-				else [str appendString: @"Unknown Title"];
+                if(name && ![name isEqualToString:@""]) {
+                    stringToAdd = name;
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"Unknown Title";
+                }
 				j++;
 			}
 			/* artist */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%a"]) {
-				if(artist && ![artist isEqualToString:@""]) [str appendString: artist];
-				else [str appendString: @"Unknown Artist"];
+                if(artist && ![artist isEqualToString:@""]) {
+                    stringToAdd = artist;
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"Unknown Artist";
+                }
 				j++;
 			}
 			/* album title */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%T"]) {
-				if(album && ![album isEqualToString:@""]) [str appendString: album];
-				else [str appendString: @"Unknown Album"];
+                if(album && ![album isEqualToString:@""]) {
+                    stringToAdd = album;
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"Unknown Album";
+                }
 				j++;
 			}
 			/* album artist */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%A"]) {
-				if(albumartist && ![albumartist isEqualToString:@""]) [str appendString: albumartist];
-				else [str appendString: @"Unknown Artist"];
+                if(albumartist && ![albumartist isEqualToString:@""]) {
+                    stringToAdd = albumartist;
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"Unknown Artist";
+                }
 				j++;
 			}
 			/* composer */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%c"]) {
-				if(composer && ![composer isEqualToString:@""]) [str appendString: composer];
-				else [str appendString: @"Unknown Composer"];
+                if(composer && ![composer isEqualToString:@""]) {
+                    stringToAdd = composer;
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"Unknown Composer";
+                }
 				j++;
 			}
 			/* year */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%y"]) {
 				NSNumber *year = [[trk metadata] objectForKey:XLD_METADATA_YEAR];
-				if(year) [str appendString: [year stringValue]];
-				else [str appendString: @"Unknown Year"];
+                if(year) {
+                    stringToAdd = [year stringValue];
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"Unknown Year";
+                }
 				j++;
 			}
 			/* genre */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%g"]) {
-				if(genre && ![genre isEqualToString:@""]) [str appendString: genre];
-				else [str appendString: @"Unknown Genre"];
+                if(genre && ![genre isEqualToString:@""]) {
+                    stringToAdd = genre;
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"Unknown Genre";
+                }
 				j++;
 			}
 			/* isrc */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%i"]) {
 				NSString *isrc = [[trk metadata] objectForKey:XLD_METADATA_ISRC];
-				if(isrc && ![isrc isEqualToString:@""]) [str appendString: isrc];
-				else [str appendString: @"NO_ISRC"];
+                if(isrc && ![isrc isEqualToString:@""]) {
+                    stringToAdd = isrc;
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"NO_ISRC";
+                }
 				j++;
 			}
 			/* mcn */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%m"]) {
 				NSString *mcn = [[trk metadata] objectForKey:XLD_METADATA_CATALOG];
-				if(mcn && ![mcn isEqualToString:@""]) [str appendString: mcn];
-				else [str appendString: @"NO_MCN"];
+                if(mcn && ![mcn isEqualToString:@""]) {
+                    stringToAdd = mcn;
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"NO_MCN";
+                }
 				j++;
 			}
 			/* discid */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%I"]) {
 				NSNumber *discid = [[trk metadata] objectForKey:XLD_METADATA_FREEDBDISCID];
-				if(discid) [str appendString: [NSString stringWithFormat:@"%08X", [discid unsignedIntValue]]];
-				else [str appendString: @"NO_DISCID"];
+                if(discid) {
+                    stringToAdd = [NSString stringWithFormat:@"%08X", [discid unsignedIntValue]];
+                    bracketHasTag = YES;
+                }
+                else {
+                    stringToAdd = @"NO_DISCID";
+                }
 				j++;
 			}
 			/* format */
 			else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%f"]) {
 				if([[o_formatList selectedItem] tag] == 1)
-					[str appendString: @"[[[XLD_FORMAT_INDICATOR]]]"];
-				else [str appendString: [self currentOutputFormatString]];
+					stringToAdd = @"[[[XLD_FORMAT_INDICATOR]]]";
+				else stringToAdd = [self currentOutputFormatString];
+                bracketHasTag = YES;
 				j++;
 			}
 			else if([[pattern substringWithRange:NSMakeRange(j,1)] isEqualToString:@"/"]) {
-				[str appendString: @"[[[XLD_DIRECTORY_SEPARATOR]]]"];
+				stringToAdd = @"[[[XLD_DIRECTORY_SEPARATOR]]]";
 			}
+            else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%["]) {
+                inBracketStr = [[NSMutableString alloc] init];
+                bracketHasTag = NO;
+                j++;
+            }
+            else if([[pattern substringWithRange:NSMakeRange(j,2)] isEqualToString:@"%]"]) {
+                if(bracketHasTag) [str appendString:inBracketStr];
+                [inBracketStr release];
+                inBracketStr = nil;
+                bracketHasTag = NO;
+                j++;
+            }
 			else {
-				[str appendString: [pattern substringWithRange:NSMakeRange(j,1)]];
+				stringToAdd = [pattern substringWithRange:NSMakeRange(j,1)];
 			}
+            if(stringToAdd) {
+                if(inBracketStr) [inBracketStr appendString:stringToAdd];
+                else [str appendString:stringToAdd];
+            }
 		}
+        if(inBracketStr) {
+            [str appendString:inBracketStr];
+            [inBracketStr release];
+        }
 		if(j==[pattern length]-1) [str appendString: [pattern substringWithRange:NSMakeRange(j,1)]];
 		if(!createSubDir || [[o_formatList selectedItem] tag] != 1)
 			[str replaceOccurrencesOfString:@"[[[XLD_FORMAT_INDICATOR]]]" withString:[self currentOutputFormatString] options:0 range:NSMakeRange(0, [str length])];
