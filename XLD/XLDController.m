@@ -4542,8 +4542,18 @@ fail:
 
 - (void)applicationDidFinishLaunching: (NSNotification *)notification
 {
+    NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
+    NSString *plistPath = [@"~/Library/Preferences/jp.tmkk.XLD.plist" stringByExpandingTildeInPath];
+    NSString *backupPath = [@"~/Library/Application Support/XLD/XLD.plist.backup" stringByExpandingTildeInPath];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:backupPath]) {
+        [[NSFileManager defaultManager] copyPath:plistPath toPath:backupPath handler:nil];
+    }
+    NSDictionary *prefDic = [[NSDictionary alloc] initWithContentsOfFile:backupPath];
+    if(prefDic) {
+        [defs registerDefaults:prefDic];
+        [prefDic release];
+    }
 	int i;
-	
 	for(i=0;i<[outputArr count];i++) {
 		if(i>=5) {
 			[o_formatList addItemWithTitle:[[[outputArr objectAtIndex:i] class] pluginName]];
@@ -4582,7 +4592,6 @@ fail:
 	[o_filenameFormat setToolTip:LS(@"formatTooltipStr")];
 	[o_libraryName setToolTip:LS(@"formatTooltipStr")];
 	
-	NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
 	NSArray* languages = [defs objectForKey:@"AppleLanguages"];
 	if([[languages objectAtIndex:0] isEqualToString:@"ja"]) {
 		[o_cuesheetEncodings selectItemAtIndex:0];
@@ -4680,6 +4689,8 @@ fail:
 	NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
 	[pref setObject:[[o_prefPane toolbar] selectedItemIdentifier] forKey:@"SelectedPreferencesToolbarItem"];
 	[pref synchronize];
+    NSDictionary *prefDic = [pref persistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
+    [prefDic writeToFile:[@"~/Library/Application Support/XLD/XLD.plist.backup" stringByExpandingTildeInPath] atomically:YES];
 	return YES;
 }
 
