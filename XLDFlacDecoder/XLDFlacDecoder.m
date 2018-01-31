@@ -5,6 +5,7 @@ typedef int64_t xldoffset_t;
 #import "XLDFlacDecoder.h"
 #import "XLDTrack.h"
 #import <unistd.h>
+#import <objc/objc-runtime.h>
 
 typedef struct {
     unsigned char id[3];
