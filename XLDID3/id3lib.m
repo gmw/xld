@@ -517,7 +517,7 @@ void parseID3(NSData *dat, NSMutableDictionary *metadata)
 		size += (getByte(dat,&pos)&0x7f) << 7;
 		size += getByte(dat,&pos)&0x7f;
 		if(version == 3 || version == 4) {
-			if(version == 4 && globalFlag & 0x7f != 0) return;
+			if(version == 4 && (globalFlag & 0x7f) != 0) return;
 			else if(version == 3 && globalFlag != 0) return;
 			
 			while(size > 0) {
