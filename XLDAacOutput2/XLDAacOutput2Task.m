@@ -532,10 +532,10 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	inputFormat.mFormatID = kAudioFormatLinearPCM;
 	
 #ifdef _BIG_ENDIAN
-	if(format.isFloat) kAudioFormatFlagIsFloat|kAudioFormatFlagIsBigEndian|kAudioFormatFlagIsPacked;
+	if(format.isFloat) inputFormat.mFormatFlags = kAudioFormatFlagIsFloat|kAudioFormatFlagIsBigEndian|kAudioFormatFlagIsPacked;
 	else inputFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger|kAudioFormatFlagIsBigEndian|kAudioFormatFlagIsPacked;
 #else
-	if(format.isFloat) kAudioFormatFlagIsFloat|kAudioFormatFlagIsPacked;
+	if(format.isFloat) inputFormat.mFormatFlags = kAudioFormatFlagIsFloat|kAudioFormatFlagIsPacked;
 	else inputFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger|kAudioFormatFlagIsPacked;
 #endif
 	inputFormat.mFramesPerPacket = 1;
