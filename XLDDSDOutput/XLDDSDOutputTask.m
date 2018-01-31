@@ -245,7 +245,7 @@ static void setupID3Tag(NSMutableData *tagData, NSDictionary *metadata)
 	if([metadata objectForKey:XLD_METADATA_COMPILATION]) {
 		if([[metadata objectForKey:XLD_METADATA_COMPILATION] boolValue]) {
 			added = YES;
-			appendTextTag(tagData, "TCMP", [NSString stringWithString:@"1"], 0);
+			appendTextTag(tagData, "TCMP", @"1", 0);
 		}
 	}
 	
@@ -258,28 +258,28 @@ static void setupID3Tag(NSMutableData *tagData, NSDictionary *metadata)
 	/* COMM (gapless album) */
 	if([metadata objectForKey:XLD_METADATA_GAPLESSALBUM] && [[metadata objectForKey:XLD_METADATA_GAPLESSALBUM] boolValue]) {
 		added = YES;
-		appendCommentTag(tagData, "COMM", "eng", [NSString stringWithString:@"iTunPGAP"], [NSString stringWithString:@"1"], 0);
+		appendCommentTag(tagData, "COMM", "eng", @"iTunPGAP", @"1", 0);
 	}
 	
 	/* COMM */
 	if([metadata objectForKey:XLD_METADATA_COMMENT]) {
 		added = YES;
-		appendCommentTag(tagData, "COMM", "eng", [NSString stringWithString:@""], [metadata objectForKey:XLD_METADATA_COMMENT], 1);
+		appendCommentTag(tagData, "COMM", "eng", @"", [metadata objectForKey:XLD_METADATA_COMMENT], 1);
 	}
 	
 	/* USLT */
 	if([metadata objectForKey:XLD_METADATA_LYRICS]) {
 		added = YES;
-		appendCommentTag(tagData, "USLT", "eng", [NSString stringWithString:@""], [metadata objectForKey:XLD_METADATA_LYRICS], 1);
+		appendCommentTag(tagData, "USLT", "eng", @"", [metadata objectForKey:XLD_METADATA_LYRICS], 1);
 	}
 	
 	/* COMM (iTunes_CDDB_1) */
 	if([metadata objectForKey:XLD_METADATA_GRACENOTE2]) {
 		added = YES;
-		appendCommentTag(tagData, "COMM", "eng", [NSString stringWithString:@"iTunes_CDDB_1"], [metadata objectForKey:XLD_METADATA_GRACENOTE2], 0);
+		appendCommentTag(tagData, "COMM", "eng", @"iTunes_CDDB_1", [metadata objectForKey:XLD_METADATA_GRACENOTE2], 0);
 		if([metadata objectForKey:XLD_METADATA_TRACK]) {
 			NSString *str = [[metadata objectForKey:XLD_METADATA_TRACK] stringValue];
-			appendCommentTag(tagData, "COMM", "eng", [NSString stringWithString:@"iTunes_CDDB_TrackNumber"], str, 0);
+			appendCommentTag(tagData, "COMM", "eng", @"iTunes_CDDB_TrackNumber", str, 0);
 		}
 	}
 	
@@ -301,57 +301,57 @@ static void setupID3Tag(NSMutableData *tagData, NSDictionary *metadata)
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_ALBUMID]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Album Id"], [metadata objectForKey:XLD_METADATA_MB_ALBUMID], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicBrainz Album Id", [metadata objectForKey:XLD_METADATA_MB_ALBUMID], 0);
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_ARTISTID]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Artist Id"], [metadata objectForKey:XLD_METADATA_MB_ARTISTID], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicBrainz Artist Id", [metadata objectForKey:XLD_METADATA_MB_ARTISTID], 0);
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_ALBUMARTISTID]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Album Artist Id"], [metadata objectForKey:XLD_METADATA_MB_ALBUMARTISTID], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicBrainz Album Artist Id", [metadata objectForKey:XLD_METADATA_MB_ALBUMARTISTID], 0);
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_DISCID]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Disc Id"], [metadata objectForKey:XLD_METADATA_MB_DISCID], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicBrainz Disc Id", [metadata objectForKey:XLD_METADATA_MB_DISCID], 0);
 	}
 	if([metadata objectForKey:XLD_METADATA_PUID]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicIP PUID"], [metadata objectForKey:XLD_METADATA_PUID], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicIP PUID", [metadata objectForKey:XLD_METADATA_PUID], 0);
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_ALBUMSTATUS]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Album Status"], [metadata objectForKey:XLD_METADATA_MB_ALBUMSTATUS], 1);
+		appendCommentTag(tagData, "TXXX", NULL,@"MusicBrainz Album Status", [metadata objectForKey:XLD_METADATA_MB_ALBUMSTATUS], 1);
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_ALBUMTYPE]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Album Type"], [metadata objectForKey:XLD_METADATA_MB_ALBUMTYPE], 1);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicBrainz Album Type", [metadata objectForKey:XLD_METADATA_MB_ALBUMTYPE], 1);
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_RELEASECOUNTRY]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Album Release Country"], [metadata objectForKey:XLD_METADATA_MB_RELEASECOUNTRY], 1);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicBrainz Album Release Country", [metadata objectForKey:XLD_METADATA_MB_RELEASECOUNTRY], 1);
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_RELEASEGROUPID]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Release Group Id"], [metadata objectForKey:XLD_METADATA_MB_RELEASEGROUPID], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicBrainz Release Group Id", [metadata objectForKey:XLD_METADATA_MB_RELEASEGROUPID], 0);
 	}
 	if([metadata objectForKey:XLD_METADATA_MB_WORKID]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MusicBrainz Work Id"], [metadata objectForKey:XLD_METADATA_MB_WORKID], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"MusicBrainz Work Id", [metadata objectForKey:XLD_METADATA_MB_WORKID], 0);
 	}
 	
 	/* Timecode related tags */
 	if([metadata objectForKey:XLD_METADATA_SMPTE_TIMECODE_START]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"SMPTE_TIMECODE_START"], [metadata objectForKey:XLD_METADATA_SMPTE_TIMECODE_START], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"SMPTE_TIMECODE_START", [metadata objectForKey:XLD_METADATA_SMPTE_TIMECODE_START], 0);
 	}
 	if([metadata objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"SMPTE_TIMECODE_DURATION"], [metadata objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"SMPTE_TIMECODE_DURATION", [metadata objectForKey:XLD_METADATA_SMPTE_TIMECODE_DURATION], 0);
 	}
 	if([metadata objectForKey:XLD_METADATA_MEDIA_FPS]) {
 		added = YES;
-		appendCommentTag(tagData, "TXXX", NULL, [NSString stringWithString:@"MEDIA_FPS"], [metadata objectForKey:XLD_METADATA_MEDIA_FPS], 0);
+		appendCommentTag(tagData, "TXXX", NULL, @"MEDIA_FPS", [metadata objectForKey:XLD_METADATA_MEDIA_FPS], 0);
 	}
 	
 	/* APIC */
