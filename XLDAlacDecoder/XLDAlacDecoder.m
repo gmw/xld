@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h>
+#import <objc/objc-runtime.h>
 #import "XLDAlacDecoder.h"
 #import "XLDTrack.h"
 
@@ -332,7 +333,8 @@ NSMutableArray *getChapterTrackList(FILE *fp, int samplerate)
 	int i,j,entries,tmp;
 	char atom[4];
 	NSMutableArray *trackList = [NSMutableArray array];
-	NSMutableArray *sampleSizeList = [NSMutableArray array];
+	//NSMutableArray *sampleSizeList = [NSMutableArray array];
+	NSMutableArray *sampleOffsetList = [NSMutableArray array];
 	
 	/* find text track (ID=2) */
 	if(fseeko(fp,0,SEEK_SET) != 0) goto end;
@@ -459,7 +461,7 @@ NSMutableArray *getChapterTrackList(FILE *fp, int samplerate)
 	
 	if(fseeko(fp,stblPos,SEEK_SET) != 0) goto end;
 	
-	while(1) { //skip until stsz;
+	/*while(1) { //skip until stsz;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
 		tmp = NSSwapBigIntToHost(tmp);
@@ -485,7 +487,7 @@ NSMutableArray *getChapterTrackList(FILE *fp, int samplerate)
 	}
 	if([sampleSizeList count] != [trackList count]) goto end;
 	
-	if(fseeko(fp,stblPos,SEEK_SET) != 0) goto end;
+	if(fseeko(fp,stblPos,SEEK_SET) != 0) goto end;*/
 	
 	while(1) { //skip until stco;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
@@ -494,12 +496,18 @@ NSMutableArray *getChapterTrackList(FILE *fp, int samplerate)
 		if(!memcmp(atom,"stco",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
-	if(fseeko(fp,8,SEEK_CUR) != 0) goto end;
-	if(fread(&tmp,4,1,fp) < 1) goto end;
-	tmp = NSSwapBigIntToHost(tmp);
-	if(fseeko(fp,tmp,SEEK_SET) != 0) goto end;
-	for(i=0;i<[sampleSizeList count];i++) {
-		off_t samplePos = ftello(fp);
+	if(fseeko(fp,4,SEEK_CUR) != 0) goto end;
+	if(fread(&entries,4,1,fp) < 1) goto end;
+	entries = NSSwapBigIntToHost(entries);
+	for(i=0;i<entries;i++) {
+		if(fread(&tmp,4,1,fp) < 1) goto end;
+		tmp = NSSwapBigIntToHost(tmp);
+		[sampleOffsetList addObject:[NSNumber numberWithInt:tmp]];
+	}
+	if([sampleOffsetList count] != [trackList count]) goto end;
+	
+	for(i=0;i<[sampleOffsetList count];i++) {
+		if(fseeko(fp,[[sampleOffsetList objectAtIndex:i] intValue],SEEK_SET) != 0) goto end;
 		unsigned short length;
 		unsigned short bom = 0;
 		if(fread(&length,2,1,fp) < 1) goto end;
@@ -526,8 +534,6 @@ NSMutableArray *getChapterTrackList(FILE *fp, int samplerate)
 			
 		}
 		free(string);
-		if(fseeko(fp,samplePos,SEEK_SET) != 0) goto end;
-		if(fseeko(fp,[[sampleSizeList objectAtIndex:i] intValue],SEEK_CUR) != 0) goto end;
 	}
 	
 end:
@@ -537,7 +543,7 @@ end:
 }
 
 @implementation XLDAlacDecoder
-		
+
 
 + (BOOL)canHandleFile:(char *)path
 {
