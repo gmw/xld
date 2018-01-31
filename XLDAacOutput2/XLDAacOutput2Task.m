@@ -16,14 +16,6 @@ typedef int64_t xldoffset_t;
 #import <unistd.h>
 #import <sys/types.h>
 
-#ifdef _BIG_ENDIAN
-#define SWAP32(n) (n)
-#define SWAP16(n) (n)
-#else
-#define SWAP32(n) (((n>>24)&0xff) | ((n>>8)&0xff00) | ((n<<8)&0xff0000) | ((n<<24)&0xff000000))
-#define SWAP16(n) (((n>>8)&0xff) | ((n<<8)&0xff00))
-#endif
-
 #define NSAppKitVersionNumber10_4 824
 
 const unsigned int srTable[16]= {96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025,  8000,  7350,     0,     0,     0,};
@@ -40,7 +32,7 @@ static int getM4aFrequency(FILE *fp)
 	while(1) { //skip until moov;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"moov",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -48,7 +40,7 @@ static int getM4aFrequency(FILE *fp)
 	while(1) { //skip until trak;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"trak",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -56,7 +48,7 @@ static int getM4aFrequency(FILE *fp)
 	while(1) { //skip until mdia;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"mdia",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -64,7 +56,7 @@ static int getM4aFrequency(FILE *fp)
 	while(1) { //skip until minf;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"minf",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -72,7 +64,7 @@ static int getM4aFrequency(FILE *fp)
 	while(1) { //skip until stbl;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"stbl",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -125,25 +117,25 @@ static void appendUserDefinedComment(NSMutableData *tagData, NSString *tagIdenti
 	NSData *commentData = [commentStr dataUsingEncoding:NSUTF8StringEncoding];
 	NSData *tagIdentifierData = [tagIdentifier dataUsingEncoding:NSUTF8StringEncoding];
 	tmp = 0x40 + [commentData length] + [tagIdentifierData length];
-	tmp = NSSwapHostIntToBig(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:"----" length:4];
 	tmp = 0x1C;
-	tmp = NSSwapHostIntToBig(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:"mean" length:4];
 	tmp = 0;
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:"com.apple.iTunes" length:16];
 	tmp = 0xC + [tagIdentifierData length];
-	tmp = NSSwapHostIntToBig(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:"name" length:4];
 	tmp = 0;
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendData:tagIdentifierData];
 	tmp = 0x10 + [commentData length];
-	tmp = NSSwapHostIntToBig(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:"data" length:4];
 	tmp = 0;
@@ -161,11 +153,11 @@ static void appendTextTag(NSMutableData *tagData, const char *atomID, NSString *
 	unsigned char tmp3;
 	NSData *data = [tagStr dataUsingEncoding:NSUTF8StringEncoding];
 	tmp = 24 + [data length];
-	tmp = NSSwapHostIntToBig(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:atomID length:4];
 	tmp = 16 + [data length];
-	tmp = NSSwapHostIntToBig(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:"data" length:4];
 	tmp = 0;
@@ -184,11 +176,11 @@ static void appendNumericTag(NSMutableData *tagData, const char *atomID, NSNumbe
 	unsigned short tmp2;
 	unsigned char tmp3;
 	tmp = 24 + length;
-	tmp = NSSwapHostIntToBig(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:atomID length:4];
 	tmp = 16 + length;
-	tmp = NSSwapHostIntToBig(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:"data" length:4];
 	tmp = 0;
@@ -202,11 +194,11 @@ static void appendNumericTag(NSMutableData *tagData, const char *atomID, NSNumbe
 		[tagData appendBytes:&tmp3 length:1];
 	}
 	else if(length == 2) {
-		tmp2 = NSSwapHostShortToBig([tagNum unsignedShortValue]);
+		tmp2 = OSSwapHostToBigInt16([tagNum unsignedShortValue]);
 		[tagData appendBytes:&tmp2 length:2];
 	}
 	else if(length == 4) {
-		tmp = NSSwapHostIntToBig([tagNum unsignedIntValue]);
+		tmp = OSSwapHostToBigInt32([tagNum unsignedIntValue]);
 		[tagData appendBytes:&tmp length:4];
 	}
 }
@@ -233,19 +225,19 @@ NSMutableData *buildChapterTrack(unsigned int totalSamples, int samplerate, NSAr
 	[data appendBytes:&tmp length:4]; // update later
 	[data appendBytes:"trak" length:4];
 	/* tkhd atom */
-	tmp = NSSwapHostIntToBig(0x5c);
+	tmp = OSSwapHostToBigInt32(0x5c);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"tkhd" length:4];
-	tmp = NSSwapHostIntToBig(0xe);
+	tmp = OSSwapHostToBigInt32(0xe);
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(dateValue);
+	tmp = OSSwapHostToBigInt32(dateValue);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(2);
+	tmp = OSSwapHostToBigInt32(2);
 	[data appendBytes:&tmp length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(totalSamples);
+	tmp = OSSwapHostToBigInt32(totalSamples);
 	[data appendBytes:&tmp length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
@@ -260,23 +252,23 @@ NSMutableData *buildChapterTrack(unsigned int totalSamples, int samplerate, NSAr
 	[data appendBytes:&tmp length:4]; // update later
 	[data appendBytes:"mdia" length:4];
 	/* mdhd atom */
-	tmp = NSSwapHostIntToBig(0x20);
+	tmp = OSSwapHostToBigInt32(0x20);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"mdhd" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(dateValue);
+	tmp = OSSwapHostToBigInt32(dateValue);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(samplerate);
+	tmp = OSSwapHostToBigInt32(samplerate);
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(totalSamples);
+	tmp = OSSwapHostToBigInt32(totalSamples);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:lang length:2];
 	tmp = 0;
 	[data appendBytes:&tmp length:2];
 	/* hdlr atom */
-	tmp = NSSwapHostIntToBig(0x21);
+	tmp = OSSwapHostToBigInt32(0x21);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"hdlr" length:4];
 	tmp = 0;
@@ -292,66 +284,66 @@ NSMutableData *buildChapterTrack(unsigned int totalSamples, int samplerate, NSAr
 	[data appendBytes:&tmp length:4]; // update later
 	[data appendBytes:"minf" length:4];
 	/* gmhd atom */
-	tmp = NSSwapHostIntToBig(0x4c);
+	tmp = OSSwapHostToBigInt32(0x4c);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"gmhd" length:4];
 	/* gmin atom */
-	tmp = NSSwapHostIntToBig(0x18);
+	tmp = OSSwapHostToBigInt32(0x18);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"gmin" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
-	tmp2 = NSSwapHostShortToBig(0x40);
+	tmp2 = OSSwapHostToBigInt16(0x40);
 	[data appendBytes:&tmp2 length:2];
-	tmp2 = NSSwapHostShortToBig(0x8000);
+	tmp2 = OSSwapHostToBigInt16(0x8000);
 	[data appendBytes:&tmp2 length:2];
 	[data appendBytes:&tmp2 length:2];
 	[data appendBytes:&tmp2 length:2];
 	[data appendBytes:&tmp length:4];
 	/* text atom */
-	tmp = NSSwapHostIntToBig(0x2c);
+	tmp = OSSwapHostToBigInt32(0x2c);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"text" length:4];
 	[data appendBytes:matrix length:36];
 	/* dinf atom */
-	tmp = NSSwapHostIntToBig(0x24);
+	tmp = OSSwapHostToBigInt32(0x24);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"dinf" length:4];
 	/* dref atom */
-	tmp = NSSwapHostIntToBig(0x1c);
+	tmp = OSSwapHostToBigInt32(0x1c);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"dref" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(1);
+	tmp = OSSwapHostToBigInt32(1);
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(0xc);
+	tmp = OSSwapHostToBigInt32(0xc);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"url " length:4];
-	tmp = NSSwapHostIntToBig(1);
+	tmp = OSSwapHostToBigInt32(1);
 	[data appendBytes:&tmp length:4];
 	/* stbl atom */
 	stblPos = [data length];
 	[data appendBytes:&tmp length:4]; // update later
 	[data appendBytes:"stbl" length:4];
 	/* stsd atom */
-	tmp = NSSwapHostIntToBig(0x4b);
+	tmp = OSSwapHostToBigInt32(0x4b);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"stsd" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(1);
+	tmp = OSSwapHostToBigInt32(1);
 	[data appendBytes:&tmp length:4];
 	/* text atom */
-	tmp = NSSwapHostIntToBig(0x3b);
+	tmp = OSSwapHostToBigInt32(0x3b);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"text" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:2];
-	tmp2 = NSSwapHostShortToBig(1);
+	tmp2 = OSSwapHostToBigInt16(1);
 	[data appendBytes:&tmp2 length:2];
-	tmp = NSSwapHostIntToBig(1);
+	tmp = OSSwapHostToBigInt32(1);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:4];
 	tmp2 = 0;
@@ -368,15 +360,15 @@ NSMutableData *buildChapterTrack(unsigned int totalSamples, int samplerate, NSAr
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:4];
 	/* stts atom */
-	tmp = NSSwapHostIntToBig(16+8*[trackList count]);
+	tmp = OSSwapHostToBigInt32(16+8*[trackList count]);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"stts" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig([trackList count]);
+	tmp = OSSwapHostToBigInt32([trackList count]);
 	[data appendBytes:&tmp length:4];
 	for(i=0;i<[trackList count];i++) {
-		tmp = NSSwapHostIntToBig(1);
+		tmp = OSSwapHostToBigInt32(1);
 		[data appendBytes:&tmp length:4];
 		/* track duration */
 		int idx;
@@ -385,17 +377,17 @@ NSMutableData *buildChapterTrack(unsigned int totalSamples, int samplerate, NSAr
 		else idx = [(XLDTrack *)[trackList objectAtIndex:i] index];
 		if(i==[trackList count]-1) duration = totalSamples - idx;
 		else duration = [(XLDTrack *)[trackList objectAtIndex:i+1] index] - idx;
-		tmp = NSSwapHostIntToBig(duration);
+		tmp = OSSwapHostToBigInt32(duration);
 		[data appendBytes:&tmp length:4];
 	}
 	/* stsz atom */
-	tmp = NSSwapHostIntToBig(20+4*[trackList count]);
+	tmp = OSSwapHostToBigInt32(20+4*[trackList count]);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"stsz" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig([trackList count]);
+	tmp = OSSwapHostToBigInt32([trackList count]);
 	[data appendBytes:&tmp length:4];
 	for(i=0;i<[trackList count];i++) {
 		/* sample length (UTF-8 length + 14) */
@@ -404,58 +396,58 @@ NSMutableData *buildChapterTrack(unsigned int totalSamples, int samplerate, NSAr
 			title = [[[(XLDTrack *)[trackList objectAtIndex:i] metadata] objectForKey:XLD_METADATA_TITLE] UTF8String];
 		else title = [[NSString stringWithFormat:@"Track %d",i+1] UTF8String];
 		[sampleSizeArray addObject:[NSNumber numberWithInt:strlen(title)+14]];
-		tmp = NSSwapHostIntToBig(strlen(title)+14);
+		tmp = OSSwapHostToBigInt32(strlen(title)+14);
 		[data appendBytes:&tmp length:4];
 	}
 	/* stsc atom */
-	tmp = NSSwapHostIntToBig(0x1c);
+	tmp = OSSwapHostToBigInt32(0x1c);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"stsc" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig(1);
+	tmp = OSSwapHostToBigInt32(1);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:&tmp length:4];
 	/* stco atom */
-	tmp = NSSwapHostIntToBig(16+4*[trackList count]);
+	tmp = OSSwapHostToBigInt32(16+4*[trackList count]);
 	[data appendBytes:&tmp length:4];
 	[data appendBytes:"stco" length:4];
 	tmp = 0;
 	[data appendBytes:&tmp length:4];
-	tmp = NSSwapHostIntToBig([trackList count]);
+	tmp = OSSwapHostToBigInt32([trackList count]);
 	[data appendBytes:&tmp length:4];
 	int offset = 8;
 	for(i=0;i<[trackList count];i++) {
 		/* sample offset - update later */
-		tmp = NSSwapHostIntToBig(offset);
+		tmp = OSSwapHostToBigInt32(offset);
 		[data appendBytes:&tmp length:4];
 		offset += [[sampleSizeArray objectAtIndex:i] intValue];
 	}
 	
 	/* update trak atom length */
-	tmp = NSSwapHostIntToBig([data length]);
+	tmp = OSSwapHostToBigInt32([data length]);
 	[data replaceBytesInRange:NSMakeRange(0, 4) withBytes:&tmp];
 	/* update mdia atom length */
-	tmp = NSSwapHostIntToBig([data length]-mdiaPos);
+	tmp = OSSwapHostToBigInt32([data length]-mdiaPos);
 	[data replaceBytesInRange:NSMakeRange(mdiaPos, 4) withBytes:&tmp];
 	/* update minf atom length */
-	tmp = NSSwapHostIntToBig([data length]-minfPos);
+	tmp = OSSwapHostToBigInt32([data length]-minfPos);
 	[data replaceBytesInRange:NSMakeRange(minfPos, 4) withBytes:&tmp];
 	/* update stbl atom length */
-	tmp = NSSwapHostIntToBig([data length]-stblPos);
+	tmp = OSSwapHostToBigInt32([data length]-stblPos);
 	[data replaceBytesInRange:NSMakeRange(stblPos, 4) withBytes:&tmp];
 	
 	/* tref atom */
-	tmp = NSSwapHostIntToBig(0x14);
+	tmp = OSSwapHostToBigInt32(0x14);
 	[trefData appendBytes:&tmp length:4];
 	[trefData appendBytes:"tref" length:4];
 	/* chap atom */
-	tmp = NSSwapHostIntToBig(0xc);
+	tmp = OSSwapHostToBigInt32(0xc);
 	[trefData appendBytes:&tmp length:4];
 	[trefData appendBytes:"chap" length:4];
-	tmp = NSSwapHostIntToBig(2);
+	tmp = OSSwapHostToBigInt32(2);
 	[trefData appendBytes:&tmp length:4];
 	
 	[trefData appendData:data];
@@ -478,18 +470,18 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		if([[(XLDTrack *)[trackList objectAtIndex:i] metadata] objectForKey:XLD_METADATA_TITLE])
 			title = [[[(XLDTrack *)[trackList objectAtIndex:i] metadata] objectForKey:XLD_METADATA_TITLE] UTF8String];
 		else title = [[NSString stringWithFormat:@"Track %d",i+1] UTF8String];
-		tmp2 = NSSwapHostShortToBig(strlen(title));
+		tmp2 = OSSwapHostToBigInt16(strlen(title));
 		[data appendBytes:&tmp2 length:2];
 		[data appendBytes:title length:strlen(title)];
-		tmp = NSSwapHostIntToBig(0xc);
+		tmp = OSSwapHostToBigInt32(0xc);
 		[data appendBytes:&tmp length:4];
 		[data appendBytes:"encd" length:4];
-		tmp = NSSwapHostIntToBig(0x00000100);
+		tmp = OSSwapHostToBigInt32(0x00000100);
 		[data appendBytes:&tmp length:4];
 	}
 	
 	/* update mdat atom length */
-	tmp = NSSwapHostIntToBig([data length]);
+	tmp = OSSwapHostToBigInt32([data length]);
 	[data replaceBytesInRange:NSMakeRange(0, 4) withBytes:&tmp];
 	
 	return data;
@@ -589,7 +581,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	
 	/* hdlr atom */
 	tmp = 0x22;
-	tmp = SWAP32(tmp);
+	tmp = OSSwapHostToBigInt32(tmp);
 	memcpy(atomID,"hdlr",4);
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:atomID length:4];
@@ -603,7 +595,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	[tagData appendBytes:&tmp length:4];
 	[tagData appendBytes:&tmp length:4];
 	tmp2 = 0;
-	tmp2 = SWAP16(tmp2);
+	tmp2 = OSSwapHostToBigInt16(tmp2);
 	[tagData appendBytes:&tmp2 length:2];
 	
 	/* ilst atom */
@@ -669,12 +661,12 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TRACK] || [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALTRACKS]) {
 			added = YES;
 			tmp = 0x20;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			memcpy(atomID,"trkn",4);
 			[tagData appendBytes:&tmp length:4];
 			[tagData appendBytes:atomID length:4];
 			tmp = 0x18;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			memcpy(atomID,"data",4);
 			[tagData appendBytes:&tmp length:4];
 			[tagData appendBytes:atomID length:4];
@@ -685,13 +677,13 @@ NSMutableData *buildChapterData(NSArray *trackList)
 			[tagData appendBytes:&tmp2 length:2];
 			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TRACK]) {
 				tmp2 = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TRACK] shortValue];
-				tmp2 = SWAP16(tmp2);
+				tmp2 = OSSwapHostToBigInt16(tmp2);
 			}
 			[tagData appendBytes:&tmp2 length:2];
 			tmp2 = 0;
 			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALTRACKS]) {
 				tmp2 = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALTRACKS] shortValue];
-				tmp2 = SWAP16(tmp2);
+				tmp2 = OSSwapHostToBigInt16(tmp2);
 			}
 			[tagData appendBytes:&tmp2 length:2];
 			tmp2 = 0;
@@ -702,12 +694,12 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DISC] || [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALDISCS]) {
 			added = YES;
 			tmp = 0x1E;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			memcpy(atomID,"disk",4);
 			[tagData appendBytes:&tmp length:4];
 			[tagData appendBytes:atomID length:4];
 			tmp = 0x16;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			memcpy(atomID,"data",4);
 			[tagData appendBytes:&tmp length:4];
 			[tagData appendBytes:atomID length:4];
@@ -718,13 +710,13 @@ NSMutableData *buildChapterData(NSArray *trackList)
 			[tagData appendBytes:&tmp2 length:2];
 			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DISC]) {
 				tmp2 = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_DISC] shortValue];
-				tmp2 = SWAP16(tmp2);
+				tmp2 = OSSwapHostToBigInt16(tmp2);
 			}
 			[tagData appendBytes:&tmp2 length:2];
 			tmp2 = 0;
 			if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALDISCS]) {
 				tmp2 = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_TOTALDISCS] shortValue];
-				tmp2 = SWAP16(tmp2);
+				tmp2 = OSSwapHostToBigInt16(tmp2);
 			}
 			[tagData appendBytes:&tmp2 length:2];
 		}
@@ -934,12 +926,12 @@ NSMutableData *buildChapterData(NSArray *trackList)
 			added = YES;
 			NSData *imgData = [[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_COVER];
 			tmp = [imgData length]+24;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			memcpy(atomID,"covr",4);
 			[tagData appendBytes:&tmp length:4];
 			[tagData appendBytes:atomID length:4];
 			tmp = [imgData length]+16;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			memcpy(atomID,"data",4);
 			[tagData appendBytes:&tmp length:4];
 			[tagData appendBytes:atomID length:4];
@@ -950,7 +942,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 			else if([imgData length] >= 3 && 0 == memcmp([imgData bytes], "GIF", 3))
 				tmp = 0xc;
 			else tmp = 0xd;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			[tagData appendBytes:&tmp length:4];
 			tmp = 0;
 			[tagData appendBytes:&tmp length:4];
@@ -959,7 +951,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	}
 	
 	/* version strings */
-	long version;
+	SInt32 version;
 	OSErr result;
 	result = Gestalt(gestaltQuickTime,&version);
 	if (result == noErr)
@@ -975,12 +967,12 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	if(addGaplessInfo) {
 		added = YES;
 		tmp = 0xBC;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		memcpy(atomID,"----",4);
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:atomID length:4];
 		tmp = 0x1C;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		memcpy(atomID,"mean",4);
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:atomID length:4];
@@ -988,7 +980,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:"com.apple.iTunes" length:16];
 		tmp = 0x14;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		memcpy(atomID,"name",4);
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:atomID length:4];
@@ -996,12 +988,12 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:"iTunSMPB" length:8];
 		tmp = 0x84;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		memcpy(atomID,"data",4);
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:atomID length:4];
 		tmp = 1;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		[tagData appendBytes:&tmp length:4];
 		tmp = 0;
 		[tagData appendBytes:&tmp length:4];
@@ -1020,12 +1012,12 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		cd.componentFlagsMask = 0;
 		
 		tmp = 0x6F;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		memcpy(atomID,"----",4);
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:atomID length:4];
 		tmp = 0x1C;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		memcpy(atomID,"mean",4);
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:atomID length:4];
@@ -1033,7 +1025,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:"com.apple.iTunes" length:16];
 		tmp = 0x1B;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		memcpy(atomID,"name",4);
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:atomID length:4];
@@ -1041,7 +1033,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:"Encoding Params" length:15];
 		tmp = 0x30;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		memcpy(atomID,"data",4);
 		[tagData appendBytes:&tmp length:4];
 		[tagData appendBytes:atomID length:4];
@@ -1050,12 +1042,12 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		[tagData appendBytes:&tmp length:4];
 		
 		tmp = 1;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		[tagData appendBytes:"vers" length:4];
 		[tagData appendBytes:&tmp length:4];
 		
 		tmp = [[configurations objectForKey:@"EncodeMode"] unsignedIntValue];
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		[tagData appendBytes:"acbf" length:4];
 		[tagData appendBytes:&tmp length:4];
 		
@@ -1066,7 +1058,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		[tagData appendBytes:&tmp length:4];
 		
 		tmp = CallComponentVersion((ComponentInstance)FindNextComponent(NULL, &cd));
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		[tagData appendBytes:"cdcv" length:4];
 		[tagData appendBytes:&tmp length:4];
 	}
@@ -1074,23 +1066,23 @@ NSMutableData *buildChapterData(NSArray *trackList)
 		int freeSize = 2000;
 		/* update length of udta atom */
 		tmp = [tagData length] + freeSize;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		[tagData replaceBytesInRange:NSMakeRange(0,4) withBytes:&tmp];
 		
 		/* update length of meta atom */
 		tmp = [tagData length] - 8 + freeSize;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		[tagData replaceBytesInRange:NSMakeRange(8,4) withBytes:&tmp];
 		
 		/* update length of ilst atom */
 		tmp = [tagData length] - 54;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		[tagData replaceBytesInRange:NSMakeRange(54,4) withBytes:&tmp];
 		
 		/* add free atom */
 		if(freeSize) {
 			tmp = freeSize;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapHostToBigInt32(tmp);
 			memcpy(atomID,"free",4);
 			[tagData appendBytes:&tmp length:4];
 			[tagData appendBytes:atomID length:4];
@@ -1319,7 +1311,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	while(1) { //skip until moov;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"moov",4)) break;
 		if(!memcmp(atom,"mdat",4)) moov_after_mdat = YES;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
@@ -1333,7 +1325,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	while(1) { //skip until trak;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"trak",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1341,7 +1333,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	while(1) { //skip until mdia;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"mdia",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1349,7 +1341,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	while(1) { //skip until minf;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"minf",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1357,7 +1349,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	while(1) { //skip until stbl;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"stbl",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1365,19 +1357,19 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	while(1) { //skip until stco;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"stco",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
 	
 	int *stco = (int *)malloc(tmp-8);
 	if(fread(stco,1,tmp-8,fp) < tmp-8) goto end;
-	int nElement = SWAP32(stco[1]);
+	int nElement = OSSwapBigToHostInt32(stco[1]);
 	
 	/* update stco atom */
 	
 	for(i=0;i<nElement;i++) {
-		stco[2+i] = SWAP32(SWAP32(stco[2+i])+moovSize);
+		stco[2+i] = OSSwapHostToBigInt32(OSSwapBigToHostInt32(stco[2+i])+moovSize);
 	}
 	if(fseeko(fp,8-tmp,SEEK_CUR) != 0) goto end;
 	if(fwrite(stco,1,tmp-8,fp) < tmp-8) goto end;
@@ -1396,7 +1388,7 @@ NSMutableData *buildChapterData(NSArray *trackList)
 	while(1) { //skip until ftyp;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"ftyp",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1495,7 +1487,7 @@ end:
 	while(1) { //skip until moov;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = NSSwapBigIntToHost(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"moov",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1503,16 +1495,16 @@ end:
 	while(1) { //skip until trak;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = NSSwapBigIntToHost(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"trak",4)) {
 			if(fseeko(fp,20,SEEK_CUR) != 0) goto end;
 			int trackID;
 			if(fread(&trackID,4,1,fp) < 1) goto end;
-			trackID = NSSwapBigIntToHost(trackID);
+			trackID = OSSwapBigToHostInt32(trackID);
 			if(trackID == 1) { // audio track; increase length by 20 bytes because tref is appended
 				if(fseeko(fp,-32,SEEK_CUR) != 0) goto end;
 				int updatedLength = tmp + 20;
-				updatedLength = NSSwapHostIntToBig(updatedLength);
+				updatedLength = OSSwapBigToHostInt32(updatedLength);
 				if(fwrite(&updatedLength,4,1,fp) < 1) goto end;
 				if(fseeko(fp,4,SEEK_CUR) != 0) goto end;
 			}
@@ -1528,7 +1520,7 @@ end:
 	while(1) { //skip until mdia;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = NSSwapBigIntToHost(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"mdia",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1536,7 +1528,7 @@ end:
 	while(1) { //skip until minf;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = NSSwapBigIntToHost(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"minf",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1544,7 +1536,7 @@ end:
 	while(1) { //skip until stbl;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = NSSwapBigIntToHost(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"stbl",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
@@ -1552,19 +1544,19 @@ end:
 	while(1) { //skip until stco;
 		if(fread(&tmp,4,1,fp) < 1) goto end;
 		if(fread(atom,1,4,fp) < 4) goto end;
-		tmp = NSSwapBigIntToHost(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(atom,"stco",4)) break;
 		if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 	}
 	
 	stco = (int *)malloc(tmp-8);
 	if(fread(stco,1,tmp-8,fp) < tmp-8) goto end;
-	int nElement = NSSwapBigIntToHost(stco[1]);
+	int nElement = OSSwapBigToHostInt32(stco[1]);
 	
 	/* update stco atom */
 	for(i=0;i<nElement;i++) {
-		unsigned int newOffset = NSSwapBigIntToHost(stco[2+i])+stbuf.st_size;
-		stco[2+i] = NSSwapHostIntToBig(newOffset);
+		unsigned int newOffset = OSSwapBigToHostInt32(stco[2+i])+stbuf.st_size;
+		stco[2+i] = OSSwapHostToBigInt32(newOffset);
 	}
 	if(fseeko(fp,8-tmp,SEEK_CUR) != 0) goto end;
 	if(fwrite(stco,1,tmp-8,fp) < tmp-8) goto end;
@@ -1612,7 +1604,7 @@ end:
 			while(1) { //skip until mdat;
 				if(fread(&tmp,4,1,fp) < 1) goto end;
 				if(fread(atom,1,4,fp) < 4) goto end;
-				tmp = SWAP32(tmp);
+				tmp = OSSwapBigToHostInt32(tmp);
 				if(!memcmp(atom,"mdat",4)) break;
 				if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 			}
@@ -1622,7 +1614,7 @@ end:
 		}
 		//NSLog(@"%d",bitrate);
 		
-		tmp = SWAP32(bitrate);
+		tmp = OSSwapBigToHostInt32(bitrate);
 		if(bitrateDataRange.location != 0) [tagData replaceBytesInRange:bitrateDataRange withBytes:&tmp];
 		if(addGaplessInfo) {
 			int actualFreq = getM4aFrequency(fp);
@@ -1638,7 +1630,7 @@ end:
 		while(1) { //skip until moov;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
 			if(fread(atom,1,4,fp) < 4) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"moov",4)) break;
 			if(!memcmp(atom,"mdat",4)) moov_after_mdat = YES;
 			if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
@@ -1648,10 +1640,10 @@ end:
 		
 		/* update moov atom size */
 		if(fread(&tmp,4,1,fp) < 1) goto end;
-		int moovSize = SWAP32(tmp);
+		int moovSize = OSSwapBigToHostInt32(tmp);
 		if(fseeko(fp,-4,SEEK_CUR) != 0) goto end;
 		tmp = moovSize + udtaSize;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapHostToBigInt32(tmp);
 		if(fwrite(&tmp,4,1,fp) < 1) goto end;
 		
 		off_t pos_moov = ftello(fp);
@@ -1664,7 +1656,7 @@ end:
 		while(rest > 0) { //skip until udta; find existing udta
 			if(fread(&tmp,4,1,fp) < 1) goto end;
 			if(fread(atom,1,4,fp) < 4) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"udta",4)) {
 				/*updateUdta(fp, tagData);
 				udtaSize = [tagData length];*/
@@ -1675,7 +1667,7 @@ end:
 					udtaSize = [tagData length];
 					if(fseeko(fp,pos_moov-4,SEEK_SET) != 0) goto end;
 					tmp = moovSize + udtaSize;
-					tmp = SWAP32(tmp);
+					tmp = OSSwapHostToBigInt32(tmp);
 					if(fwrite(&tmp,4,1,fp) < 1) goto end;
 				}
 				else {
@@ -1697,7 +1689,7 @@ end:
 		while(1) { //skip until trak;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
 			if(fread(atom,1,4,fp) < 4) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"trak",4)) break;
 			if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 		}
@@ -1710,7 +1702,7 @@ end:
 		while(1) { //skip until mdia;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
 			if(fread(atom,1,4,fp) < 4) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"mdia",4)) break;
 			if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 		}
@@ -1718,7 +1710,7 @@ end:
 		while(1) { //skip until minf;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
 			if(fread(atom,1,4,fp) < 4) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"minf",4)) break;
 			if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 		}
@@ -1726,7 +1718,7 @@ end:
 		while(1) { //skip until stbl;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
 			if(fread(atom,1,4,fp) < 4) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"stbl",4)) break;
 			if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 		}
@@ -1756,7 +1748,7 @@ end:
 				}
 			}
 			if(fseeko(fp,10,SEEK_CUR) != 0) goto end;
-			tmp = SWAP32(bitrate);
+			tmp = OSSwapHostToBigInt32(bitrate);
 			if(fwrite(&tmp,4,1,fp) < 1) goto end;
 			
 			if(!udtaSize) goto end;
@@ -1771,21 +1763,21 @@ end:
 		while(1) { //skip until stco;
 			if(fread(&tmp,4,1,fp) < 1) goto end;
 			if(fread(atom,1,4,fp) < 4) goto end;
-			tmp = SWAP32(tmp);
+			tmp = OSSwapBigToHostInt32(tmp);
 			if(!memcmp(atom,"stco",4)) break;
 			if(fseeko(fp,tmp-8,SEEK_CUR) != 0) goto end;
 		}
 		
 		int *stco = (int *)malloc(tmp-8);
 		if(fread(stco,1,tmp-8,fp) < tmp-8) goto end;
-		int nElement = SWAP32(stco[1]);
+		int nElement = OSSwapBigToHostInt32(stco[1]);
 		
 		//NSLog(@"DEBUG: updating stco atom...");
 		
 		/* update stco atom */
 		
 		for(i=0;i<nElement;i++) {
-			stco[2+i] = SWAP32(SWAP32(stco[2+i])+udtaSize);
+			stco[2+i] = OSSwapHostToBigInt32(OSSwapBigToHostInt32(stco[2+i])+udtaSize);
 		}
 		if(fseeko(fp,8-tmp,SEEK_CUR) != 0) goto end;
 		if(fwrite(stco,1,tmp-8,fp) < tmp-8) goto end;

@@ -28,7 +28,7 @@ APPKIT_EXTERN const double NSAppKitVersionNumber;
 
 + (BOOL)canLoadThisBundle
 {
-	long version = 0;
+	SInt32 version = 0;
 	Gestalt(gestaltQuickTime,&version);
 	if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_3 || version < 0x07210000) {
 		return NO;
@@ -43,7 +43,7 @@ APPKIT_EXTERN const double NSAppKitVersionNumber;
 	
 	[o_bitrateField setIntValue:128];
 	[o_samplerate setAutoenablesItems:NO];
-	long version = 0;
+	SInt32 version = 0;
 	Gestalt(gestaltQuickTime,&version);
 	if(version < 0x07630000 || floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
 		isSBRAvailable = NO;
