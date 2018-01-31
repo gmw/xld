@@ -1,14 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "XLDLibsndfileDecoder.h"
 #import <XLDID3/id3lib.h>
-
-#ifdef _BIG_ENDIAN
-#define SWAP32(n) (n)
-#define SWAP16(n) (n)
-#else
-#define SWAP32(n) (((n>>24)&0xff) | ((n>>8)&0xff00) | ((n<<8)&0xff0000) | ((n<<24)&0xff000000))
-#define SWAP16(n) (((n>>8)&0xff) | ((n<<8)&0xff00))
-#endif
+#import <objc/objc-runtime.h>
 
 typedef struct
 {
@@ -94,14 +87,14 @@ static NSString* samplesToTimecode(uint64_t samples, int samplerate, double fps)
 	while(1) {
 		if(fread(chunk,1,4,fp) != 4) goto last;
 		if(fread(&tmp,4,1,fp) != 1) goto last;
-		tmp = SWAP32(tmp);
+		tmp = OSSwapBigToHostInt32(tmp);
 		if(!memcmp(chunk,"MARK",4)) break;
 		if(tmp&1) tmp++;
 		if(fseeko(fp,tmp,SEEK_CUR)) goto last;
 	}
 	
 	if(fread(&tmp2,2,1,fp) != 1) goto last;
-	markerCount = SWAP16(tmp2);
+	markerCount = OSSwapBigToHostInt16(tmp2);
 	if(!markerCount) goto last;
 	
 	markers = (marker_t *)malloc(sizeof(marker_t)*markerCount);
@@ -109,7 +102,7 @@ static NSString* samplesToTimecode(uint64_t samples, int samplerate, double fps)
 	for(i=0;i<markerCount;i++) {
 		if(fseeko(fp,2,SEEK_CUR)) goto last;
 		if(fread(&tmp,4,1,fp) != 1) goto last;
-		markers[i].offset = SWAP32(tmp);
+		markers[i].offset = OSSwapBigToHostInt32(tmp);
 		if(fread(&tmp3,1,1,fp) != 1) goto last;
 		markers[i].name = (char *)malloc(tmp3+1);
 		if(fread(markers[i].name,1,tmp3,fp) != tmp3) goto last;
