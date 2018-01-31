@@ -85,13 +85,13 @@ APPKIT_EXTERN const double NSAppKitVersionNumber;
 	[cfg setObject:[NSNumber numberWithInt:[[o_bitDepth selectedItem] tag]] forKey:@"BitDepth"];
 	/* desc */
 	if([[o_samplerate selectedItem] tag] && [[o_bitDepth selectedItem] tag]) {
-		[cfg setObject:[NSString stringWithFormat:@"%d Hz, %d bit",[[o_samplerate selectedItem] tag],[[o_bitDepth selectedItem] tag]] forKey:@"ShortDesc"];
+		[cfg setObject:[NSString stringWithFormat:@"%ld Hz, %ld bit",[[o_samplerate selectedItem] tag],[[o_bitDepth selectedItem] tag]] forKey:@"ShortDesc"];
 	}
 	else if([[o_samplerate selectedItem] tag]) {
-		[cfg setObject:[NSString stringWithFormat:@"%d Hz",[[o_samplerate selectedItem] tag]] forKey:@"ShortDesc"];
+		[cfg setObject:[NSString stringWithFormat:@"%ld Hz",[[o_samplerate selectedItem] tag]] forKey:@"ShortDesc"];
 	}
 	else if([[o_bitDepth selectedItem] tag]) {
-		[cfg setObject:[NSString stringWithFormat:@"%d bit",[[o_bitDepth selectedItem] tag]] forKey:@"ShortDesc"];
+		[cfg setObject:[NSString stringWithFormat:@"%ld bit",[[o_bitDepth selectedItem] tag]] forKey:@"ShortDesc"];
 	}
 	return [cfg autorelease];
 }
