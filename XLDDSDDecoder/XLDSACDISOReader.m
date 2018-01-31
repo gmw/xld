@@ -10,6 +10,7 @@ typedef int64_t xldoffset_t;
 #import "XLDSACDISOReader.h"
 #import "XLDTrack.h"
 #import "DST/dst_decoder.h"
+#import <objc/objc-runtime.h>
 
 #define XLD_METADATA_TITLE		@"Title"
 #define XLD_METADATA_ARTIST		@"Artist"

@@ -9,6 +9,7 @@
 #import "XLDDSDDecoder.h"
 #import "id3lib.h"
 #import "XLDTrack.h"
+#import <objc/objc-runtime.h>
 
 static inline void convertSamples(void *dst, float *src, int numSamples, float gain, int isFloat)
 {
