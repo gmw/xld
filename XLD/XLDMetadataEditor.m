@@ -965,7 +965,7 @@ static const char* ID3v1GenreList[] = {
 	if(currentSingleIndex == [currentSingleTracks count]-1)  [o_singleNextButton setEnabled:NO];
 	NSString *title = [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] ? [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] : @""; 
 	NSString *path = [[[currentSingleTracks objectAtIndex:currentSingleIndex] metadata] objectForKey:XLD_METADATA_ORIGINALFILEPATH];
-	[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,[currentSingleTracks count]]];
+	[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,(int)[currentSingleTracks count]]];
 	if(path && [[NSFileManager defaultManager] fileExistsAtPath:path]) {
 		[o_singleEditor setRepresentedFilename:path];
 	}
@@ -1008,7 +1008,7 @@ static const char* ID3v1GenreList[] = {
 		if(currentSingleIndex == [currentSingleTracks count]-1)  [o_singleNextButton setEnabled:NO];
 		NSString *title = [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] ? [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] : @""; 
 		NSString *path = [[[currentSingleTracks objectAtIndex:currentSingleIndex] metadata] objectForKey:XLD_METADATA_ORIGINALFILEPATH];
-		[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,[currentSingleTracks count]]];
+		[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,(int)[currentSingleTracks count]]];
 		if(path && [[NSFileManager defaultManager] fileExistsAtPath:path]) {
 			[o_singleEditor setRepresentedFilename:path];
 		}
@@ -1030,7 +1030,7 @@ static const char* ID3v1GenreList[] = {
 		NSString *title = [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] ? [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] : @""; 
 		NSString *path = [[[currentSingleTracks objectAtIndex:currentSingleIndex] metadata] objectForKey:XLD_METADATA_ORIGINALFILEPATH];
 		//NSLog(@"%@",path);
-		[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,[currentSingleTracks count]]];
+		[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,(int)[currentSingleTracks count]]];
 		if(path && [[NSFileManager defaultManager] fileExistsAtPath:path]) {
 			[o_singleEditor setRepresentedFilename:path];
 		}
@@ -1109,7 +1109,7 @@ static const char* ID3v1GenreList[] = {
 	
 	NSString *title = [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] ? [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] : @""; 
 	NSString *path = [[[currentSingleTracks objectAtIndex:currentSingleIndex] metadata] objectForKey:XLD_METADATA_ORIGINALFILEPATH];
-	[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,[currentSingleTracks count]]];
+	[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,(int)[currentSingleTracks count]]];
 	if(path && [[NSFileManager defaultManager] fileExistsAtPath:path]) {
 		[o_singleEditor setRepresentedFilename:path];
 	}
@@ -1130,7 +1130,7 @@ static const char* ID3v1GenreList[] = {
 	
 	NSString *title = [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] ? [[currentSingleTracks objectAtIndex:currentSingleIndex] desiredFileName] : @""; 
 	NSString *path = [[[currentSingleTracks objectAtIndex:currentSingleIndex] metadata] objectForKey:XLD_METADATA_ORIGINALFILEPATH];
-	[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,[currentSingleTracks count]]];
+	[o_singleEditor setTitle:[NSString stringWithFormat:@"%@ (%d/%d)",title,currentSingleIndex+1,(int)[currentSingleTracks count]]];
 	if(path && [[NSFileManager defaultManager] fileExistsAtPath:path]) {
 		[o_singleEditor setRepresentedFilename:path];
 	}

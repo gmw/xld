@@ -171,15 +171,9 @@ filterYule(const Float_t * input, Float_t * output, size_t nSamples, const Float
 		  "subps		%5, %4			\n\t"
 #endif
 		  "movss		%4, (%9)		\n\t"
-#if defined(__x86_64__)
-		  "addq			$4, %8			\n\t"
-		  "addq			$4, %9			\n\t"
-		  "decq			%10				\n\t"
-#else
-		  "addl			$4, %8			\n\t"
-		  "addl			$4, %9			\n\t"
-		  "decl			%10				\n\t"
-#endif
+		  "add			$4, %8			\n\t"
+		  "add			$4, %9			\n\t"
+		  "dec			%10				\n\t"
 		  "jnz			1b				\n\t"
 		  : "=x" (v1), "=x" (v2), "=x" (v3), "=x" (v4), "=x" (v5), "=x" (v6), "=x" (v7), "=x" (v8),
 		  "+r" (input), "+r" (output), "+r" (nSamples)
@@ -219,15 +213,9 @@ filterButter(const Float_t * input, Float_t * output, size_t nSamples, const Flo
 		  "subps		%2, %1			\n\t"
 #endif
 		  "movss		%1, (%6)		\n\t"
-#if defined(__x86_64__)
-		  "addq			$4, %5			\n\t"
-		  "addq			$4, %6			\n\t"
-		  "decq			%7				\n\t"
-#else
-		  "addl			$4, %5			\n\t"
-		  "addl			$4, %6			\n\t"
-		  "decl			%7				\n\t"
-#endif
+		  "add			$4, %5			\n\t"
+		  "add			$4, %6			\n\t"
+		  "dec			%7				\n\t"
 		  "jnz			1b				\n\t"
 		  : "=x" (v1), "=x" (v2), "=x" (v3), "=x" (v4), "=x" (v5), "+r" (input), "+r" (output), "+r" (nSamples)
 		  : "r" (kernel)
@@ -362,12 +350,12 @@ gain_analyze_samples_interleaved_int32 ( replaygain_t *rg, const Int32_t* sample
 	else sample_r = sample_l;
 	for(i=0;i<num_samples;i++) {
 		sample_l[i] = (samples[i*num_channels] >> 16);
-		if(abs(sample_l[i]) > rg->peak_track) rg->peak_track = abs(sample_l[i]);
-		if(abs(sample_l[i]) > rg->peak_album) rg->peak_album = abs(sample_l[i]);
+		if(fabs(sample_l[i]) > rg->peak_track) rg->peak_track = fabs(sample_l[i]);
+		if(fabs(sample_l[i]) > rg->peak_album) rg->peak_album = fabs(sample_l[i]);
 		if(num_channels == 2) {
 			sample_r[i] = (samples[i*num_channels+1] >>16);
-			if(abs(sample_r[i]) > rg->peak_track) rg->peak_track = abs(sample_r[i]);
-			if(abs(sample_r[i]) > rg->peak_album) rg->peak_album = abs(sample_r[i]);
+			if(fabs(sample_r[i]) > rg->peak_track) rg->peak_track = fabs(sample_r[i]);
+			if(fabs(sample_r[i]) > rg->peak_album) rg->peak_album = fabs(sample_r[i]);
 		}
 	}
 	int ret = gain_analyze_samples(rg,sample_l,sample_r,num_samples,num_channels);

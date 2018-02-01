@@ -129,7 +129,7 @@
 		[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
 		[rep drawInRect: targetImageFrame];
 		[image unlockFocus];
-		if(autosetTooltip) [self setToolTip:[NSString stringWithFormat:@"%d x %d, %d KiB",beforeX,beforeY,[imageData length]/1024]];
+		if(autosetTooltip) [self setToolTip:[NSString stringWithFormat:@"%d x %d, %ld KiB",beforeX,beforeY,[imageData length]/1024]];
 	}
 	else [self setToolTip:nil];
 	[self setNeedsDisplay:YES];

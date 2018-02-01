@@ -92,7 +92,7 @@
 	[cfg setObject:[NSNumber numberWithInt:[[o_srcAlgorithm selectedItem] tag]] forKey:@"SRCAlgorithm"];
 	/* desc */
 	if([o_isFloat state]==NSOnState) [cfg setObject:@"32-bit, float" forKey:@"ShortDesc"];
-	else if([[o_bitDepth selectedItem] tag]) [cfg setObject:[NSString stringWithFormat:@"%d-bit",[[o_bitDepth selectedItem] tag]*8] forKey:@"ShortDesc"];
+	else if([[o_bitDepth selectedItem] tag]) [cfg setObject:[NSString stringWithFormat:@"%ld-bit",[[o_bitDepth selectedItem] tag]*8] forKey:@"ShortDesc"];
 	return [cfg autorelease];
 }
 

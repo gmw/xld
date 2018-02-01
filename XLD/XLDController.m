@@ -75,7 +75,11 @@ static DADissenterRef diskMounted(DADiskRef disk, void *context)
 	return NULL;
 }
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= 1050
+static NSInteger intSort(id num1, id num2, void *context)
+#else
 static int intSort(id num1, id num2, void *context)
+#endif
 {
     int v1 = [num1 intValue];
     int v2 = [num2 intValue];
@@ -3247,7 +3251,7 @@ end:
 	BOOL isDir;
 	NSFileManager *mgr = [NSFileManager defaultManager];
 	NSString *filter = ([o_limitExtension state] == NSOnState) ? [[o_extensionFilter stringValue] lowercaseString] : nil;
-	unsigned long modifierFlags = [NSEvent modifierFlags];
+	unsigned long modifierFlags = [[NSApp currentEvent] modifierFlags];
 	[mgr fileExistsAtPath:[queue objectAtIndex:0] isDirectory:&isDir];
 	firstDrag = YES;
 	if(([queue count] == 1) && !isDir) {

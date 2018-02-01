@@ -53,7 +53,7 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 - (NSMenu *)menuForEvent:(NSEvent *)event
 {
 	NSMenu *menu = [super menuForEvent:event];
-	int tag = [[self delegate] tag];
+	int tag = [(XLDView *)[self delegate] tag];
 	if(tag >= 100) {
 		NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:LS(@"Apply This Item for All Tracks") action:@selector(applyForAll:) keyEquivalent:@""];
 		[item setTarget:actionTarget];
@@ -547,7 +547,7 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 + (NSString *)gracenoteDiscIDForTracks:(NSArray *)tracks totalFrames:(xldoffset_t)totalFrames freeDBDiscID:(unsigned int)discid
 {
 	NSMutableString *str = [NSMutableString string];
-	[str appendFormat:@"%08X+%lld+%d",discid,(totalFrames)/588+150,[tracks count]];
+	[str appendFormat:@"%08X+%lld+%lu",discid,(totalFrames)/588+150,[tracks count]];
 	int i;
 	for(i=0;i<[tracks count];i++) {
 		[str appendFormat:@"+%lld",[(XLDTrack *)[tracks objectAtIndex:i] index]/588+150];
@@ -592,10 +592,17 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 @end
 
 @implementation XLDSplitView
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= 1050
+- (CGFloat)dividerThickness
+{
+	return 1.0;
+}
+#else
 - (float)dividerThickness
 {
-    return 1.0f;
+	return 1.0f;
 }
+#endif
 
 - (void)drawDividerInRect:(NSRect)rect
 {
@@ -606,7 +613,11 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 @end
 
 @implementation XLDAdaptiveTexturedWindow
+#ifdef __x86_64__
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation
+#else
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation
+#endif
 {
 	if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
 		windowStyle |= NSTexturedBackgroundWindowMask;

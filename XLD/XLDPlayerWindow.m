@@ -29,7 +29,7 @@
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
 	id fileArr = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
-	[[self delegate] openFileForPlay:[fileArr objectAtIndex:0]];
+	[(XLDPlayer *)[self delegate] openFileForPlay:[fileArr objectAtIndex:0]];
 	return YES;
 }
 

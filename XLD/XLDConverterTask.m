@@ -875,8 +875,13 @@ typedef struct {
 				//[encoderTask finalize];
 				[encoderTask closeFile];
 				if(!testMode) {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 					if(moveAfterFinish) [fm removeFileAtPath:tmpPathStr handler:nil];
 					else [fm removeFileAtPath:dstPathStr handler:nil];
+#else
+					if(moveAfterFinish) [fm removeItemAtPath:tmpPathStr error:nil];
+					else [fm removeItemAtPath:dstPathStr error:nil];
+#endif
 				}
 			}
 			else {
@@ -884,8 +889,13 @@ typedef struct {
 					//[[encoderTaskArray objectAtIndex:i] finalize];
 					[[encoderTaskArray objectAtIndex:i] closeFile];
 					if(!testMode) {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 						if(moveAfterFinish) [fm removeFileAtPath:[tmpPathStrArray objectAtIndex:i] handler:nil];
 						else [fm removeFileAtPath:[outputPathStrArray objectAtIndex:i] handler:nil];
+#else
+						if(moveAfterFinish) [fm removeItemAtPath:[tmpPathStrArray objectAtIndex:i] error:nil];
+						else [fm removeItemAtPath:[outputPathStrArray objectAtIndex:i] error:nil];
+#endif
 					}
 				}
 			}
@@ -990,8 +1000,13 @@ typedef struct {
 		if(!info->error) [encoderTask finalize];
 		[encoderTask closeFile];
 		if(info->error && !testMode) {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 			if(moveAfterFinish) [fm removeFileAtPath:tmpPathStr handler:nil];
 			else [fm removeFileAtPath:dstPathStr handler:nil];
+#else
+			if(moveAfterFinish) [fm removeItemAtPath:tmpPathStr error:nil];
+			else [fm removeItemAtPath:dstPathStr error:nil];
+#endif
 		}
 	}
 	else {
@@ -999,8 +1014,13 @@ typedef struct {
 			if(!info->error) [[encoderTaskArray objectAtIndex:i] finalize];
 			[[encoderTaskArray objectAtIndex:i] closeFile];
 			if(info->error && !testMode) {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 				if(moveAfterFinish) [fm removeFileAtPath:[tmpPathStrArray objectAtIndex:i] handler:nil];
 				else [fm removeFileAtPath:[outputPathStrArray objectAtIndex:i] handler:nil];
+#else
+				if(moveAfterFinish) [fm removeItemAtPath:[tmpPathStrArray objectAtIndex:i] error:nil];
+				else [fm removeItemAtPath:[outputPathStrArray objectAtIndex:i] error:nil];
+#endif
 			}
 		}
 	}
@@ -1047,7 +1067,11 @@ finish:
 		[statusField setHidden:NO];
 	}
 	else {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 		if(removeOriginalFile) [fm removeFileAtPath:inFile handler:nil];
+#else
+		if(removeOriginalFile) [fm removeItemAtPath:inFile error:nil];
+#endif
         NSMutableDictionary *attrDic = nil;
         id label = [[track metadata] objectForKey:XLD_METADATA_FINDERLABEL];
         if([[track metadata] objectForKey:XLD_METADATA_CREATIONDATE] || [[track metadata] objectForKey:XLD_METADATA_MODIFICATIONDATE]) {
@@ -1061,8 +1085,13 @@ finish:
         }
         if(encoder) {
             if(attrDic) {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
                 if(moveAfterFinish) [fm changeFileAttributes:attrDic atPath:tmpPathStr];
                 else [fm changeFileAttributes:attrDic atPath:dstPathStr];
+#else
+				if(moveAfterFinish) [fm setAttributes:attrDic ofItemAtPath:tmpPathStr error:nil];
+				else [fm setAttributes:attrDic ofItemAtPath:dstPathStr error:nil];
+#endif
             }
             if(label) {
                 if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
@@ -1090,8 +1119,13 @@ finish:
         else {
             for(i=0;i<[outputPathStrArray count];i++) {
                 if(attrDic) {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
                     if(moveAfterFinish) [fm changeFileAttributes:attrDic atPath:[tmpPathStrArray objectAtIndex:i]];
                     else [fm changeFileAttributes:attrDic atPath:[outputPathStrArray objectAtIndex:i]];
+#else
+					if(moveAfterFinish) [fm setAttributes:attrDic ofItemAtPath:[tmpPathStrArray objectAtIndex:i] error:nil];
+					else [fm setAttributes:attrDic ofItemAtPath:[outputPathStrArray objectAtIndex:i] error:nil];
+#endif
                 }
                 if(moveAfterFinish) {
                     [fm createDirectoryWithIntermediateDirectoryInPath:[[outputPathStrArray objectAtIndex:i] stringByDeletingLastPathComponent]];

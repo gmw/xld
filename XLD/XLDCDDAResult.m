@@ -24,7 +24,11 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	return [NSString stringWithFormat:@"%02d:%02d:%02d",min,sec,f];
 }
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= 1050
+static NSInteger intSort(id num1, id num2, void *context)
+#else
 static int intSort(id num1, id num2, void *context)
+#endif
 {
     int v1 = [num1 intValue];
     int v2 = [num2 intValue];
