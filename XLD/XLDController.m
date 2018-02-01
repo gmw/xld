@@ -1444,18 +1444,17 @@ static void getFilesFromM3U(NSString *m3u, NSMutableArray *queue, NSStringEncodi
 		[o_ejectDiscMenu removeItemAtIndex:i];
 	}
     
-	struct statfs *mountedDisks = malloc(sizeof(struct statfs) * 256);
-	int numVolumes = getfsstat(mountedDisks, sizeof(struct statfs) * 256, MNT_NOWAIT);
+	NSArray *mountedVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
+	int numVolumes = [mountedVolumes count];
 	for(i=0;i<numVolumes;i++) {
-		if(!strcmp(mountedDisks[i].f_fstypename,"cddafs")) // It's an audio CD
+		NSString *mntPath = [mountedVolumes objectAtIndex:i];
+		struct statfs statDisc;
+		statfs([mntPath UTF8String], &statDisc);
+		if(!strcmp(statDisc.f_fstypename, "cddafs")) // It's an audio CD
 		{
-			NSString *mntPath = [NSString stringWithUTF8String:mountedDisks[i].f_mntonname];
-            if(!mntPath) {
-                mntPath = mountNameFromBSDName(mountedDisks[i].f_mntfromname);
-            }
-            if(!mntPath) continue;
-			NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:[[NSFileManager defaultManager] displayNameAtPath:mntPath] action:@selector(readCDDA:) keyEquivalent:@""];
-			NSMenuItem *item2 = [[NSMenuItem alloc]initWithTitle:[[NSFileManager defaultManager] displayNameAtPath:mntPath] action:@selector(ejectDisc:) keyEquivalent:@""];
+			NSString *title = [[NSFileManager defaultManager] displayNameAtPath:mntPath];
+			NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:title action:@selector(readCDDA:) keyEquivalent:@""];
+			NSMenuItem *item2 = [[NSMenuItem alloc] initWithTitle:title action:@selector(ejectDisc:) keyEquivalent:@""];
 			[item setTarget:self];
 			if(n==0) [item setKeyEquivalent:@"O"];
 			[o_openCDDA insertItem:item atIndex:n];
@@ -1463,9 +1462,9 @@ static void getFilesFromM3U(NSString *m3u, NSMutableArray *queue, NSStringEncodi
 			n++;
 			if(automount) {
 				const char *devicePath = [[NSString stringWithFormat:@"/dev/%@",device] UTF8String];
-				if(!strcmp(devicePath, mountedDisks[i].f_mntfromname)) {
+				if(!strcmp(devicePath, statDisc.f_mntfromname)) {
 					struct stat st;
-					stat(mountedDisks[i].f_mntonname, &st);
+					stat([mntPath UTF8String], &st);
 					//NSLog(@"%f",st.st_mtimespec.tv_sec - launchDate);
 					if((st.st_mtimespec.tv_sec - launchDate) > -30) discToMount = item;
 				}
@@ -1473,7 +1472,6 @@ static void getFilesFromM3U(NSString *m3u, NSMutableArray *queue, NSStringEncodi
 			[item release];
 		}
 	}
-	free(mountedDisks);
 	
 	if(n==0) {
 		NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:LS(@"Audio CD Not Found") action:nil keyEquivalent:@""];
