@@ -139,7 +139,7 @@ static int load_psf1(void *state, const char *filename)
             psfFile[size] = 0;
             char *lib = find_tag((const char *)psfFile+sizeReserved+sizeCompressed+16+5,"_lib=");
             if(lib) {
-                int len = strlen(filename);
+                int len = (int)strlen(filename);
                 char *dir = malloc(len+strlen(lib)+1);
                 strcpy(dir,filename);
                 for(len--;len>=0;len--) {
@@ -164,7 +164,7 @@ static int load_psf1(void *state, const char *filename)
         return -1;
     }
     
-    int ret = psx_upload_psxexe(state, exe, sizeDecompressed);
+    int ret = psx_upload_psxexe(state, exe, (unsigned int)sizeDecompressed);
     free(exe);
     free(psfFile);
     fclose(fp);
@@ -194,7 +194,7 @@ static int load_psf2(void *vfs, const char *filename)
             psfFile[size] = 0;
             char *lib = find_tag((const char *)psfFile+sizeReserved+sizeCompressed+16+5,"_lib=");
             if(lib) {
-                int len = strlen(filename);
+                int len = (int)strlen(filename);
                 char *dir = malloc(len+strlen(lib)+1);
                 strcpy(dir,filename);
                 for(len--;len>=0;len--) {
@@ -465,7 +465,7 @@ static int load_psf2(void *vfs, const char *filename)
             float valueL = *((float *)decodeBuffer+i*2)*gain;
             float valueR = *((float *)decodeBuffer+i*2+1)*gain;
             int roundedL,roundedR;
-#if defined(__i386__)
+#if defined(__i386__) || defined(__x86_64__)
             __asm__ (
                      "cvtss2si	%2, %0\n\t"
                      "cvtss2si	%3, %1\n\t"
@@ -486,7 +486,7 @@ static int load_psf2(void *vfs, const char *filename)
     }
     else {
         int i=0;
-#if defined(__i386__)
+#if defined(__i386__) || defined(__x86_64__)
         __m128 v0, v1;
         v1 = _mm_set1_ps(volume);
         for(;i<count-1;i+=2) {
@@ -502,7 +502,7 @@ static int load_psf2(void *vfs, const char *filename)
         for(;i<count*2;i++) {
             float value = *((float *)decodeBuffer+i)*volume;
             int rounded;
-#if defined(__i386__)
+#if defined(__i386__) || defined(__x86_64__)
             __asm__ (
                      "cvtss2si	%1, %0\n\t"
                      : "=r"(rounded)
@@ -527,7 +527,7 @@ static int load_psf2(void *vfs, const char *filename)
         currentPos = 0;
     }
     if(currentPos < count) {
-        int request = 4096;
+        xldoffset_t request = 4096;
         while(1) {
             if(currentPos + request > count) request = count - currentPos;
             psx_execute(psxState, 0x7FFFFFFF, decodeBuffer, (unsigned int*)&request, 0);
