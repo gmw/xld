@@ -29,13 +29,13 @@ typedef int64_t xldoffset_t;
 	} __attribute__((packed)) id3v2;
 	
 	struct {
-		unsigned long TTAid;
+		uint32_t TTAid;
 		unsigned short AudioFormat;
 		unsigned short NumChannels;
 		unsigned short BitsPerSample;
-		unsigned long SampleRate;
-		unsigned long DataLength;
-		unsigned long CRC32;
+		uint32_t SampleRate;
+		uint32_t DataLength;
+		uint32_t CRC32;
 	} __attribute__((packed)) tta_hdr;
 	
 	// skip ID3V2 header
@@ -45,7 +45,7 @@ typedef int64_t xldoffset_t;
 	}
 	
 	if (!memcmp(id3v2.id, "ID3", 3)) {
-		long len;
+		int32_t len;
 
 		if (id3v2.size[0] & 0x80) {
 			fclose(fdin);

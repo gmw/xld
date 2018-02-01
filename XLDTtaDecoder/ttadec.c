@@ -1,19 +1,20 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+#include <stdint.h>
 
 typedef int64_t xldoffset_t;
 
 #include "ttadec.h"
 #include "ttaenc.h"
 #include "crc32.h"
-#if defined(__i386__)
+#if defined(__i386__) || defined(__x86_64__)
 #include "filters_sse.h"
 #else
 #include "filters.h"
 #endif
 
-const unsigned long bit_mask[] = {
+const uint32_t bit_mask[] = {
     0x00000000, 0x00000001, 0x00000003, 0x00000007,
     0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f,
     0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff,
@@ -25,7 +26,7 @@ const unsigned long bit_mask[] = {
     0xffffffff
 };
 
-const unsigned long bit_shift[] = {
+const uint32_t bit_shift[] = {
     0x00000001, 0x00000002, 0x00000004, 0x00000008,
     0x00000010, 0x00000020, 0x00000040, 0x00000080,
     0x00000100, 0x00000200, 0x00000400, 0x00000800,
@@ -38,9 +39,9 @@ const unsigned long bit_shift[] = {
     0x80000000, 0x80000000, 0x80000000, 0x80000000
 	};
 
-const unsigned long *shift_16 = bit_shift + 4;
+const uint32_t *shift_16 = bit_shift + 4;
 
-void tta_error(long error, wchar_t *name)
+void tta_error(int32_t error, wchar_t *name)
 {
     ERASE_STDERR;
     switch (error) {
@@ -76,10 +77,10 @@ void *tta_malloc(size_t num, size_t size)
 }
 
 
-__inline void get_binary(unsigned long *value, unsigned long bits, ttainfo *info) {
+static inline void get_binary(uint32_t *value, uint32_t bits, ttainfo *info) {
     while (info->bit_count < bits) {
 		if (info->bitpos == info->BIT_BUFFER_END) {
-			long res = fread(info->bit_buffer, 1,
+			int32_t res = fread(info->bit_buffer, 1,
 					BIT_BUFFER_SIZE, info->fdin);
 			if (!res) {
 				tta_error(READ_ERROR, NULL);
@@ -101,12 +102,12 @@ __inline void get_binary(unsigned long *value, unsigned long bits, ttainfo *info
     info->bit_cache &= bit_mask[info->bit_count];
 }
 
-__inline void get_unary(unsigned long *value, ttainfo *info) {
+static inline void get_unary(uint32_t *value, ttainfo *info) {
     *value = 0;
 
     while (!(info->bit_cache ^ bit_mask[info->bit_count])) {
 		if (info->bitpos == info->BIT_BUFFER_END) {
-			long res = fread(info->bit_buffer, 1,
+			int32_t res = fread(info->bit_buffer, 1,
 					BIT_BUFFER_SIZE, info->fdin);
 			if (!res) {
 				tta_error(READ_ERROR, NULL);
@@ -140,11 +141,11 @@ void init_buffer_read(xldoffset_t pos, ttainfo *info) {
 }
 
 int done_buffer_read(ttainfo *info) {
-    unsigned long crc32, rbytes, res;
+    uint32_t crc32, rbytes, res;
     info->frame_crc32 ^= 0xFFFFFFFFUL;
 
     rbytes = info->BIT_BUFFER_END - info->bitpos;
-    if (rbytes < sizeof(long)) {
+    if (rbytes < sizeof(int32_t)) {
 		memcpy(info->bit_buffer, info->bitpos, 4);
 		res = fread(info->bit_buffer + rbytes, 1,
 			BIT_BUFFER_SIZE - rbytes, info->fdin);
@@ -158,7 +159,7 @@ int done_buffer_read(ttainfo *info) {
 
     memcpy(&crc32, info->bitpos, 4);
     crc32 = ENDSWAP_INT32(crc32);
-    info->bitpos += sizeof(long);
+    info->bitpos += sizeof(int32_t);
     res = (crc32 != info->frame_crc32);
 
     info->bit_cache = info->bit_count = 0;
@@ -167,16 +168,16 @@ int done_buffer_read(ttainfo *info) {
     return res;
 }
 
-void rice_init(adapt *rice, unsigned long k0, unsigned long k1) {
+void rice_init(adapt *rice, uint32_t k0, uint32_t k1) {
     rice->k0 = k0;
     rice->k1 = k1;
     rice->sum0 = shift_16[k0];
     rice->sum1 = shift_16[k1];
 }
 
-void encoder_init(encoder *tta, long nch, long byte_size) {
-	long *fset = flt_set[byte_size - 1];
-    long i;
+void encoder_init(encoder *tta, int32_t nch, int32_t byte_size) {
+	int32_t *fset = flt_set[byte_size - 1];
+    int32_t i;
 
     for (i = 0; i < nch; i++) {
 		filter_init(&tta[i].fst, fset[0], fset[1]);
@@ -187,8 +188,8 @@ void encoder_init(encoder *tta, long nch, long byte_size) {
 
 int decode_init(char *filename, ttainfo *info)
 {
-	unsigned long st_size, checksum;
-	long len = 0;
+	uint32_t st_size, checksum;
+	int32_t len = 0;
 	
 	info->finish = 0;
 	info->BIT_BUFFER_END = info->bit_buffer + BIT_BUFFER_SIZE;
@@ -235,7 +236,7 @@ int decode_init(char *filename, ttainfo *info)
 	
 	info->tta_hdr.CRC32 = ENDSWAP_INT32(info->tta_hdr.CRC32);
 	checksum = crc32((unsigned char *) &info->tta_hdr,
-	sizeof(info->tta_hdr) - sizeof(long));
+	sizeof(info->tta_hdr) - sizeof(int32_t));
 	if (checksum != info->tta_hdr.CRC32) {
 		fclose(info->fdin);
 		return -1;
@@ -249,7 +250,7 @@ int decode_init(char *filename, ttainfo *info)
 	
 	int sampleRate = info->tta_hdr.SampleRate;
 	int bytesPerSample = (info->tta_hdr.BitsPerSample + 7) / 8;
-	info->framelen = (long) (FRAME_TIME * info->tta_hdr.SampleRate);
+	info->framelen = (int32_t) (FRAME_TIME * info->tta_hdr.SampleRate);
 	int channels = info->tta_hdr.NumChannels;
 	info->bytesPerFrame = info->framelen * 4 * channels;
 	info->isFloat = (info->tta_hdr.AudioFormat == WAVE_FORMAT_IEEE_FLOAT);
@@ -267,23 +268,23 @@ int decode_init(char *filename, ttainfo *info)
 	info->totalFrames = info->tta_hdr.DataLength;
 	
 	// grab some space for a buffer
-	info->data = (long *) tta_malloc(channels * info->framelen, sizeof(long));
+	info->data = (int32_t *) tta_malloc(channels * info->framelen, sizeof(int32_t));
 	info->enc = info->tta = tta_malloc(channels, sizeof(encoder));
-	info->seek_table = (unsigned long *) tta_malloc(st_size, sizeof(long));
+	info->seek_table = (uint32_t *) tta_malloc(st_size, sizeof(int32_t));
 	
 	info->internal_buffer = malloc(info->bytesPerFrame);
 	info->internal_buffer_p = info->internal_buffer;
 	info->bufferRest = 0;
 
 	// read seek table
-	if (fread(info->seek_table, st_size, sizeof(long), info->fdin) == 0) {
+	if (fread(info->seek_table, st_size, sizeof(int32_t), info->fdin) == 0) {
 		fclose(info->fdin);
 		return -1;
 	}
-	else info->input_byte_count += st_size * sizeof(long);
+	else info->input_byte_count += st_size * sizeof(int32_t);
 
 	checksum = crc32((unsigned char *) info->seek_table, 
-		(st_size - 1) * sizeof(long));
+		(st_size - 1) * sizeof(int32_t));
 	if (checksum != ENDSWAP_INT32(info->seek_table[st_size - 1]))
 		fwprintf(stdout, L"Decode:  warning, seek table corrupted\r\n");
 	else info->st_state = 1;
@@ -303,8 +304,8 @@ int decode_init(char *filename, ttainfo *info)
 
 int decode_sample(ttainfo *info, unsigned char *outbuf, int bytes)
 {
-	unsigned long depth, k, unary, binary;
-	long *p, value;
+	uint32_t depth, k, unary, binary;
+	int32_t *p, value;
 	unsigned char *outbuf_p = outbuf;
 	int bytesCopied = 0, repeat, bytesToCopy;
 	
@@ -338,7 +339,7 @@ int decode_sample(ttainfo *info, unsigned char *outbuf, int bytes)
 		for (p = info->data; p < info->data + framelen * info->channels; p++) {
 			fltst *fst = &(info->enc->fst);
 			adapt *rice = &(info->enc->rice);
-			long *last = &(info->enc->last);
+			int32_t *last = &(info->enc->last);
 
 			// decode Rice unsigned
 			get_unary(&unary, info);
@@ -386,9 +387,9 @@ int decode_sample(ttainfo *info, unsigned char *outbuf, int bytes)
 
 			// combine data
 			if (info->isFloat && ((p - info->data) & 1)) {
-				unsigned long negative = *p & 0x80000000;
-				unsigned long data_hi = *(p - 1);
-				unsigned long data_lo = abs(*p) - 1;
+				uint32_t negative = *p & 0x80000000;
+				uint32_t data_hi = *(p - 1);
+				uint32_t data_lo = abs(*p) - 1;
 
 				data_hi += (data_hi || data_lo) ? 0x3F80 : 0;
 				*(p - 1) = (data_hi << 16) | SWAP16(data_lo) | negative;
@@ -397,7 +398,7 @@ int decode_sample(ttainfo *info, unsigned char *outbuf, int bytes)
 			if (info->enc < info->tta + info->channels - 1) info->enc++;
 			else {
 				if (!info->isFloat && info->channels > 1) {
-					long *r = p - 1;
+					int32_t *r = p - 1;
 					for (*p += *r/2; r > p - info->channels; r--)
 						*r = *(r + 1) - *r;
 				}
@@ -410,7 +411,7 @@ int decode_sample(ttainfo *info, unsigned char *outbuf, int bytes)
 		if (done_buffer_read(info)) {
 			if (info->st_state) {
 				fwprintf(stdout, L"Decode:  checksum error, %ld samples wiped\r\n", framelen);
-				memset(info->data, 0, info->channels * framelen * sizeof(long));
+				memset(info->data, 0, info->channels * framelen * sizeof(int32_t));
 				fseeko(info->fdin, info->lastpos, SEEK_SET);
 				init_buffer_read(info->lastpos, info);
 			} else {

@@ -6,13 +6,13 @@
 #define BIT_BUFFER_SIZE (1024*1024)
 
 typedef struct {
-    unsigned long TTAid;
+    uint32_t TTAid;
     unsigned short AudioFormat;
     unsigned short NumChannels;
     unsigned short BitsPerSample;
-    unsigned long SampleRate;
-    unsigned long DataLength;
-    unsigned long CRC32;
+    uint32_t SampleRate;
+    uint32_t DataLength;
+    uint32_t CRC32;
 } __attribute__ ((packed)) tta_hdr_t;
 
 typedef struct {
@@ -23,26 +23,26 @@ typedef struct {
 } __attribute__ ((packed)) id3v2_t;
 
 typedef struct {
-	unsigned long k0;
-	unsigned long k1;
-	unsigned long sum0;
-	unsigned long sum1;
+	uint32_t k0;
+	uint32_t k1;
+	uint32_t sum0;
+	uint32_t sum1;
 } adapt;
 
 typedef struct {
-	long shift;
-	long round;
-	long error;
-	long mutex;
-	long qm[MAX_ORDER] __attribute__((aligned(16)));
-	long dx[MAX_ORDER] __attribute__((aligned(16)));
-	long dl[MAX_ORDER] __attribute__((aligned(16)));
+	int32_t shift;
+	int32_t round;
+	int32_t error;
+	int32_t mutex;
+	int32_t qm[MAX_ORDER] __attribute__((aligned(16)));
+	int32_t dx[MAX_ORDER] __attribute__((aligned(16)));
+	int32_t dl[MAX_ORDER] __attribute__((aligned(16)));
 } fltst;
 
 typedef struct {
 	fltst fst;
 	adapt rice;
-	long last;
+	int32_t last;
 } encoder;
 
 typedef struct
@@ -60,20 +60,20 @@ typedef struct
 	int input_byte_count;
 	int data_offset;
 	encoder *tta, *enc;
-	long *data;
+	int32_t *data;
 	unsigned char *internal_buffer;
 	unsigned char *internal_buffer_p;
 	int bufferRest;
 	unsigned char bit_buffer[BIT_BUFFER_SIZE + 8];
 	unsigned char *BIT_BUFFER_END;
 	tta_hdr_t tta_hdr;
-	unsigned long *seek_table;
-	unsigned long *st;
-	unsigned long framelen, lastlen, fframes, st_state;
+	uint32_t *seek_table;
+	uint32_t *st;
+	uint32_t framelen, lastlen, fframes, st_state;
 	xldoffset_t lastpos;
-	unsigned long frame_crc32;
-	unsigned long bit_count;
-	unsigned long bit_cache;
+	uint32_t frame_crc32;
+	uint32_t bit_count;
+	uint32_t bit_cache;
 	unsigned char *bitpos;
 	id3v2_t id3v2;
 } ttainfo;

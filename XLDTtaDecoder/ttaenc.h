@@ -153,7 +153,7 @@ int wcsicmp (const wchar_t *s1, const wchar_t *s2) {
 
 #define LINE "------------------------------------------------------------"
 
-#define PREDICTOR1(x, k)	((long)((((uint64)x << k) - x) >> k))
+#define PREDICTOR1(x, k)	((int32_t)((((uint64)x << k) - x) >> k))
 
 #define ENC(x)  (((x)>0)?((x)<<1)-1:(-(x)<<1))
 #define DEC(x)  (((x)&1)?(++(x)>>1):(-(x)>>1))

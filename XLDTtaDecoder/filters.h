@@ -32,12 +32,12 @@
 #define FILTERS_H
 
 ///////// Filter Settings //////////
-static long flt_set [4][2] = {
+static int32_t flt_set [4][2] = {
 	{10,1}, {9,1}, {10,1}, {12,0}
 };
 
-__inline void
-memshl (register long *pA, register long *pB) {
+static inline void
+memshl (register int32_t *pA, register int32_t *pB) {
 	*pA++ = *pB++;
 	*pA++ = *pB++;
 	*pA++ = *pB++;
@@ -48,12 +48,12 @@ memshl (register long *pA, register long *pB) {
 	*pA   = *pB;
 }
 
-__inline void
-hybrid_filter (fltst *fs, long *in, long mode) {
-	register long *pA = fs->dl;
-	register long *pB = fs->qm;
-	register long *pM = fs->dx;
-	register long sum = fs->round;
+static inline void
+hybrid_filter (fltst *fs, int32_t *in, int32_t mode) {
+	register int32_t *pA = fs->dl;
+	register int32_t *pB = fs->qm;
+	register int32_t *pM = fs->dx;
+	register int32_t sum = fs->round;
 
 	if (!fs->error) {
 		sum += *pA++ * *pB, pB++;
@@ -110,7 +110,7 @@ hybrid_filter (fltst *fs, long *in, long mode) {
 }
 
 void
-filter_init (fltst *fs, long shift, long mode) {
+filter_init (fltst *fs, int32_t shift, int32_t mode) {
 	memset (fs, 0, sizeof(fltst));
 	fs->shift = shift;
 	fs->round = 1 << (shift - 1);
