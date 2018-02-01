@@ -527,10 +527,10 @@ static int load_psf2(void *vfs, const char *filename)
         currentPos = 0;
     }
     if(currentPos < count) {
-        xldoffset_t request = 4096;
+        unsigned int request = 4096;
         while(1) {
-            if(currentPos + request > count) request = count - currentPos;
-            psx_execute(psxState, 0x7FFFFFFF, decodeBuffer, (unsigned int*)&request, 0);
+            if(currentPos + request > count) request = (unsigned int)(count - currentPos);
+            psx_execute(psxState, 0x7FFFFFFF, decodeBuffer, &request, 0);
             currentPos += request;
             if(currentPos == count) break;
         }
