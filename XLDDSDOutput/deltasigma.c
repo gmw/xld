@@ -366,7 +366,7 @@ static int deltasigma_4th_dsf(xld_deltasigma_t *dsm, const float* in, unsigned c
 			bitBuf = 0;
 			written++;
 			bitBufMeter = 0;
-			out += 1;
+			out++;
 		}
 	}
 #endif
@@ -796,7 +796,7 @@ static int deltasigma_8th_dsf(xld_deltasigma_t *dsm, const float* in, unsigned c
 			bitBuf = 0;
 			written++;
 			bitBufMeter = 0;
-			out += stride;
+			out++;
 		}
 	}
 	_mm_store_ps((float *)dsm->buffer, (__m128)v5);
@@ -841,7 +841,7 @@ static int deltasigma_8th_dsf(xld_deltasigma_t *dsm, const float* in, unsigned c
 			bitBuf = 0;
 			written++;
 			bitBufMeter = 0;
-			out += stride;
+			out++;
 		}
 	}
 #endif
