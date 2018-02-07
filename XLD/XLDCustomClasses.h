@@ -128,9 +128,15 @@
 @end
 #endif
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
 @interface XLDBundle : NSBundle {
 }
 @end
+#else
+@interface NSBundle (XLDLSUIElement)
+- (NSDictionary *)mod_infoDictionary;
+@end
+#endif
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
 @interface NSFileManager (XLDNSFileManager1050OverMethod)

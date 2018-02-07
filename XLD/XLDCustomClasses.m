@@ -592,7 +592,7 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 @end
 
 @implementation XLDSplitView
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= 1050
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 - (CGFloat)dividerThickness
 {
 	return 1.0;
@@ -613,7 +613,7 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 @end
 
 @implementation XLDAdaptiveTexturedWindow
-#ifdef __x86_64__
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation
 #else
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation
@@ -706,6 +706,7 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 
 @end
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
 @implementation XLDBundle
 - (NSDictionary *)infoDictionary
 {
@@ -716,6 +717,16 @@ static NSString *framesToMSFStr(xldoffset_t frames, int samplerate)
 	return dic;
 }
 @end
+#else
+@implementation NSBundle (XLDLSUIElement)
+- (NSDictionary *)mod_infoDictionary
+{
+	id dic = [self mod_infoDictionary];
+	if([dic respondsToSelector:@selector(setBool:forKey:)]) [dic setBool:YES forKey:@"LSUIElement"];
+	return dic;
+}
+@end
+#endif
 
 @implementation NSFileManager (XLDFileMove)
 - (void)moveFileAtPath:(NSString *)src toPath:(NSString *)dst
