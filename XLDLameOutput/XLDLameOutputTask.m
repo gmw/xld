@@ -15,7 +15,7 @@ typedef int64_t xldoffset_t;
 #import "XLDTrack.h"
 
 //extern int id3tag_set_lyrics_utf16(lame_global_flags * gfp, char const *lang, unsigned short const *desc, unsigned short const *text);
-extern int id3v2_add_ucs2(lame_t gfp, uint32_t frame_id, char const *lang, unsigned short const *desc, unsigned short const *text);
+//extern int id3v2_add_ucs2(lame_t gfp, uint32_t frame_id, char const *lang, unsigned short const *desc, unsigned short const *text);
 
 #define FRAME_ID(a, b, c, d) \
 ( ((unsigned long)(a) << 24) \
@@ -279,14 +279,14 @@ void swap_utf16(unsigned short *str)
 		}
 #ifdef USE_ID3TAG_CUSTOMIZED_LAME
 		if([[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS]) {
-			NSData *dat = [[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS] dataUsingEncoding:NSUnicodeStringEncoding];
+			NSString *value = [NSString stringWithFormat:@"USLT==%@",[[(XLDTrack *)track metadata] objectForKey:XLD_METADATA_LYRICS]];
+			NSData *dat = [value dataUsingEncoding:NSUnicodeStringEncoding];
 			buffer = (char *)malloc([dat length]+10);
 			[dat getBytes:buffer];
 			buffer[[dat length]] = 0;
 			buffer[[dat length]+1] = 0;
 			swap_utf16((unsigned short*)buffer);
-			//id3tag_set_lyrics_utf16(gfp,"eng",desc,(unsigned short *)buffer);
-			id3v2_add_ucs2(gfp, FRAME_ID('U', 'S', 'L', 'T'), "eng", desc, (unsigned short *)buffer);
+			id3tag_set_fieldvalue_utf16(gfp,(unsigned short *)buffer);
 			free(buffer);
 		}
 #endif
