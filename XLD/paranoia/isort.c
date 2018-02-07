@@ -33,7 +33,7 @@
  * used to index up to (size) samples from a vector.
  */
 
-sort_info *sort_alloc(long size){
+sort_info *sort_alloc(int32_t size){
   sort_info *ret=calloc(1,sizeof(sort_info));
 
   ret->vector=NULL;
@@ -42,7 +42,7 @@ sort_info *sort_alloc(long size){
   ret->maxsize=size;
 
   ret->head=calloc(65536,sizeof(sort_link *));
-  ret->bucketusage=malloc(65536*sizeof(long));
+  ret->bucketusage=malloc(65536*sizeof(int32_t));
   ret->revindex=calloc(size,sizeof(sort_link));
   ret->lastbucket=0;
 
@@ -67,7 +67,7 @@ void sort_unsortall(sort_info *i){
   if(i->lastbucket>2000){ /* a guess */
     memset(i->head,0,65536*sizeof(sort_link *));
   }else{
-    long b;
+    int32_t b;
     for(b=0;b<i->lastbucket;b++)
       i->head[i->bucketusage[b]]=NULL;
   }
@@ -104,8 +104,8 @@ void sort_free(sort_info *i){
  * vector.  It is called internally and only when needed.
  */
 
-static void sort_sort(sort_info *i,long sortlo,long sorthi){
-  long j;
+static void sort_sort(sort_info *i,int32_t sortlo,int32_t sorthi){
+  int32_t j;
 
   /* We walk backward through the range to index because we insert new
    * samples at the head of each bucket's list.  At the end, they'll be
@@ -163,8 +163,8 @@ static void sort_sort(sort_info *i,long sortlo,long sorthi){
  * but no error checking is done here.
  */
 
-void sort_setup(sort_info *i,int16_t *vector,long *abspos,
-		long size,long sortlo,long sorthi){
+void sort_setup(sort_info *i,int16_t *vector,int32_t *abspos,
+		int32_t size,int32_t sortlo,int32_t sorthi){
   /* Reset the index if it has already been built.
    */
   if(i->sortbegin!=-1)sort_unsortall(i);
@@ -193,7 +193,7 @@ void sort_setup(sort_info *i,int16_t *vector,long *abspos,
  * This function returns NULL if no matches were found.
  */
 
-sort_link *sort_getmatch(sort_info *i,long post,long overlap,int value){
+sort_link *sort_getmatch(sort_info *i,int32_t post,int32_t overlap,int value){
   sort_link *ret;
 
   /* If the vector hasn't been indexed yet, index it now.

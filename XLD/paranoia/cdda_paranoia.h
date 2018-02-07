@@ -50,10 +50,10 @@ cdrom_paranoia *paranoia_init(cdrom_drive *d);
 cdrom_paranoia *paranoia_init_old(cdrom_drive *d);
 void paranoia_modeset(cdrom_paranoia *p,int mode);
 int paranoia_seek(cdrom_paranoia *p,off_t seek,int mode);
-int16_t *paranoia_read(cdrom_paranoia *p,void(*callback)(long,int));
-int16_t *paranoia_read_limited(cdrom_paranoia *p,void(*callback)(long,int),int maxretries);
+int16_t *paranoia_read(cdrom_paranoia *p,void(*callback)(int32_t,int));
+int16_t *paranoia_read_limited(cdrom_paranoia *p,void(*callback)(int32_t,int),int maxretries);
 void paranoia_free(cdrom_paranoia *p);
-void paranoia_overlapset(cdrom_paranoia *p,long overlap);
+void paranoia_overlapset(cdrom_paranoia *p,int32_t overlap);
 int paranoia_cachemodel_size(cdrom_paranoia *p,int sectors);
 
 #endif

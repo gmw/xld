@@ -30,7 +30,7 @@ char *callback_msg[] = {
 
 static paranoia_cb_mode_t callback_result; 
 
-void paranoia_callback(long int n, paranoia_cb_mode_t ret)
+void paranoia_callback(int32_t n, paranoia_cb_mode_t ret)
 {
 	//if((ret != PARANOIA_CB_READ) && (ret != PARANOIA_CB_VERIFY) && (ret != PARANOIA_CB_OVERLAP)) NSLog(@"callback: %d (%s)\n",n,callback_msg[ret]);
 	if(ret == PARANOIA_CB_FIXUP_EDGE) callback_result |= 0x1;

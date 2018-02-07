@@ -125,7 +125,7 @@ static void i_v_fragment_destructor(v_fragment *v){
 }
 
 v_fragment *new_v_fragment(cdrom_paranoia_t *p,c_block *one,
-			   long begin, long end, int last){
+			   int32_t begin, int32_t end, int last){
   linked_element *e=new_elem(p->fragments);
   v_fragment *b=e->ptr;
   
@@ -211,7 +211,7 @@ int16_t *v_buffer(v_fragment *v){
 }
 
 /* alloc a c_block not on a cache list */
-c_block *c_alloc(int16_t *vector,long begin,long size){
+c_block *c_alloc(int16_t *vector,int32_t begin,int32_t size){
   c_block *c=calloc(1,sizeof(c_block));
   c->vector=vector;
   c->begin=begin;
@@ -219,12 +219,12 @@ c_block *c_alloc(int16_t *vector,long begin,long size){
   return(c);
 }
 
-void c_set(c_block *v,long begin){
+void c_set(c_block *v,int32_t begin){
   v->begin=begin;
 }
 
 /* pos here is vector position from zero */
-void c_insert(c_block *v,long pos,int16_t *b,long size){
+void c_insert(c_block *v,int32_t pos,int16_t *b,int32_t size){
   int vs=cs(v);
   if(pos<0 || pos>vs)return;
 
@@ -240,7 +240,7 @@ void c_insert(c_block *v,long pos,int16_t *b,long size){
   v->size+=size;
 }
 
-void c_remove(c_block *v,long cutpos,long cutsize){
+void c_remove(c_block *v,int32_t cutpos,int32_t cutsize){
   int vs=cs(v);
   if(cutpos<0 || cutpos>vs)return;
   if(cutpos+cutsize>vs)cutsize=vs-cutpos;
@@ -253,7 +253,7 @@ void c_remove(c_block *v,long cutpos,long cutsize){
   v->size-=cutsize;
 }
 
-void c_overwrite(c_block *v,long pos,int16_t *b,long size){
+void c_overwrite(c_block *v,int32_t pos,int16_t *b,int32_t size){
   int vs=cs(v);
 
   if(pos<0)return;
@@ -262,7 +262,7 @@ void c_overwrite(c_block *v,long pos,int16_t *b,long size){
   memcpy(v->vector+pos,b,size*sizeof(int16_t));
 }
 
-void c_append(c_block *v, int16_t *vector, long size){
+void c_append(c_block *v, int16_t *vector, int32_t size){
   int vs=cs(v);
 
   /* update the vector */
@@ -275,7 +275,7 @@ void c_append(c_block *v, int16_t *vector, long size){
   v->size+=size;
 }
 
-void c_removef(c_block *v, long cut){
+void c_removef(c_block *v, int32_t cut){
   c_remove(v,0,cut);
   v->begin+=cut;
 }
@@ -356,7 +356,7 @@ paranoia_init_old(cdrom_drive_t *d)
 	p->cache_limit=JIGGLE_MODULO;
 	p->enable=PARANOIA_MODE_FULL;
 	p->cursor=cdda_disc_firstsector(d);
-	p->lastread=LONG_MAX;
+	p->lastread=INT32_MAX;
 	p->use_old_engine=1;
 	
 	/* One last one... in case data and audio tracks are mixed... */

@@ -47,12 +47,12 @@ void paranoia_resetall(cdrom_paranoia_t *p){
   paranoia_resetcache(p);
 }
 
-void i_paranoia_trim(cdrom_paranoia_t *p,long beginword,long endword){
+void i_paranoia_trim(cdrom_paranoia_t *p,int32_t beginword,int32_t endword){
   root_block *root=&(p->root);
   if(root->vector!=NULL){
-    long target=beginword-MAX_SECTOR_OVERLAP*CD_FRAMEWORDS;
-    long rbegin=cb(root->vector);
-    long rend=ce(root->vector);
+    int32_t target=beginword-MAX_SECTOR_OVERLAP*CD_FRAMEWORDS;
+    int32_t rbegin=cb(root->vector);
+    int32_t rend=ce(root->vector);
 
     if(rbegin>beginword)
       goto rootfree;
@@ -62,7 +62,7 @@ void i_paranoia_trim(cdrom_paranoia_t *p,long beginword,long endword){
 	goto rootfree;
 
       {
-	long offset=target-rbegin;
+	int32_t offset=target-rbegin;
 	c_removef(root->vector,offset);
       }
     }
@@ -103,11 +103,11 @@ rootfree:
  * narrowing our search.  In high-jitter conditions, it will be much larger,
  * widening our search at the cost of speed.
  */
-void offset_adjust_settings(cdrom_paranoia_t *p, void(*callback)(long,paranoia_cb_mode_t)){
+void offset_adjust_settings(cdrom_paranoia_t *p, void(*callback)(int32_t,paranoia_cb_mode_t)){
   if(p->stage2.offpoints>=10){
     /* drift: look at the average offset value.  If it's over one
        sector, frob it.  We just want a little hysteresis [sp?]*/
-    long av=(p->stage2.offpoints?p->stage2.offaccum/p->stage2.offpoints:0);
+    int32_t av=(p->stage2.offpoints?p->stage2.offaccum/p->stage2.offpoints:0);
     
     if(abs(av)>p->dynoverlap/4){
       av=(av/MIN_SECTOR_EPSILON)*MIN_SECTOR_EPSILON;
@@ -131,7 +131,7 @@ void offset_adjust_settings(cdrom_paranoia_t *p, void(*callback)(long,paranoia_c
 	  v=v_next(v);
 	}
 	while(c){
-	  long adj=min(av,cb(c));
+	  int32_t adj=min(av,cb(c));
 	  c_set(c,cb(c)-adj);
 	  c=c_next(c);
 	}
@@ -204,8 +204,8 @@ void offset_adjust_settings(cdrom_paranoia_t *p, void(*callback)(long,paranoia_c
  * momentarily. There is no correctness bug. --Monty
  *
  */
-void offset_add_value(cdrom_paranoia_t *p,offsets *o,long value,
-			     void(*callback)(long,paranoia_cb_mode_t)){
+void offset_add_value(cdrom_paranoia_t *p,offsets *o,int32_t value,
+			     void(*callback)(int32_t,paranoia_cb_mode_t)){
   if(o->offpoints!=-1){
 
     /* Track the average magnitude of jitter (in either direction) */

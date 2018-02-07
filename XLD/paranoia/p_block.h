@@ -32,8 +32,8 @@ typedef struct linked_list{
 
   void *(*new_poly)();
   void (*free_poly)(void *poly);
-  long current;
-  long active;
+  int32_t current;
+  int32_t active;
 
 } linked_list;
 
@@ -58,8 +58,8 @@ extern linked_list *copy_list(linked_list *list); /* shallow; doesn't copy
 typedef struct c_block{
   /* The buffer */
   int16_t *vector;
-  long begin;
-  long size;
+  int32_t begin;
+  int32_t size;
 
   /* auxiliary support structures */
   unsigned char *flags; /* 1    known boundaries in read data
@@ -73,7 +73,7 @@ typedef struct c_block{
 			 */
 
   /* end of session cases */
-  long lastsector;
+  int32_t lastsector;
   struct cdrom_paranoia_s *p;
   struct linked_element *e;
 
@@ -86,12 +86,12 @@ extern c_block *new_c_block(struct cdrom_paranoia_s *p);
 typedef struct v_fragment{
   c_block *one;
 
-  long begin;
-  long size;
+  int32_t begin;
+  int32_t size;
   int16_t *vector;
 
   /* end of session cases */
-  long lastsector;
+  int32_t lastsector;
 
   /* linked list */
   struct cdrom_paranoia_s *p;
@@ -101,7 +101,7 @@ typedef struct v_fragment{
 
 extern void free_v_fragment(v_fragment *c);
 extern v_fragment *new_v_fragment(struct cdrom_paranoia_s *p,c_block *one,
-				  long begin, long end, int lastsector);
+				  int32_t begin, int32_t end, int lastsector);
 extern int16_t *v_buffer(v_fragment *v);
 
 extern c_block *c_first(struct cdrom_paranoia_s *p);
@@ -115,23 +115,23 @@ extern v_fragment *v_next(v_fragment *v);
 extern v_fragment *v_prev(v_fragment *v);
 
 typedef struct root_block{
-  long returnedlimit;   
-  long lastsector;
+  int32_t returnedlimit;   
+  int32_t lastsector;
   struct cdrom_paranoia_s *p;
 
   c_block *vector; /* doesn't use any sorting */
   int silenceflag;
-  long silencebegin;
+  int32_t silencebegin;
 } root_block;
 
 typedef struct offsets{
   
-  long offpoints;
-  long newpoints;
-  long offaccum;
-  long offdiff;
-  long offmin;
-  long offmax;
+  int32_t offpoints;
+  int32_t newpoints;
+  int32_t offaccum;
+  int32_t offdiff;
+  int32_t offmin;
+  int32_t offmax;
 
 } offsets;
 
@@ -140,7 +140,7 @@ struct cdrom_paranoia_s{
 
   root_block root;        /* verified/reconstructed cached data */
   linked_list *cache;     /* our data as read from the cdrom */
-  long cache_limit;
+  int32_t cache_limit;
   linked_list *fragments; /* fragments of blocks that have been 'verified' */
   sort_info *sortcache;
 
@@ -152,32 +152,32 @@ struct cdrom_paranoia_s{
   
   /* for compatibility */
   int readahead;
-  long lastread;
+  int32_t lastread;
   int use_old_engine;
 
   int enable;
-  long cursor;
-  long current_lastsector;
-  long current_firstsector;
+  int32_t cursor;
+  int32_t current_lastsector;
+  int32_t current_firstsector;
 
   /* statistics for drift/overlap */
   struct offsets stage1;
   struct offsets stage2;
 
-  long dynoverlap;
-  long dyndrift;
+  int32_t dynoverlap;
+  int32_t dyndrift;
 
   /* statistics for verification */
 
 };
 
-extern c_block *c_alloc(int16_t *vector,long begin,long size);
-extern void c_set(c_block *v,long begin);
-extern void c_insert(c_block *v,long pos,int16_t *b,long size);
-extern void c_remove(c_block *v,long cutpos,long cutsize);
-extern void c_overwrite(c_block *v,long pos,int16_t *b,long size);
-extern void c_append(c_block *v, int16_t *vector, long size);
-extern void c_removef(c_block *v, long cut);
+extern c_block *c_alloc(int16_t *vector,int32_t begin,int32_t size);
+extern void c_set(c_block *v,int32_t begin);
+extern void c_insert(c_block *v,int32_t pos,int16_t *b,int32_t size);
+extern void c_remove(c_block *v,int32_t cutpos,int32_t cutsize);
+extern void c_overwrite(c_block *v,int32_t pos,int16_t *b,int32_t size);
+extern void c_append(c_block *v, int16_t *vector, int32_t size);
+extern void c_removef(c_block *v, int32_t cut);
 
 #define ce(v) (v->begin+v->size)
 #define cb(v) (v->begin)

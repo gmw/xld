@@ -13,20 +13,20 @@ typedef struct sort_link{
 typedef struct sort_info{
   int16_t *vector;                /* vector (storage doesn't belong to us) */
 
-  long  *abspos;                 /* pointer for side effects */
-  long  size;                    /* vector size */
+  int32_t  *abspos;                 /* pointer for side effects */
+  int32_t  size;                    /* vector size */
 
-  long  maxsize;                 /* maximum vector size */
+  int32_t  maxsize;                 /* maximum vector size */
 
-  long sortbegin;                /* range of contiguous sorted area */
-  long lo,hi;                    /* current post, overlap range */
+  int32_t sortbegin;                /* range of contiguous sorted area */
+  int32_t lo,hi;                    /* current post, overlap range */
   int  val;                      /* ...and val */
 
   /* sort structs */
   sort_link **head;           /* sort buckets (65536) */
 
-  long *bucketusage;          /*  of used buckets (65536) */
-  long lastbucket;
+  int32_t *bucketusage;          /*  of used buckets (65536) */
+  int32_t lastbucket;
   sort_link *revindex;
 
 } sort_info;
@@ -37,7 +37,7 @@ typedef struct sort_info{
  * Allocates and initializes a new, empty sort_info object, which can
  * be used to index up to (size) samples from a vector.
  */
-extern sort_info *sort_alloc(long size);
+extern sort_info *sort_alloc(int32_t size);
 
 /*! ========================================================================
  * sort_unsortall() (internal)
@@ -60,8 +60,8 @@ extern void sort_unsortall(sort_info *i);
  * Note: size *must* be <= the size given to the preceding sort_alloc(),
  * but no error checking is done here.
  */
-extern void sort_setup(sort_info *i,int16_t *vector,long *abspos,long size,
-		       long sortlo, long sorthi);
+extern void sort_setup(sort_info *i,int16_t *vector,int32_t *abspos,int32_t size,
+		       int32_t sortlo, int32_t sorthi);
 
 /* =========================================================================
  * sort_free()
@@ -81,7 +81,7 @@ extern void sort_free(sort_info *i);
  *
  * This function returns NULL if no matches were found.
  */
-extern sort_link *sort_getmatch(sort_info *i,long post,long overlap,int value);
+extern sort_link *sort_getmatch(sort_info *i,int32_t post,int32_t overlap,int value);
 
 /*! ========================================================================
  * sort_nextmatch()

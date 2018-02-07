@@ -28,10 +28,10 @@
  * This function is used by i_analyze_rift_r() below to find where a
  * leading rift ends.
  */
-long i_paranoia_overlap_r(int16_t *buffA,int16_t *buffB,
-			  long offsetA, long offsetB){
-  long beginA=offsetA;
-  long beginB=offsetB;
+int32_t i_paranoia_overlap_r(int16_t *buffA,int16_t *buffB,
+			  int32_t offsetA, int32_t offsetB){
+  int32_t beginA=offsetA;
+  int32_t beginB=offsetB;
 
   /* Start at the given offsets and work our way backwards until we hit
    * the beginning of one of the vectors.
@@ -56,11 +56,11 @@ long i_paranoia_overlap_r(int16_t *buffA,int16_t *buffB,
  * This function is used by i_analyze_rift_f() below to find where a
  * trailing rift ends.
  */
-long i_paranoia_overlap_f(int16_t *buffA,int16_t *buffB,
-			  long offsetA, long offsetB,
-			  long sizeA,long sizeB){
-  long endA=offsetA;
-  long endB=offsetB;
+int32_t i_paranoia_overlap_f(int16_t *buffA,int16_t *buffB,
+			  int32_t offsetA, int32_t offsetB,
+			  int32_t sizeA,int32_t sizeB){
+  int32_t endA=offsetA;
+  int32_t endB=offsetB;
   
   /* Start at the given offsets and work our way forward until we hit
    * the end of one of the vectors.
@@ -83,10 +83,10 @@ long i_paranoia_overlap_f(int16_t *buffA,int16_t *buffB,
  * or whether the rift contains a stutter (that should be dropped).  See
  * i_analyze_rift_[rf] for more details.
  */
-int i_stutter_or_gap(int16_t *A, int16_t *B,long offA, long offB,
-		     long gap){
-  long a1=offA;
-  long b1=offB;
+int i_stutter_or_gap(int16_t *A, int16_t *B,int32_t offA, int32_t offB,
+		     int32_t gap){
+  int32_t a1=offA;
+  int32_t b1=offB;
   
   /* If the rift was so big that there aren't enough samples in the other
    * vector to compare against the full gap, then just compare what we
@@ -141,13 +141,13 @@ int i_stutter_or_gap(int16_t *A, int16_t *B,long offA, long offB,
  *              both A and B are in sync again
  */
 void i_analyze_rift_f(int16_t *A,int16_t *B,
-		      long sizeA, long sizeB,
-		      long aoffset, long boffset, 
-		      long *matchA,long *matchB,long *matchC){
+		      int32_t sizeA, int32_t sizeB,
+		      int32_t aoffset, int32_t boffset, 
+		      int32_t *matchA,int32_t *matchB,int32_t *matchC){
   
-  long apast=sizeA-aoffset;
-  long bpast=sizeB-boffset;
-  long i;
+  int32_t apast=sizeA-aoffset;
+  int32_t bpast=sizeB-boffset;
+  int32_t i;
   
   *matchA=0, *matchB=0, *matchC=0;
   
@@ -296,13 +296,13 @@ void i_analyze_rift_f(int16_t *A,int16_t *B,
  *              both A and B are in sync again
  */
 void i_analyze_rift_r(int16_t *A,int16_t *B,
-		      long sizeA, long sizeB,
-		      long aoffset, long boffset, 
-		      long *matchA,long *matchB,long *matchC){
+		      int32_t sizeA, int32_t sizeB,
+		      int32_t aoffset, int32_t boffset, 
+		      int32_t *matchA,int32_t *matchB,int32_t *matchC){
   
-  long apast=aoffset+1;
-  long bpast=boffset+1;
-  long i;
+  int32_t apast=aoffset+1;
+  int32_t bpast=boffset+1;
+  int32_t i;
   
   *matchA=0, *matchB=0, *matchC=0;
   
@@ -462,9 +462,9 @@ void i_analyze_rift_r(int16_t *A,int16_t *B,
  * Note that while this function checks both A and B for silence, the caller
  * assumes that only one or the other has silence.
  */
-void  analyze_rift_silence_f(int16_t *A,int16_t *B,long sizeA,long sizeB,
-			     long aoffset, long boffset,
-			     long *matchA, long *matchB){
+void  analyze_rift_silence_f(int16_t *A,int16_t *B,int32_t sizeA,int32_t sizeB,
+			     int32_t aoffset, int32_t boffset,
+			     int32_t *matchA, int32_t *matchB){
   *matchA=-1;
   *matchB=-1;
 
