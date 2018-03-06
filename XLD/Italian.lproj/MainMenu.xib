@@ -12,19 +12,19 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="356"/>
+			<integer value="594"/>
+			<integer value="278"/>
 			<integer value="1047"/>
+			<integer value="536"/>
 			<integer value="616"/>
 			<integer value="1080"/>
-			<integer value="317"/>
-			<integer value="278"/>
-			<integer value="551"/>
-			<integer value="536"/>
-			<integer value="404"/>
 			<integer value="604"/>
-			<integer value="594"/>
-			<integer value="106"/>
 			<integer value="375"/>
+			<integer value="404"/>
+			<integer value="356"/>
+			<integer value="317"/>
+			<integer value="551"/>
+			<integer value="29"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -725,6 +725,45 @@
 												<string key="NSTitle">Controlla ortografia mentre scrivo</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
+												<int key="NSMnemonicLoc">2147483647</int>
+												<reference key="NSOnImage" ref="423253037"/>
+												<reference key="NSMixedImage" ref="305205768"/>
+											</object>
+										</object>
+									</object>
+								</object>
+								<object class="NSMenuItem" id="617264690">
+									<reference key="NSMenu" ref="570055824"/>
+									<string key="NSTitle">Trasformazioni</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="423253037"/>
+									<reference key="NSMixedImage" ref="305205768"/>
+									<string key="NSAction">submenuAction:</string>
+									<object class="NSMenu" key="NSSubmenu" id="545540965">
+										<string key="NSTitle">Trasformazioni</string>
+										<object class="NSMutableArray" key="NSMenuItems">
+											<bool key="EncodedWithXMLCoder">YES</bool>
+											<object class="NSMenuItem" id="474941478">
+												<reference key="NSMenu" ref="545540965"/>
+												<string key="NSTitle">Scrivi in lettere maiuscole</string>
+												<string key="NSKeyEquiv"/>
+												<int key="NSMnemonicLoc">2147483647</int>
+												<reference key="NSOnImage" ref="423253037"/>
+												<reference key="NSMixedImage" ref="305205768"/>
+											</object>
+											<object class="NSMenuItem" id="49266917">
+												<reference key="NSMenu" ref="545540965"/>
+												<string key="NSTitle">Scrivi in lettere minuscole</string>
+												<string key="NSKeyEquiv"/>
+												<int key="NSMnemonicLoc">2147483647</int>
+												<reference key="NSOnImage" ref="423253037"/>
+												<reference key="NSMixedImage" ref="305205768"/>
+											</object>
+											<object class="NSMenuItem" id="681505299">
+												<reference key="NSMenu" ref="545540965"/>
+												<string key="NSTitle">Inserisci maiuscole</string>
+												<string key="NSKeyEquiv"/>
 												<int key="NSMnemonicLoc">2147483647</int>
 												<reference key="NSOnImage" ref="423253037"/>
 												<reference key="NSMixedImage" ref="305205768"/>
@@ -9966,6 +10005,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="534096309"/>
 							<reference ref="887450870"/>
 							<reference ref="166729864"/>
+							<reference ref="617264690"/>
 						</object>
 						<reference key="parent" ref="801290933"/>
 					</object>
@@ -13897,6 +13937,41 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="1035027063"/>
 						<reference key="parent" ref="53674811"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1207</int>
+						<reference key="object" ref="617264690"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="545540965"/>
+						</object>
+						<reference key="parent" ref="570055824"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1208</int>
+						<reference key="object" ref="545540965"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="681505299"/>
+							<reference ref="49266917"/>
+							<reference ref="474941478"/>
+						</object>
+						<reference key="parent" ref="617264690"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1209</int>
+						<reference key="object" ref="681505299"/>
+						<reference key="parent" ref="545540965"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1210</int>
+						<reference key="object" ref="49266917"/>
+						<reference key="parent" ref="545540965"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1211</int>
+						<reference key="object" ref="474941478"/>
+						<reference key="parent" ref="545540965"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -14115,6 +14190,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>1204.IBPluginDependency</string>
 					<string>1205.IBEditorWindowLastContentRect</string>
 					<string>1205.IBPluginDependency</string>
+					<string>1207.IBPluginDependency</string>
+					<string>1208.IBEditorWindowLastContentRect</string>
+					<string>1208.IBPluginDependency</string>
+					<string>1209.IBPluginDependency</string>
+					<string>1210.IBPluginDependency</string>
+					<string>1211.IBPluginDependency</string>
 					<string>124.IBPluginDependency</string>
 					<string>124.ImportedFromIB2</string>
 					<string>125.IBEditorWindowLastContentRect</string>
@@ -15243,6 +15324,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{642, 350}, {64, 6}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>{{780, 424}, {227, 63}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>{{568, 613}, {166, 23}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15297,7 +15384,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{286, 513}, {273, 223}}</string>
+					<string>{{163, 493}, {273, 243}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15995,7 +16082,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{286, 283}, {356, 453}}</string>
+					<string>{{89, 283}, {356, 453}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -16203,7 +16290,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1206</int>
+			<int key="maxID">1211</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
