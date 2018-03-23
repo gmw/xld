@@ -375,18 +375,42 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 		if(result->parent) {
 			XLDCDDAResult *obj = result->parent;
 			if(currentTrack <= obj->trackNumber) {
+				cddaRipResult *targetResult = [obj resultForIndex:currentTrack];
 				if(currentFrame+count >= obj->actualLengthArr[currentTrack-1]) {
-					cddaRipResult *targetResult = [obj resultForIndex:currentTrack];
+#if USE_EBUR128
+					cddaRipResult *nextTrackResult = NULL;
+					if(currentTrack < obj->trackNumber) nextTrackResult = [obj resultForIndex:currentTrack+1];
+					double trackGain;
+					double peak;
+					ebur128_add_frames_int(targetResult->r128, buffer, obj->actualLengthArr[currentTrack-1]-currentFrame);
+					if(nextTrackResult)
+						ebur128_add_frames_int(nextTrackResult->r128, buffer+2*(obj->actualLengthArr[currentTrack-1]-currentFrame), count+currentFrame-obj->actualLengthArr[currentTrack-1]);
+					ebur128_loudness_global(targetResult->r128, &trackGain);
+					targetResult->trackGain = ebur128_reference_loudness - trackGain;
+					ebur128_sample_peak(targetResult->r128, 0, &peak);
+					targetResult->peak = peak;
+					ebur128_sample_peak(targetResult->r128, 1, &peak);
+					if(peak > targetResult->peak) targetResult->peak = peak;
+#else
 					gain_analyze_samples_interleaved_int32(result->rg,buffer,obj->actualLengthArr[currentTrack-1]-currentFrame,2);
 					targetResult->trackGain = PINK_REF-gain_get_title(result->rg);
 					targetResult->peak = peak_get_title(result->rg);
 					gain_analyze_samples_interleaved_int32(result->rg,buffer+2*(obj->actualLengthArr[currentTrack-1]-currentFrame),count+currentFrame-obj->actualLengthArr[currentTrack-1],2);
+#endif
 					//NSLog(@"track %d: gain %.2f, peak %f",currentTrack,targetResult->trackGain,targetResult->peak);
 				}
+#if USE_EBUR128
+				else ebur128_add_frames_int(targetResult->r128,buffer,count);
+#else
 				else gain_analyze_samples_interleaved_int32(result->rg,buffer,count,2);
+#endif
 			}
 		}
+#if USE_EBUR128
+		else ebur128_add_frames_int(result->r128,buffer,count);
+#else
 		else gain_analyze_samples_interleaved_int32(result->rg,buffer,count,2);
+#endif
 	}
 	
 	/* AccurateRip & CRC32 stuff */
@@ -708,8 +732,19 @@ static void commitSecureRipperResult(cddaRipResult *result, XLDSecureRipperResul
 	if(result) {
 		if(result->scanReplayGain && !testMode) {
 			if(!result->parent) {
+#if USE_EBUR128
+				double trackGain;
+				double peak;
+				ebur128_loudness_global(result->r128, &trackGain);
+				result->trackGain = ebur128_reference_loudness - trackGain;
+				ebur128_sample_peak(result->r128, 0, &peak);
+				result->peak = peak;
+				ebur128_sample_peak(result->r128, 1, &peak);
+				if(peak > result->peak) result->peak = peak;
+#else
 				result->trackGain = PINK_REF-gain_get_title(result->rg);
 				result->peak = peak_get_title(result->rg);
+#endif
 			}
 		}
 	}

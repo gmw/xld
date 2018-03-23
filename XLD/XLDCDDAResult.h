@@ -7,8 +7,13 @@
 //
 //  Access to AccurateRip is regulated, see  http://www.accuraterip.com/3rdparty-access.htm for details.
 
+#define USE_EBUR128 1
 #import <Cocoa/Cocoa.h>
+#if USE_EBUR128
+#import "ebur128.h"
+#else
 #import "gain_analysis.h"
+#endif
 #import "XLDTrackValidator.h"
 
 typedef struct {
@@ -35,7 +40,11 @@ typedef struct {
 	NSMutableArray *suspiciousPosition;
 	BOOL checkInconsistency;
 	BOOL scanReplayGain;
+#if USE_EBUR128
+	ebur128_state *r128;
+#else
 	replaygain_t *rg;
+#endif
 	float trackGain;
 	float peak;
 	XLDARStatus ARStatus;
@@ -66,7 +75,12 @@ typedef struct {
 	NSMutableArray *trackList;
 	NSString *cuePath;
 	NSArray *cuePathArray;
+#if USE_EBUR128
+	ebur128_state **r128;
+	int r128TrackCount;
+#else
 	replaygain_t *rg;
+#endif
 	BOOL isGoodRip;
 	BOOL appendBOM;
 	int processOfExistingFiles;
@@ -74,6 +88,9 @@ typedef struct {
 	unsigned int gapStatus;
 	XLDRipperMode ripperMode;
 	NSString *mediaType;
+	BOOL gainAnalyzed;
+	double albumGain;
+	double albumPeak;
 @public
 	xldoffset_t *indexArr;
 	xldoffset_t *actualLengthArr; /* used for detecting the track end for single image ripping */

@@ -134,8 +134,10 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 	[super init];
 	detectedOffset = [[NSMutableDictionary alloc] init];
 	trackList = [[NSMutableArray alloc] init];
+#if !USE_EBUR128
 	rg = (replaygain_t *)malloc(sizeof(replaygain_t));
 	gain_init_analysis(rg,44100);
+#endif
 	logDirectoryArray = [[NSMutableArray alloc] init];
 	cueDirectoryArray = [[NSMutableArray alloc] init];
 	return self;
@@ -148,13 +150,21 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 	indexArr = (xldoffset_t *)malloc(sizeof(xldoffset_t)*t);
 	lengthArr = (xldoffset_t *)malloc(sizeof(xldoffset_t)*t);
 	actualLengthArr = (xldoffset_t *)malloc(sizeof(xldoffset_t)*t);
+#if USE_EBUR128
+	r128 = calloc(t,sizeof(ebur128_state*));
+#endif
 	int i;
 	for(i=0;i<t+1;i++) {
 		results[i].suspiciousPosition = [[NSMutableArray alloc] init];
+#if USE_EBUR128
+		results[i].r128 = ebur128_init(2, 44100, EBUR128_MODE_I|EBUR128_MODE_SAMPLE_PEAK);
+#else
 		results[i].rg = rg;
+#endif
 		results[i].detectedOffset = [[NSMutableDictionary alloc] init];
 		results[i].validator = [[XLDTrackValidator alloc] init];
 		[results[i].validator setTrackNumber:i];
+		results[i].peak = -1;
 	}
 	trackNumber = t;
 	return self;
@@ -170,6 +180,9 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 			[results[i].suspiciousPosition release];
 			[results[i].detectedOffset release];
 			[results[i].validator release];
+#if USE_EBUR128
+			ebur128_destroy(&results[i].r128);
+#endif
 		}
 		free(results);
 	}
@@ -190,7 +203,11 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 	if(cueFileName) [cueFileName release];
 	[logDirectoryArray release];
 	[cueDirectoryArray release];
+#if USE_EBUR128
+	if(r128) free(r128);
+#else
 	free(rg);
+#endif
 	if(mediaType) [mediaType release];
 	[super dealloc];
 }
@@ -306,14 +323,29 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 
 - (void)analyzeGain
 {
+	if(gainAnalyzed) return;
 	int i;
+#if USE_EBUR128
+	for(i=1;i<trackNumber+1;i++) {
+		if(results[i].peak >= 0) r128[r128TrackCount++] = results[i].r128;
+	}
+#endif
 	if(results[0].enabled) {
 		if(!results[0].cancelled && results[0].scanReplayGain) {
-			float albumGain = PINK_REF-gain_get_album(rg);
-			float albumPeak = peak_get_album(rg);
+#if USE_EBUR128
+			albumPeak = 0;
+			ebur128_loudness_global_multiple(r128, r128TrackCount, &albumGain);
+			albumGain = ebur128_reference_loudness - albumGain;
+			for(i=1;i<trackNumber+1;i++) {
+				if(results[i].peak > albumPeak) albumPeak = results[i].peak;
+			}
+#else
+			albumGain = PINK_REF-gain_get_album(rg);
+			albumPeak = peak_get_album(rg);
+#endif
 			for(i=0;i<[trackList count];i++) {
-				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumGain] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
-				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumPeak] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
+				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithDouble:albumGain] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
+				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithDouble:albumPeak] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
 			}
 		}
 		for(i=1;i<trackNumber+1;i++) {
@@ -338,11 +370,20 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 			}
 		}
 		if(results[0].scanReplayGain) {
-			float albumGain = PINK_REF-gain_get_album(rg);
-			float albumPeak = peak_get_album(rg);
+#if USE_EBUR128
+			albumPeak = 0;
+			ebur128_loudness_global_multiple(r128, r128TrackCount, &albumGain);
+			albumGain = ebur128_reference_loudness - albumGain;
+			for(i=1;i<trackNumber+1;i++) {
+				if(results[i].peak > albumPeak) albumPeak = results[i].peak;
+			}
+#else
+			albumGain = PINK_REF-gain_get_album(rg);
+			albumPeak = peak_get_album(rg);
+#endif
 			for(i=0;i<[trackList count];i++) {
-				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumGain] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
-				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumPeak] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
+				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithDouble:albumGain] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
+				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithDouble:albumPeak] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
 			}
 		}
 		for(i=1;i<trackNumber+1;i++) {
@@ -353,6 +394,7 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 			}
 		}
 	}
+	gainAnalyzed = YES;
 }
 
 - (void)commitReplayGainTagForTrack:(int)trk
@@ -367,6 +409,7 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 {
 	if(!results) return nil;
 	//if(!useParanoia) return nil;
+	if(!gainAnalyzed) [self analyzeGain];
 	isGoodRip = YES;
 	BOOL error = NO;
 	BOOL inconsistency = NO;
@@ -481,12 +524,6 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 		}
 		else {
 			if(results[0].scanReplayGain) {
-				float albumGain = PINK_REF-gain_get_album(rg);
-				float albumPeak = peak_get_album(rg);
-				/*for(i=0;i<[trackList count];i++) {
-					[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumGain] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
-					[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumPeak] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
-				}*/
 				[out appendString:[NSString stringWithFormat:@"    Album gain               : %.2f dB\n",albumGain]];
 				[out appendString:[NSString stringWithFormat:@"    Peak                     : %f\n",albumPeak]];
 			}
@@ -612,28 +649,9 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, cddaRipResult *result)
 		}
 	}
 	else {
-		if(results[0].scanReplayGain) {
-			/* album gain should be disabled unless all tracks except the data track are ripped */
-			for(i=0;i<[trackList count];i++) {
-				BOOL dataTrack = NO;
-				if([[[trackList objectAtIndex:i] metadata] objectForKey:XLD_METADATA_DATATRACK]) {
-					dataTrack = [[[[trackList objectAtIndex:i] metadata] objectForKey:XLD_METADATA_DATATRACK] boolValue];
-				}
-				if(results[i+1].cancelled || (!results[i+1].enabled && !dataTrack)) {
-					results[0].scanReplayGain = NO;
-					break;
-				}
-			}
-		}
 		if(results[0].scanReplayGain || (!results[0].cancelled && ripperMode != kRipperModeBurst))
 			[out appendString:@"All Tracks\n"];
 		if(results[0].scanReplayGain) {
-			float albumGain = PINK_REF-gain_get_album(rg);
-			float albumPeak = peak_get_album(rg);
-			/*for(i=0;i<[trackList count];i++) {
-				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumGain] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
-				[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumPeak] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
-			}*/
 			[out appendString:[NSString stringWithFormat:@"    Album gain               : %.2f dB\n",albumGain]];
 			[out appendString:[NSString stringWithFormat:@"    Peak                     : %f\n",albumPeak]];
 		}

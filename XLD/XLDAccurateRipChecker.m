@@ -53,8 +53,10 @@ static int intSort(id num1, id num2, void *context)
 	trackList = [[NSMutableArray alloc] init];
 	preTrackSamples = calloc(1,588*4*2*sizeof(int));
 	postTrackSamples = calloc(1,588*4*2*sizeof(int));
+#if !USE_EBUR128
 	rg = (replaygain_t *)malloc(sizeof(replaygain_t));
 	gain_init_analysis(rg,44100);
+#endif
 	
 	for(i = 0; i < 256; ++i){
 		value = i;
@@ -161,6 +163,9 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, checkResult *result)
 	[self init];
 	results = (checkResult *)calloc(1,sizeof(checkResult)*([tracks count]));
 	trackNumber = [tracks count];
+#if USE_EBUR128
+	r128 = calloc(trackNumber,sizeof(ebur128_state*));
+#endif
 	int i;
 	for(i=0;i<trackNumber;i++) {
 		[trackList addObject:[tracks objectAtIndex:i]];
@@ -201,7 +206,16 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, checkResult *result)
 	[trackList release];
 	free(preTrackSamples);
 	free(postTrackSamples);
+#if USE_EBUR128
+	if(r128) {
+		for(i=0;i<r128TrackCount;i++) {
+			ebur128_destroy(&r128[i]);
+		}
+		free(r128);
+	}
+#else
 	free(rg);
+#endif
 	[super dealloc];
 }
 
@@ -362,6 +376,9 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, checkResult *result)
 	xldoffset_t currentFrame = 0;
 	int *buffer = (int *)malloc(8192 * 2 * 4);
 	int currentTrack = 1;
+#if USE_EBUR128
+	r128[r128TrackCount++] = ebur128_init(2, 44100, EBUR128_MODE_I|EBUR128_MODE_SAMPLE_PEAK);
+#endif
 	
 	results[0].enabled = YES;
 	
@@ -378,7 +395,11 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, checkResult *result)
 		}
 		if(ret > 0) {
 			[self commitBufferForTrack:currentTrack withBuffer:buffer length:ret currentFrame:currentFrame];
+#if USE_EBUR128
+			ebur128_add_frames_int(r128[r128TrackCount-1],buffer,ret);
+#else
 			gain_analyze_samples_interleaved_int32(rg,buffer,ret,2);
+#endif
 		}
 		framesToCopy -= ret;
 		currentFrame += ret;
@@ -392,8 +413,21 @@ static BOOL dumpAccurateRipLog(NSMutableString *out, checkResult *result)
 		}
 		
 		if(!framesToCopy) {
+#if USE_EBUR128
+			double trackGain;
+			double peak;
+			ebur128_loudness_global(r128[r128TrackCount-1], &trackGain);
+			results[currentTrack-1].trackGain = ebur128_reference_loudness - trackGain;
+			ebur128_sample_peak(r128[r128TrackCount-1], 0, &peak);
+			results[currentTrack-1].peak = peak;
+			ebur128_sample_peak(r128[r128TrackCount-1], 1, &peak);
+			if(peak > results[currentTrack-1].peak) results[currentTrack-1].peak = peak;
+			if(currentTrack < trackNumber)
+				r128[r128TrackCount++] = ebur128_init(2, 44100, EBUR128_MODE_I|EBUR128_MODE_SAMPLE_PEAK);
+#else
 			results[currentTrack-1].trackGain = PINK_REF-gain_get_title(rg);
 			results[currentTrack-1].peak = peak_get_title(rg);
+#endif
 			currentFrame = 0;
 			currentTrack++;
 			if(currentTrack <= trackNumber) {
@@ -509,6 +543,9 @@ finish:
 	xldoffset_t currentFrame = 0;
 	int *buffer = (int *)malloc(8192 * 2 * 4);
 	int currentTrack = 1;
+#if USE_EBUR128
+	r128[r128TrackCount++] = ebur128_init(2, 44100, EBUR128_MODE_I|EBUR128_MODE_SAMPLE_PEAK);
+#endif
 	
 	results[0].enabled = YES;
 	
@@ -541,7 +578,11 @@ finish:
 					crc32_eac_global = (crc32_eac_global >> 8) ^ crc32Table[(crc32_eac_global ^ (sample>>24)) & 0xFF];
 				}
 			}
+#if USE_EBUR128
+			ebur128_add_frames_int(r128[r128TrackCount-1],buffer,ret);
+#else
 			gain_analyze_samples_interleaved_int32(rg,buffer,ret,2);
+#endif
 		}
 		framesToCopy -= ret;
 		currentFrame += ret;
@@ -555,8 +596,21 @@ finish:
 		}
 		
 		if(!framesToCopy) {
+#if USE_EBUR128
+			double trackGain;
+			double peak;
+			ebur128_loudness_global(r128[r128TrackCount-1], &trackGain);
+			results[currentTrack-1].trackGain = ebur128_reference_loudness - trackGain;
+			ebur128_sample_peak(r128[r128TrackCount-1], 0, &peak);
+			results[currentTrack-1].peak = peak;
+			ebur128_sample_peak(r128[r128TrackCount-1], 1, &peak);
+			if(peak > results[currentTrack-1].peak) results[currentTrack-1].peak = peak;
+			if(currentTrack < trackNumber)
+				r128[r128TrackCount++] = ebur128_init(2, 44100, EBUR128_MODE_I|EBUR128_MODE_SAMPLE_PEAK);
+#else
 			results[currentTrack-1].trackGain = PINK_REF-gain_get_title(rg);
 			results[currentTrack-1].peak = peak_get_title(rg);
+#endif
 			currentFrame = 0;
 			currentTrack++;
 			if(currentTrack <= trackNumber) {
@@ -654,8 +708,18 @@ finish:
 	int ARStatusPos = [out length];
 	
 	if(!stop) {
+#if USE_EBUR128
+		double albumGain;
+		double albumPeak = 0;
+		ebur128_loudness_global_multiple(r128, r128TrackCount, &albumGain);
+		albumGain = ebur128_reference_loudness - albumGain;
+		for(i=0;i<trackNumber;i++) {
+			if(results[i].peak > albumPeak) albumPeak = results[i].peak;
+		}
+#else
 		float albumGain = PINK_REF-gain_get_album(rg);
 		float albumPeak = peak_get_album(rg);
+#endif
 		for(i=0;i<[trackList count];i++) {
 			[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumGain] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
 			[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumPeak] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
@@ -762,8 +826,18 @@ finish:
 	[out appendString:@"\n"];
 	
 	if(!stop) {
+#if USE_EBUR128
+		double albumGain;
+		double albumPeak = 0;
+		ebur128_loudness_global_multiple(r128, r128TrackCount, &albumGain);
+		albumGain = ebur128_reference_loudness - albumGain;
+		for(i=0;i<trackNumber;i++) {
+			if(results[i].peak > albumPeak) albumPeak = results[i].peak;
+		}
+#else
 		float albumGain = PINK_REF-gain_get_album(rg);
 		float albumPeak = peak_get_album(rg);
+#endif
 		for(i=0;i<[trackList count];i++) {
 			[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumGain] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_GAIN];
 			[[[trackList objectAtIndex:i] metadata] setObject:[NSNumber numberWithFloat:albumPeak] forKey:XLD_METADATA_REPLAYGAIN_ALBUM_PEAK];
