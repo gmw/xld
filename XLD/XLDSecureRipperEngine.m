@@ -7,12 +7,12 @@
 //
 
 #import "XLDSecureRipperEngine.h"
-#import <openssl/md5.h>
+#import <CommonCrypto/CommonDigest.h>
 
 #define LOG_RIPPING_STATUS 0
 
 #define OVERLAP 3
-/* SECTOR_READ should be large enough to kill a chace on most drives */
+/* SECTOR_READ should be large enough to kill a cache on most drives */
 #define SECTOR_READ 600
 #define SECTORS_PER_IOCTL 10
 #define SLOWDOWN_THREASHOLD 10
@@ -34,23 +34,23 @@ typedef struct _sectorBuffer
 
 static sectorBuffer *createSectorBuffer(void *buffer)
 {
-	MD5_CTX context;
+	CC_MD5_CTX context;
 	sectorBuffer *sector = calloc(1,sizeof(sectorBuffer));
 	memcpy(sector->buffer, buffer, 2352);
 	sector->matchCount = 1;
-	MD5_Init (&context);
-	MD5_Update (&context, buffer, 2352);
-	MD5_Final(sector->md5, &context);
+	CC_MD5_Init (&context);
+	CC_MD5_Update (&context, buffer, 2352);
+	CC_MD5_Final(sector->md5, &context);
 	return sector;
 }
 
 static void commitSector(sectorBuffer *sector, void *buffer)
 {
 	unsigned char md5[16];
-	MD5_CTX context;
-	MD5_Init (&context);
-	MD5_Update (&context, buffer, 2352);
-	MD5_Final(md5, &context);
+	CC_MD5_CTX context;
+	CC_MD5_Init (&context);
+	CC_MD5_Update (&context, buffer, 2352);
+	CC_MD5_Final(md5, &context);
 	
 	sectorBuffer *current = sector;
 	while(1) {

@@ -7,12 +7,8 @@
 //
 
 #import "XLDAmazonSearcher.h"
-//#import <openssl/sha.h>
-#import <openssl/bio.h>
-#import <openssl/evp.h>
-#import <openssl/buffer.h>
-#import <CommonCrypto/CommonDigest.h>
 #import "XLDCustomClasses.h"
+#import <CommonCrypto/CommonDigest.h>
 
 enum
 {
@@ -80,6 +76,41 @@ static void HMAC_SHA256_Final(hmac_sha256_t *hmac, unsigned char *md)
 	CC_SHA256_Final(md,&sha);
 }
 
+#if 1
+static const char basis_64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static char *base64enc(const unsigned char *input, int len)
+{
+	char *encoded = malloc(((len + 2) / 3 * 4) + 1);
+	int i;
+	char *p;
+	
+	p = encoded;
+	for (i = 0; i < len - 2; i += 3) {
+		*p++ = basis_64[(input[i] >> 2) & 0x3F];
+		*p++ = basis_64[((input[i] & 0x3) << 4) | ((int) (input[i + 1] & 0xF0) >> 4)];
+		*p++ = basis_64[((input[i + 1] & 0xF) << 2) | ((int) (input[i + 2] & 0xC0) >> 6)];
+		*p++ = basis_64[input[i + 2] & 0x3F];
+	}
+	if (i < len) {
+		*p++ = basis_64[(input[i] >> 2) & 0x3F];
+		if (i == (len - 1)) {
+			*p++ = basis_64[((input[i] & 0x3) << 4)];
+			*p++ = '=';
+		}
+		else {
+			*p++ = basis_64[((input[i] & 0x3) << 4) | ((int) (input[i + 1] & 0xF0) >> 4)];
+			*p++ = basis_64[((input[i + 1] & 0xF) << 2)];
+		}
+		*p++ = '=';
+	}
+	
+	*p++ = '\0';
+	return encoded;
+}
+#else
+#import <openssl/bio.h>
+#import <openssl/evp.h>
+#import <openssl/buffer.h>
 static char *base64enc(const unsigned char *input, int length)
 {
 	BIO *bmem, *b64;
@@ -101,6 +132,7 @@ static char *base64enc(const unsigned char *input, int length)
 	
 	return buff;
 }
+#endif
 
 @implementation XLDAmazonSearcher
 

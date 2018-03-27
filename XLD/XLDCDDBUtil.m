@@ -14,11 +14,43 @@
 #import "XLDMusicBrainzReleaseList.h"
 #import "XLDMusicBrainzRelease.h"
 #import "XLDDiscogsRelease.h"
-#import <openssl/sha.h>
+#import <CommonCrypto/CommonDigest.h>
+
+#if 1
+static const char basis_64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._";
+static char *base64enc(const unsigned char *input, int len)
+{
+	char *encoded = malloc(((len + 2) / 3 * 4) + 1);
+	int i;
+	char *p;
+	
+	p = encoded;
+	for (i = 0; i < len - 2; i += 3) {
+		*p++ = basis_64[(input[i] >> 2) & 0x3F];
+		*p++ = basis_64[((input[i] & 0x3) << 4) | ((int) (input[i + 1] & 0xF0) >> 4)];
+		*p++ = basis_64[((input[i + 1] & 0xF) << 2) | ((int) (input[i + 2] & 0xC0) >> 6)];
+		*p++ = basis_64[input[i + 2] & 0x3F];
+	}
+	if (i < len) {
+		*p++ = basis_64[(input[i] >> 2) & 0x3F];
+		if (i == (len - 1)) {
+			*p++ = basis_64[((input[i] & 0x3) << 4)];
+			*p++ = '-';
+		}
+		else {
+			*p++ = basis_64[((input[i] & 0x3) << 4) | ((int) (input[i + 1] & 0xF0) >> 4)];
+			*p++ = basis_64[((input[i + 1] & 0xF) << 2)];
+		}
+		*p++ = '-';
+	}
+	
+	*p++ = '\0';
+	return encoded;
+}
+#else
 #import <openssl/bio.h>
 #import <openssl/evp.h>
 #import <openssl/buffer.h>
-
 static char *base64enc(const unsigned  char *input, int length)
 {
 	BIO *bmem, *b64;
@@ -46,6 +78,7 @@ static char *base64enc(const unsigned  char *input, int length)
 	
 	return buff;
 }
+#endif
 
 @implementation XLDCDDBUtil
 
@@ -80,7 +113,7 @@ static char *base64enc(const unsigned  char *input, int length)
 
 - (void)setTracks:(NSArray *)tracks totalFrame:(int)frames
 {
-	SHA_CTX	sha;
+	CC_SHA1_CTX	sha;
 	unsigned char	digest[20];
 	char *base64;
 	char		tmp[17];
@@ -109,26 +142,26 @@ static char *base64enc(const unsigned  char *input, int length)
 		cddb_disc_add_track(disc, track);
 	}
 	
-	SHA1_Init(&sha);
+	CC_SHA1_Init(&sha);
 	sprintf(tmp, "%02X", 1);
-	SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
+	CC_SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
 	sprintf(toc,"%d",1);
 	sprintf(tmp, "%02X", totalAudioTrack);
-	SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
+	CC_SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
 	sprintf(toc,"%s+%d",toc,totalAudioTrack);
 	sprintf(tmp, "%08X", (unsigned int)((totalAudioFrames*75.0/44100.0)+150));
-	SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
+	CC_SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
 	sprintf(toc,"%s+%d",toc,(unsigned int)((totalAudioFrames*75.0/44100.0)+150));
 	for (i = 1; i <= totalAudioTrack; i++) {
 		sprintf(tmp, "%08X", (unsigned int)([(XLDTrack *)[tracks objectAtIndex:i-1] index]*75.0/44100.0)+150);
-		SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
+		CC_SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
 		sprintf(toc,"%s+%d",toc,(unsigned int)([(XLDTrack *)[tracks objectAtIndex:i-1] index]*75.0/44100.0)+150);
 	}
 	for (; i < 100; i++) {
 		sprintf(tmp, "%08X", 0);
-		SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
+		CC_SHA1_Update(&sha, (unsigned char *) tmp, strlen(tmp));
 	}
-	SHA1_Final(digest, &sha);
+	CC_SHA1_Final(digest, &sha);
 	base64 = base64enc(digest, sizeof(digest));
 	strcpy(discid, base64);
 	free(base64);
