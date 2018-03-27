@@ -327,7 +327,7 @@ static int write_block (void *id, void *data, int32_t length)
 			tagAdded = YES;
 		}
 	}
-	MD5_Init (&context);
+	CC_MD5_Init (&context);
 	return YES;
 }
 
@@ -345,9 +345,9 @@ static int write_block (void *id, void *data, int32_t length)
 		ptr = (unsigned char *)(internalBuffer + i);
 		internalBuffer[i] = buffer[i] >> (32-format.bps*8);
 #ifdef _BIG_ENDIAN
-		for(j=0;j<format.bps;j++) MD5_Update (&context, ptr+3-j, 1);
+		for(j=0;j<format.bps;j++) CC_MD5_Update (&context, ptr+3-j, 1);
 #else
-		for(j=0;j<format.bps;j++) MD5_Update (&context, ptr+j, 1);
+		for(j=0;j<format.bps;j++) CC_MD5_Update (&context, ptr+j, 1);
 #endif
 	}
 	WavpackPackSamples(wpc,internalBuffer,counts);
@@ -357,7 +357,7 @@ static int write_block (void *id, void *data, int32_t length)
 - (void)finalize
 {
 	unsigned char digest[16];
-	MD5_Final(digest, &context);
+	CC_MD5_Final(digest, &context);
 	WavpackStoreMD5Sum(wpc,digest);
 	WavpackFlushSamples(wpc);
 	if(tagAdded) WavpackWriteTag(wpc);

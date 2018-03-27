@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "XLDOutputTask.h"
 #import <wavpack/wavpack.h>
-#import <openssl/md5.h>
+#import <CommonCrypto/CommonDigest.h>
 
 #define XLD_METADATA_TITLE		@"Title"
 #define XLD_METADATA_ARTIST		@"Artist"
@@ -82,7 +82,7 @@ typedef struct
 	fileID *fpwvc;
 	int *internalBuffer;
 	int internalBufferSize;
-	MD5_CTX context;
+	CC_MD5_CTX context;
 	NSDictionary *configurations;
 }
 
