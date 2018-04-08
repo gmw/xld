@@ -104,7 +104,7 @@
 	NSMutableArray *args;
 	if([shell isEqualToString:@"/bin/csh"] || [shell isEqualToString:@"/bin/tcsh"])
 		args = [NSMutableArray arrayWithObjects:@"-i",@"-c",@"/usr/bin/which wine",nil];
-	else if(NSApp)
+	else if([shell isEqualToString:@"/bin/zsh"])
 		args = [NSMutableArray arrayWithObjects:@"-l",@"-i",@"-c",@"/usr/bin/which wine",nil];
 	else
 		args = [NSMutableArray arrayWithObjects:@"-l",@"-c",@"/usr/bin/which wine",nil];
@@ -123,6 +123,9 @@
 		//fallback - search crossover, winebottler or mikuinstaller
 		NSFileManager *fm = [NSFileManager defaultManager];
 		if([fm fileExistsAtPath:@"/Applications/Wine.app/Contents/Resources/bin/wine"]) return YES;
+		if([fm fileExistsAtPath:@"/Applications/Wine Stable.app/Contents/Resources/wine/bin/wine"]) return YES;
+		if([fm fileExistsAtPath:@"/Applications/Wine Devel.app/Contents/Resources/wine/bin/wine"]) return YES;
+		if([fm fileExistsAtPath:@"/Applications/Wine Staging.app/Contents/Resources/wine/bin/wine"]) return YES;
 		if([fm fileExistsAtPath:@"/Applications/CrossOver.app/Contents/SharedSupport/CrossOver/bin/wineloader"]) return YES;
 		//if([fm fileExistsAtPath:@"/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/bin/wine"]) return YES;
 		return NO;
@@ -160,7 +163,7 @@
 	NSMutableArray *args;
 	if([shell isEqualToString:@"/bin/csh"] || [shell isEqualToString:@"/bin/tcsh"])
 		args = [NSMutableArray arrayWithObjects:@"-i",@"-c",@"/usr/bin/which wine",nil];
-	else if(NSApp)
+	else if([shell isEqualToString:@"/bin/zsh"])
 		args = [NSMutableArray arrayWithObjects:@"-l",@"-i",@"-c",@"/usr/bin/which wine",nil];
 	else
 		args = [NSMutableArray arrayWithObjects:@"-l",@"-c",@"/usr/bin/which wine",nil];
@@ -179,9 +182,15 @@
 		//fallback - search winebottler or mikuinstaller
 		NSFileManager *fm = [NSFileManager defaultManager];
 		if([fm fileExistsAtPath:@"/Applications/CrossOver.app/Contents/SharedSupport/CrossOver/bin/wineloader"])
-			return [NSString stringWithString:@"/Applications/CrossOver.app/Contents/SharedSupport/CrossOver/bin/wineloader"];
+			return @"/Applications/CrossOver.app/Contents/SharedSupport/CrossOver/bin/wineloader";
+		if([fm fileExistsAtPath:@"/Applications/Wine Stable.app/Contents/Resources/wine/bin/wine"])
+			return @"/Applications/Wine Stable.app/Contents/Resources/wine/bin/wine";
+		if([fm fileExistsAtPath:@"/Applications/Wine Devel.app/Contents/Resources/wine/bin/wine"])
+			return @"/Applications/Wine Devel.app/Contents/Resources/wine/bin/wine";
+		if([fm fileExistsAtPath:@"/Applications/Wine Staging.app/Contents/Resources/wine/bin/wine"])
+			return @"/Applications/Wine Staging.app/Contents/Resources/wine/bin/wine";
 		if([fm fileExistsAtPath:@"/Applications/Wine.app/Contents/Resources/bin/wine"])
-			return [NSString stringWithString:@"/Applications/Wine.app/Contents/Resources/bin/wine"];
+			return @"/Applications/Wine.app/Contents/Resources/bin/wine";
 		/*if([fm fileExistsAtPath:@"/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/bin/wine"])
 			return [NSString stringWithString:@"/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/bin/wine"];*/
 		return nil;
